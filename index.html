@@ -8,94 +8,58 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'IBM Plex Sans KR',sans-serif;background:#f0f0f0;color:#222;min-height:100vh}
-
-/* 헤더 */
 .app-header{background:#111;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .app-header-left{display:flex;align-items:center;gap:12px}
 .app-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4em;letter-spacing:3px;color:#fff}
 .app-subtitle{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.4)}
 .app-badge{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.5);padding:3px 8px;border-radius:4px}
-
-/* 탭 */
 .tabs{display:flex;gap:0;padding:0 24px;background:#1a1a1a;border-bottom:1px solid rgba(255,255,255,.08)}
 .tab{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;padding:12px 20px;color:rgba(255,255,255,.4);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
 .tab:hover{color:rgba(255,255,255,.7)}
 .tab.active{color:#fff;border-bottom-color:#fff}
-
-/* 메인 레이아웃 */
-.main{display:flex;height:calc(100vh - 90px);overflow:hidden}
-
-/* 폼 패널 */
-.form-panel{width:320px;flex-shrink:0;background:#fff;border-right:1px solid #ddd;display:flex;flex-direction:column;overflow:hidden}
+.form-panel{width:340px;flex-shrink:0;background:#fff;border-right:1px solid #ddd;display:flex;flex-direction:column;overflow:hidden}
 .form-panel-header{padding:14px 16px;border-bottom:1px solid #eee;background:#fafafa}
 .form-panel-header h2{font-size:13px;font-weight:700;color:#111}
 .form-panel-header p{font-size:11px;color:#999;margin-top:2px}
 .form-body{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:10px}
 
-/* 폼 요소 */
+/* 서식 툴바 */
+.fmt-bar{display:flex;align-items:center;gap:5px;padding:8px 16px;background:#1a1a1a;border-bottom:1px solid #333;flex-shrink:0;flex-wrap:wrap;position:sticky;top:0;z-index:50}
+.fmt-bar-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.3);margin-right:4px}
+.fmt-btn{width:26px;height:26px;border-radius:5px;border:1px solid rgba(255,255,255,.15);background:none;color:rgba(255,255,255,.6);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;font-family:'IBM Plex Sans KR',sans-serif;flex-shrink:0}
+.fmt-btn:hover{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3)}
+.fmt-divider{width:1px;height:18px;background:rgba(255,255,255,.12);margin:0 3px;flex-shrink:0}
+.fmt-swatch{width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .1s,border-color .1s;flex-shrink:0}
+.fmt-swatch:hover{transform:scale(1.2);border-color:rgba(255,255,255,.5)}
+input[type=color].fmt-custom{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.2);cursor:pointer;padding:0;background:none;flex-shrink:0}
+.fmt-reset{font-family:'Share Tech Mono',monospace;font-size:9px;color:rgba(255,255,255,.35);cursor:pointer;padding:2px 6px;border:1px solid rgba(255,255,255,.12);border-radius:4px;background:none;transition:all .12s;flex-shrink:0}
+.fmt-reset:hover{color:#fff;border-color:rgba(255,255,255,.3)}
+.fmt-hint{font-family:'Share Tech Mono',monospace;font-size:8px;color:rgba(255,255,255,.2);width:100%;margin-top:2px;letter-spacing:.5px}
+
 .field{display:flex;flex-direction:column;gap:4px}
 .field label{font-size:11px;font-weight:500;color:#666;letter-spacing:.3px}
 .field input,.field textarea,.field select{font-size:12px;padding:7px 10px;border:1px solid #e0e0e0;border-radius:6px;background:#fafafa;color:#222;width:100%;transition:border .15s;font-family:'IBM Plex Sans KR',sans-serif;resize:vertical}
 .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:#999;background:#fff}
 .field textarea{min-height:56px}
 .section-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:#bbb;padding:6px 0 2px;border-bottom:1px solid #f0f0f0;margin-top:4px}
-
-/* 태그 인풋 */
 .tag-wrap{display:flex;flex-wrap:wrap;gap:4px;padding:6px 8px;border:1px solid #e0e0e0;border-radius:6px;background:#fafafa;cursor:text;min-height:36px;align-items:center}
 .tag-wrap:focus-within{border-color:#999;background:#fff}
 .tag-chip{background:#efefef;border-radius:4px;font-size:11px;padding:2px 8px;display:flex;align-items:center;gap:4px;color:#333}
 .tag-chip button{border:none;background:none;cursor:pointer;color:#999;font-size:13px;padding:0;line-height:1}
 .tag-chip button:hover{color:#333}
 .tag-new-input{border:none;outline:none;font-size:11px;background:transparent;color:#222;min-width:70px;flex:1;font-family:'IBM Plex Sans KR',sans-serif}
-
-/* 복사 버튼 */
 .copy-btn{margin:12px 16px 16px;padding:10px;background:#111;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;letter-spacing:1px;cursor:pointer;font-family:'Share Tech Mono',monospace;transition:background .2s}
 .copy-btn:hover{background:#333}
 .copy-btn.copied{background:#1a6b3a}
-
-/* 미리보기 패널 */
 .preview-panel{flex:1;overflow-y:auto;padding:24px;background:#e8e8e8;display:flex;justify-content:center}
 .preview-inner{width:100%;max-width:440px}
 .preview-card{background:#fff;border-radius:2px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.12)}
 .preview-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:#999;text-align:center;margin-bottom:12px}
-
-/* 탭 패널 숨김 */
 .tab-panel{display:none}
 .tab-panel.active{display:flex;height:100%}
-
-/* 컬러 툴바 */
-.color-toolbar{position:fixed;background:#1a1a1a;border:1px solid #333;border-radius:10px;padding:7px 10px;display:flex;align-items:center;gap:6px;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .15s;white-space:nowrap}
-.color-toolbar.show{opacity:1;pointer-events:all}
-.color-toolbar-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.35);margin-right:2px}
-.color-swatch{width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .1s,border-color .1s;flex-shrink:0}
-.color-swatch:hover{transform:scale(1.25);border-color:rgba(255,255,255,.5)}
-.color-divider{width:1px;height:14px;background:rgba(255,255,255,.15);margin:0 2px}
-.color-reset{font-family:'Share Tech Mono',monospace;font-size:9px;color:rgba(255,255,255,.4);cursor:pointer;padding:2px 6px;border:1px solid rgba(255,255,255,.15);border-radius:4px;background:none;transition:all .15s}
-.color-reset:hover{color:#fff;border-color:rgba(255,255,255,.4)}
-input[type=color].color-custom{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.25);cursor:pointer;padding:0;background:none}
 </style>
 </head>
 <body>
-
-
-<!-- 컬러 툴바 -->
-<div class="color-toolbar" id="color-toolbar">
-  <span class="color-toolbar-label">COLOR</span>
-  <span class="color-swatch" style="background:#ffffff" onclick="applyColor('#ffffff')" title="흰색"></span>
-  <span class="color-swatch" style="background:#ff6b6b" onclick="applyColor('#ff6b6b')" title="레드"></span>
-  <span class="color-swatch" style="background:#ffa94d" onclick="applyColor('#ffa94d')" title="오렌지"></span>
-  <span class="color-swatch" style="background:#ffe066" onclick="applyColor('#ffe066')" title="옐로우"></span>
-  <span class="color-swatch" style="background:#69db7c" onclick="applyColor('#69db7c')" title="그린"></span>
-  <span class="color-swatch" style="background:#74c0fc" onclick="applyColor('#74c0fc')" title="블루"></span>
-  <span class="color-swatch" style="background:#cc99ff" onclick="applyColor('#cc99ff')" title="퍼플"></span>
-  <span class="color-swatch" style="background:#f783ac" onclick="applyColor('#f783ac')" title="핑크"></span>
-  <span class="color-swatch" style="background:#aaaaaa" onclick="applyColor('#aaaaaa')" title="그레이"></span>
-  <div class="color-divider"></div>
-  <input type="color" class="color-custom" id="color-custom-picker" title="직접 선택" value="#ffffff">
-  <div class="color-divider"></div>
-  <button class="color-reset" onclick="applyColor(null)">지우기</button>
-</div>
-
 <div class="app-header">
   <div class="app-header-left">
     <div class="app-logo">NSSA</div>
@@ -103,471 +67,318 @@ input[type=color].color-custom{width:18px;height:18px;border-radius:50%;border:2
   </div>
   <div class="app-badge">케이브덕 호환 · 인라인 스타일 출력</div>
 </div>
-
 <div class="tabs">
   <div class="tab active" onclick="switchTab('sigma',this)">⚡ 시그마 Sigma</div>
   <div class="tab" onclick="switchTab('delta',this)">◈ 델타 Delta</div>
 </div>
 
-<!-- ───────────── 시그마 탭 ───────────── -->
+<!-- 시그마 탭 -->
 <div id="tab-sigma" class="tab-panel active">
   <div class="form-panel">
-    <div class="form-panel-header">
-      <h2>시그마 인사파일</h2>
-      <p>입력하면 미리보기가 실시간으로 바뀌어요</p>
+    <div class="form-panel-header"><h2>시그마 인사파일</h2><p>입력하면 미리보기가 실시간으로 바뀌어요</p></div>
+    <div class="fmt-bar" data-scope="s">
+      <span class="fmt-bar-label">FORMAT</span>
+      <button class="fmt-btn" onclick="applyWrap('b')" title="굵게"><b>B</b></button>
+      <button class="fmt-btn" onclick="applyWrap('i')" title="기울기"><span style="font-style:italic;font-weight:400">I</span></button>
+      <div class="fmt-divider"></div>
+      <span class="fmt-swatch" style="background:#ffffff" onclick="applyColor('#ffffff')"></span>
+      <span class="fmt-swatch" style="background:#ff6b6b" onclick="applyColor('#ff6b6b')"></span>
+      <span class="fmt-swatch" style="background:#ffa94d" onclick="applyColor('#ffa94d')"></span>
+      <span class="fmt-swatch" style="background:#ffe066" onclick="applyColor('#ffe066')"></span>
+      <span class="fmt-swatch" style="background:#69db7c" onclick="applyColor('#69db7c')"></span>
+      <span class="fmt-swatch" style="background:#74c0fc" onclick="applyColor('#74c0fc')"></span>
+      <span class="fmt-swatch" style="background:#cc99ff" onclick="applyColor('#cc99ff')"></span>
+      <span class="fmt-swatch" style="background:#f783ac" onclick="applyColor('#f783ac')"></span>
+      <span class="fmt-swatch" style="background:#aaaaaa" onclick="applyColor('#aaaaaa')"></span>
+      <div class="fmt-divider"></div>
+      <input type="color" class="fmt-custom" id="s-color-picker" value="#ffffff" title="직접 선택">
+      <div class="fmt-divider"></div>
+      <button class="fmt-reset" onclick="applyStrip()">서식 지우기</button>
+      <div class="fmt-hint">텍스트 드래그 후 버튼 클릭 · 서식 중첩 가능</div>
     </div>
     <div class="form-body" id="sigma-form">
       <div class="section-label">기본 정보</div>
       <div class="field"><label>이름</label><input id="s-name" placeholder="신이한"></div>
       <div class="field"><label>코드네임</label><input id="s-codename" placeholder="SEGYEONG / 세경"></div>
       <div class="field"><label>이미지 URL</label><input id="s-img" placeholder="https://..."></div>
-      <div class="field"><label>유형</label>
-        <select id="s-type">
-          <option value="전투형 Combat">전투형 Combat</option>
-          <option value="지원형 Support">지원형 Support</option>
-        </select>
-      </div>
-      <div class="field"><label>등급</label>
-        <select id="s-grade">
-          <option value="특수요원 1급">특수요원 1급</option>
-          <option value="특수요원 2급">특수요원 2급</option>
-          <option value="특수요원 3급">특수요원 3급</option>
-          <option value="수습요원">수습요원</option>
-          <option value="대기요원">대기요원</option>
-        </select>
-      </div>
+      <div class="field"><label>유형</label><select id="s-type"><option value="전투형 Combat">전투형 Combat</option><option value="지원형 Support">지원형 Support</option></select></div>
+      <div class="field"><label>등급</label><select id="s-grade"><option value="특수요원 1급">특수요원 1급</option><option value="특수요원 2급">특수요원 2급</option><option value="특수요원 3급">특수요원 3급</option><option value="수습요원">수습요원</option><option value="대기요원">대기요원</option></select></div>
       <div class="field"><label>등록번호</label><input id="s-no" placeholder="NSSA-01-13-SEG-SIG"></div>
       <div class="field"><label>부서</label><input id="s-dept" placeholder="특수전략과"></div>
-
       <div class="section-label">AGENT PROFILE</div>
       <div class="field"><label>성별</label><input id="s-gender" placeholder="남"></div>
       <div class="field"><label>나이</label><input id="s-age" placeholder="27세"></div>
       <div class="field"><label>외형</label><textarea id="s-look" placeholder="창백한 피부 · 흑발 · 백안(白眼)"></textarea></div>
       <div class="field"><label>성격</label><textarea id="s-personality" placeholder="운명론자. 감정 동요 적음."></textarea></div>
-
       <div class="section-label">ABILITY RECORD</div>
       <div class="field"><label>능력명 (한국어)</label><input id="s-abil-ko" placeholder="천혼철 (千魂鐵)"></div>
       <div class="field"><label>능력명 (영어)</label><input id="s-abil-en" placeholder="SPIRIT IRON"></div>
       <div class="field"><label>능력 설명</label><textarea id="s-abil-desc" placeholder="영적 에너지를 무기로 형상화..."></textarea></div>
-      <div class="field">
-        <label>능력 태그 <span style="color:#bbb;font-weight:400">(입력 후 Enter)</span></label>
-        <div class="tag-wrap" id="s-tag-wrap"><input class="tag-new-input" id="s-tag-input" placeholder="태그 추가..."></div>
-      </div>
+      <div class="field"><label>능력 태그 <span style="color:#bbb;font-weight:400">(입력 후 Enter)</span></label><div class="tag-wrap" id="s-tag-wrap"><input class="tag-new-input" id="s-tag-input" placeholder="태그 추가..."></div></div>
       <div class="field"><label>폭주 전조</label><textarea id="s-breakdown" placeholder="수치 51% — 빙의 현상 출현..."></textarea></div>
       <div class="field"><label>전략적 가치</label><textarea id="s-value" placeholder="대체 불가 전력..."></textarea></div>
-
       <div class="section-label">PERSONAL NOTE</div>
       <div class="field"><label>특이사항</label><textarea id="s-note" placeholder="⚠ 공포스팟 주기 탐사..."></textarea></div>
-
       <div class="section-label">SCENARIO · 도입부</div>
       <div class="field"><label>도입부</label><textarea id="s-scenario" placeholder="도입부 내용을 작성하세요..." style="min-height:80px"></textarea></div>
     </div>
     <button class="copy-btn" id="s-copy-btn" onclick="copyHTML('sigma')">HTML 복사하기</button>
   </div>
-  <div class="preview-panel">
-    <div class="preview-inner">
-      <div class="preview-label">PREVIEW · 실시간 미리보기</div>
-      <div class="preview-card" id="s-preview"></div>
-    </div>
-  </div>
+  <div class="preview-panel"><div class="preview-inner"><div class="preview-label">PREVIEW · 실시간 미리보기</div><div class="preview-card" id="s-preview"></div></div></div>
 </div>
 
-<!-- ───────────── 델타 탭 ───────────── -->
+<!-- 델타 탭 -->
 <div id="tab-delta" class="tab-panel">
   <div class="form-panel">
-    <div class="form-panel-header">
-      <h2>델타 인사파일</h2>
-      <p>입력하면 미리보기가 실시간으로 바뀌어요</p>
+    <div class="form-panel-header"><h2>델타 인사파일</h2><p>입력하면 미리보기가 실시간으로 바뀌어요</p></div>
+    <div class="fmt-bar" data-scope="d">
+      <span class="fmt-bar-label">FORMAT</span>
+      <button class="fmt-btn" onclick="applyWrap('b')" title="굵게"><b>B</b></button>
+      <button class="fmt-btn" onclick="applyWrap('i')" title="기울기"><span style="font-style:italic;font-weight:400">I</span></button>
+      <div class="fmt-divider"></div>
+      <span class="fmt-swatch" style="background:#ffffff" onclick="applyColor('#ffffff')"></span>
+      <span class="fmt-swatch" style="background:#ff6b6b" onclick="applyColor('#ff6b6b')"></span>
+      <span class="fmt-swatch" style="background:#ffa94d" onclick="applyColor('#ffa94d')"></span>
+      <span class="fmt-swatch" style="background:#ffe066" onclick="applyColor('#ffe066')"></span>
+      <span class="fmt-swatch" style="background:#69db7c" onclick="applyColor('#69db7c')"></span>
+      <span class="fmt-swatch" style="background:#74c0fc" onclick="applyColor('#74c0fc')"></span>
+      <span class="fmt-swatch" style="background:#cc99ff" onclick="applyColor('#cc99ff')"></span>
+      <span class="fmt-swatch" style="background:#f783ac" onclick="applyColor('#f783ac')"></span>
+      <span class="fmt-swatch" style="background:#aaaaaa" onclick="applyColor('#aaaaaa')"></span>
+      <div class="fmt-divider"></div>
+      <input type="color" class="fmt-custom" id="d-color-picker" value="#ffffff" title="직접 선택">
+      <div class="fmt-divider"></div>
+      <button class="fmt-reset" onclick="applyStrip()">서식 지우기</button>
+      <div class="fmt-hint">텍스트 드래그 후 버튼 클릭 · 서식 중첩 가능</div>
     </div>
     <div class="form-body" id="delta-form">
       <div class="section-label">기본 정보</div>
       <div class="field"><label>이름</label><input id="d-name" placeholder="홍길동"></div>
       <div class="field"><label>직함</label><input id="d-title" placeholder="작전피해조사과 · 대리"></div>
       <div class="field"><label>이미지 URL</label><input id="d-img" placeholder="https://..."></div>
-      <div class="field"><label>직급</label>
-        <select id="d-grade">
-          <option value="사원">사원</option>
-          <option value="주임">주임</option>
-          <option value="대리" selected>대리</option>
-          <option value="과장">과장</option>
-          <option value="차장">차장</option>
-          <option value="실장">실장</option>
-          <option value="단장">단장</option>
-        </select>
-      </div>
+      <div class="field"><label>직급</label><select id="d-grade"><option value="사원">사원</option><option value="주임">주임</option><option value="대리" selected>대리</option><option value="과장">과장</option><option value="차장">차장</option><option value="실장">실장</option><option value="단장">단장</option></select></div>
       <div class="field"><label>등록번호</label><input id="d-no" placeholder="NSSA-??-??-DEL"></div>
       <div class="field"><label>부서</label><input id="d-dept" placeholder="작전피해조사과"></div>
-
       <div class="section-label">EMPLOYEE PROFILE</div>
       <div class="field"><label>성별</label><input id="d-gender" placeholder="남"></div>
       <div class="field"><label>나이</label><input id="d-age" placeholder="??세"></div>
       <div class="field"><label>외형</label><textarea id="d-look" placeholder="외형 설명..."></textarea></div>
       <div class="field"><label>성격</label><textarea id="d-personality" placeholder="성격 설명..."></textarea></div>
-
       <div class="section-label">PERSONAL NOTE</div>
       <div class="field"><label>특이사항</label><textarea id="d-note" placeholder="특이사항..."></textarea></div>
-
       <div class="section-label">DUTY RECORD</div>
       <div class="field"><label>주요 담당 업무</label><textarea id="d-duty" placeholder="작전 후 피해 조사·기록..."></textarea></div>
-      <div class="field">
-        <label>업무 태그 <span style="color:#bbb;font-weight:400">(입력 후 Enter)</span></label>
-        <div class="tag-wrap" id="d-tag-wrap"><input class="tag-new-input" id="d-tag-input" placeholder="태그 추가..."></div>
-      </div>
-
+      <div class="field"><label>업무 태그 <span style="color:#bbb;font-weight:400">(입력 후 Enter)</span></label><div class="tag-wrap" id="d-tag-wrap"><input class="tag-new-input" id="d-tag-input" placeholder="태그 추가..."></div></div>
       <div class="section-label">EVALUATION</div>
       <div class="field"><label>업무 평가</label><textarea id="d-eval" placeholder="평가 내용..."></textarea></div>
       <div class="field"><label>평가자</label><input id="d-eval-from" placeholder="담당 과장 / 20XX"></div>
-
       <div class="section-label">SCENARIO · 도입부</div>
       <div class="field"><label>도입부</label><textarea id="d-scenario" placeholder="도입부 내용을 작성하세요..." style="min-height:80px"></textarea></div>
     </div>
     <button class="copy-btn" id="d-copy-btn" onclick="copyHTML('delta')">HTML 복사하기</button>
   </div>
-  <div class="preview-panel">
-    <div class="preview-inner">
-      <div class="preview-label">PREVIEW · 실시간 미리보기</div>
-      <div class="preview-card" id="d-preview"></div>
-    </div>
-  </div>
+  <div class="preview-panel"><div class="preview-inner"><div class="preview-label">PREVIEW · 실시간 미리보기</div><div class="preview-card" id="d-preview"></div></div></div>
 </div>
 
 <script>
-// ── 탭 전환 ──
-function switchTab(id, el) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  el.classList.add('active');
-}
+function switchTab(id,el){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');el.classList.add('active')}
 
-// ── 태그 시스템 ──
-const tagStore = { sigma: [], delta: [] };
+const tagStore={sigma:[],delta:[]};
+function initTags(key,wrapId,inputId){const input=document.getElementById(inputId);input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const v=input.value.trim();if(v&&!tagStore[key].includes(v)){tagStore[key].push(v);renderTags(key,wrapId,inputId);key==='sigma'?renderSigma():renderDelta()}input.value=''}})}
+function removeTag(key,i,wrapId,inputId){tagStore[key].splice(i,1);renderTags(key,wrapId,inputId);key==='sigma'?renderSigma():renderDelta()}
+function renderTags(key,wrapId,inputId){const wrap=document.getElementById(wrapId);const input=document.getElementById(inputId);wrap.innerHTML='';tagStore[key].forEach((t,i)=>{const chip=document.createElement('span');chip.className='tag-chip';chip.innerHTML=t+'<button onclick="removeTag(\''+key+'\','+i+',\''+wrapId+'\',\''+inputId+'\')">×</button>';wrap.appendChild(chip)});wrap.appendChild(input)}
+initTags('sigma','s-tag-wrap','s-tag-input');
+initTags('delta','d-tag-wrap','d-tag-input');
 
-function initTags(key, wrapId, inputId) {
-  const input = document.getElementById(inputId);
-  input.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const v = input.value.trim();
-      if (v && !tagStore[key].includes(v)) {
-        tagStore[key].push(v);
-        renderTags(key, wrapId, inputId);
-        key === 'sigma' ? renderSigma() : renderDelta();
-      }
-      input.value = '';
-    }
-  });
-}
+function g(id){const el=document.getElementById(id);return el?el.value:''}
 
-function removeTag(key, i, wrapId, inputId) {
-  tagStore[key].splice(i, 1);
-  renderTags(key, wrapId, inputId);
-  key === 'sigma' ? renderSigma() : renderDelta();
-}
-
-function renderTags(key, wrapId, inputId) {
-  const wrap = document.getElementById(wrapId);
-  const input = document.getElementById(inputId);
-  wrap.innerHTML = '';
-  tagStore[key].forEach((t, i) => {
-    const chip = document.createElement('span');
-    chip.className = 'tag-chip';
-    chip.innerHTML = `${t}<button onclick="removeTag('${key}',${i},'${wrapId}','${inputId}')">×</button>`;
-    wrap.appendChild(chip);
-  });
-  wrap.appendChild(input);
-}
-
-initTags('sigma', 's-tag-wrap', 's-tag-input');
-initTags('delta', 'd-tag-wrap', 'd-tag-input');
-
-// ── 헬퍼 ──
-function g(id) { const el = document.getElementById(id); return el ? el.value : ''; }
-function esc(s) {
-  // span color 태그는 살리고 나머지만 이스케이프
-  const parts = s.split(/(<span style="color:[^"]*">|<\/span>)/g);
-  return parts.map((p, i) => {
-    if (/^<span style="color:[^"]*">$/.test(p) || p === '</span>') return p;
-    return p.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }).join('');
-}
-
-// ── 시그마 렌더 ──
-function renderSigma() {
-  const name     = g('s-name') || '이름';
-  const codename = g('s-codename') || 'CODE NAME';
-  const img      = g('s-img');
-  const type     = g('s-type');
-  const grade    = g('s-grade');
-  const no       = g('s-no') || 'NSSA-??-??-SIG';
-  const dept     = g('s-dept') || '부서명';
-  const gender   = esc(g('s-gender')) || '—';
-  const age      = esc(g('s-age')) || '—';
-  const look     = esc(g('s-look')) || '—';
-  const pers     = esc(g('s-personality')) || '—';
-  const abilKo   = esc(g('s-abil-ko')) || '능력명';
-  const abilEn   = esc(g('s-abil-en')) || 'ABILITY';
-  const abilDesc = esc(g('s-abil-desc')) || '—';
-  const breakdown= esc(g('s-breakdown')) || '—';
-  const value    = esc(g('s-value')) || '—';
-  const note     = esc(g('s-note')) || '—';
-  const scenario = esc(g('s-scenario'));
-
-  const tagHTML = tagStore.sigma.map(t =>
-    `<span style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;border:1px solid rgba(0,0,0,.20);color:#555555;padding:.2em .5em;">${esc(t)}</span>`
-  ).join('');
-
-  const heroImg = img
-    ? `<img src="${img}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;">`
-    : `<div style="width:100%;height:100%;background:#cccccc;display:flex;align-items:center;justify-content:center;"><span style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:#888888;">PHOTO HERE</span></div>`;
-
-  document.getElementById('s-preview').innerHTML = `
-<div style="position:relative;width:100%;aspect-ratio:3/4;overflow:hidden;background:#111111;">
-  ${heroImg}
-  <div style="position:absolute;top:1em;right:0;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;background:#111111;color:#ffffff;padding:.3em .8em;">${esc(grade)}</div>
-  <div style="position:absolute;bottom:0;left:0;right:0;padding:1em 1.2em .9em;background:rgba(255,255,255,.88);border-top:1px solid rgba(0,0,0,.10);">
-    <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:#888888;letter-spacing:3px;margin-bottom:.3em;">NSSA · PERSONNEL FILE</div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:3em;color:#111111;line-height:1;letter-spacing:2px;">${esc(name)}</div>
-    <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:#888888;letter-spacing:2px;margin-top:.3em;">CODE NAME : ${esc(codename)}</div>
-  </div>
-</div>
-<div style="display:flex;flex-wrap:wrap;gap:.35em;padding:.75em 1.2em;">
-  <span style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;padding:.25em .6em;border:1px solid rgba(0,0,0,.40);color:#111111;font-weight:700;">시그마 Sigma</span>
-  <span style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;padding:.25em .6em;border:1px solid rgba(0,0,0,.40);color:#111111;font-weight:700;">${esc(type)}</span>
-  <span style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;padding:.25em .6em;border:1px solid rgba(0,0,0,.40);color:#111111;font-weight:700;">${esc(grade)}</span>
-</div>
-<div style="display:flex;align-items:center;gap:1.2em;padding:.55em 1.2em .8em;border-bottom:1px solid rgba(0,0,0,.12);">
-  <div style="display:flex;align-items:baseline;gap:.4em;"><span style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:#aaaaaa;">NO.</span><span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:#555555;">${esc(no)}</span></div>
-  <div style="display:flex;align-items:baseline;gap:.4em;"><span style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:#aaaaaa;">DEPT.</span><span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:#555555;">${esc(dept)}</span></div>
-</div>
-<div style="padding:1.1em 1.2em;border-bottom:1px solid rgba(0,0,0,.10);">
-  <div style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:#111111;margin-bottom:.9em;display:flex;align-items:center;gap:8px;">AGENT PROFILE<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,.20),transparent);"></div></div>
-  <div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">성별</span><span style="color:#333333;flex:1;line-height:1.7;">${gender}</span></div>
-  <div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">나이</span><span style="color:#333333;flex:1;line-height:1.7;">${age}</span></div>
-  <div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">외형</span><span style="color:#333333;flex:1;line-height:1.7;">${look}</span></div>
-  <div style="display:flex;padding:.5em 0;font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">성격</span><span style="color:#333333;flex:1;line-height:1.7;">${pers}</span></div>
-</div>
-<div style="padding:1.1em 1.2em;border-bottom:1px solid rgba(0,0,0,.10);">
-  <div style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:#111111;margin-bottom:.9em;display:flex;align-items:center;gap:8px;">ABILITY RECORD<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,.20),transparent);"></div></div>
-  <div style="background:#f5f5f5;border:1px solid rgba(0,0,0,.10);border-left:3px solid #111111;padding:1em;">
-    <div style="font-size:15px;font-weight:700;color:#111111;display:flex;align-items:baseline;gap:.5em;margin-bottom:.15em;">${abilKo} <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:#888888;font-weight:400;letter-spacing:2px;">${abilEn}</span></div>
-    <div style="font-size:13px;color:#555555;line-height:1.8;margin-top:.6em;">${abilDesc}</div>
-    ${tagHTML ? `<div style="display:flex;flex-wrap:wrap;gap:.35em;margin-top:.8em;">${tagHTML}</div>` : ''}
-    <div style="margin-top:.9em;padding-top:.9em;border-top:1px solid rgba(0,0,0,.10);">
-      <div style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;color:#cc3333;margin-bottom:.5em;">폭주 전조</div>
-      <div style="font-size:13px;color:#555555;line-height:1.8;">${breakdown}</div>
-    </div>
-  </div>
-  <div style="background:#f5f5f5;border:1px solid rgba(0,0,0,.10);border-left:3px solid #444444;padding:1em;margin-top:.6em;">
-    <div style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;color:#444444;margin-bottom:.5em;">전략적 가치</div>
-    <div style="font-size:13px;color:#555555;line-height:1.8;">${value}</div>
-  </div>
-</div>
-<div style="padding:1.1em 1.2em;border-bottom:1px solid rgba(0,0,0,.10);">
-  <div style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:#111111;margin-bottom:.9em;display:flex;align-items:center;gap:8px;">PERSONAL NOTE<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,.20),transparent);"></div></div>
-  <div style="background:#f5f5f5;border:1px solid rgba(0,0,0,.10);border-left:3px solid #444444;padding:1em;">
-    <div style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;color:#444444;margin-bottom:.5em;">특이사항</div>
-    <div style="font-size:13px;color:#555555;line-height:1.8;">${note}</div>
-  </div>
-</div>
-<div style="background:#111111;padding:1.2em;position:relative;">
-  <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,rgba(255,255,255,.5),transparent);"></div>
-  <div style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:rgba(255,255,255,.35);margin-bottom:.8em;">SCENARIO · 도입부</div>
-  <div style="font-size:13px;color:rgba(255,255,255,.82);line-height:2;">${scenario || '<span style="color:rgba(255,255,255,.2);">도입부를 입력하세요</span>'}</div>
-</div>
-<div style="background:#111111;display:flex;align-items:center;justify-content:space-between;padding:7px 16px;">
-  <span style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:4px;color:#ffffff;">기밀 · CLASSIFIED</span>
-  <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(255,255,255,.4);">NSSA-DOC-2026</span>
-  <span style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:4px;color:#ffffff;">기밀 · CLASSIFIED</span>
-</div>
-<div style="padding:1em 1.2em 1.5em;display:flex;align-items:flex-end;justify-content:space-between;gap:1em;">
-  <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:#aaaaaa;line-height:1.8;">FILE NO. ${esc(no)}<br>ISSUED 2026 · 특안청 본부<br>ACCESS RESTRICTED</div>
-  <div style="flex-shrink:0;border:1.5px solid rgba(0,0,0,.25);padding:.35em .7em;transform:rotate(4deg);opacity:.6;text-align:center;">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:14px;color:#333333;letter-spacing:3px;line-height:1;">VERIFIED</div>
-    <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:#555555;letter-spacing:1px;">NSSA-HQ · 2026</div>
-  </div>
-</div>`;
-}
-
-// ── 델타 렌더 ──
-function renderDelta() {
-  const name    = g('d-name') || '이름';
-  const title   = g('d-title') || '부서 · 직급';
-  const img     = g('d-img');
-  const grade   = g('d-grade');
-  const no      = g('d-no') || 'NSSA-??-??-DEL';
-  const dept    = g('d-dept') || '부서명';
-  const gender  = esc(g('d-gender')) || '—';
-  const age     = esc(g('d-age')) || '—';
-  const look    = esc(g('d-look')) || '—';
-  const pers    = esc(g('d-personality')) || '—';
-  const note    = esc(g('d-note')) || '—';
-  const duty    = esc(g('d-duty')) || '—';
-  const evalTxt = esc(g('d-eval')) || '';
-  const evalFrom= esc(g('d-eval-from')) || '담당 과장 / 20XX';
-  const scenario= esc(g('d-scenario'));
-
-  const tagHTML = tagStore.delta.map(t =>
-    `<span style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;border:1px solid rgba(0,0,0,.20);color:#555555;padding:.2em .5em;">${esc(t)}</span>`
-  ).join('');
-
-  const heroImg = img
-    ? `<img src="${img}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;">`
-    : `<div style="width:100%;height:100%;background:#dddddd;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8em;">
-        <div style="width:60px;height:60px;border-radius:50%;background:rgba(0,0,0,.10);"></div>
-        <span style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:#bbbbbb;">PHOTO HERE</span>
-       </div>`;
-
-  document.getElementById('d-preview').innerHTML = `
-<div style="position:relative;width:100%;aspect-ratio:3/4;overflow:hidden;background:#cccccc;">
-  ${heroImg}
-  <div style="position:absolute;top:1em;right:0;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;background:#444444;color:#ffffff;padding:.3em .8em;">DELTA · ${esc(grade)}</div>
-  <div style="position:absolute;bottom:0;left:0;right:0;padding:1em 1.2em .9em;background:rgba(255,255,255,.88);border-top:1px solid rgba(0,0,0,.10);">
-    <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:#888888;letter-spacing:3px;margin-bottom:.3em;">NSSA · PERSONNEL FILE</div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:3em;color:#111111;line-height:1;letter-spacing:2px;">${esc(name)}</div>
-    <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:#888888;letter-spacing:2px;margin-top:.3em;">${esc(title)}</div>
-  </div>
-</div>
-<div style="display:flex;flex-wrap:wrap;gap:.35em;padding:.75em 1.2em;">
-  <span style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;padding:.25em .6em;border:1px solid #444444;color:#444444;font-weight:700;">델타 Delta</span>
-</div>
-<div style="display:flex;align-items:center;gap:1.2em;padding:.55em 1.2em .8em;border-bottom:1px solid rgba(0,0,0,.12);">
-  <div style="display:flex;align-items:baseline;gap:.4em;"><span style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:#aaaaaa;">NO.</span><span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:#555555;">${esc(no)}</span></div>
-  <div style="display:flex;align-items:baseline;gap:.4em;"><span style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:#aaaaaa;">DEPT.</span><span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:#555555;">${esc(dept)}</span></div>
-</div>
-<div style="padding:1.1em 1.2em;border-bottom:1px solid rgba(0,0,0,.10);">
-  <div style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:#444444;margin-bottom:.9em;display:flex;align-items:center;gap:8px;">EMPLOYEE PROFILE<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,.15),transparent);"></div></div>
-  <div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">성별</span><span style="color:#333333;flex:1;line-height:1.7;">${gender}</span></div>
-  <div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">나이</span><span style="color:#333333;flex:1;line-height:1.7;">${age}</span></div>
-  <div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">외형</span><span style="color:#333333;flex:1;line-height:1.7;">${look}</span></div>
-  <div style="display:flex;padding:.5em 0;font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">성격</span><span style="color:#333333;flex:1;line-height:1.7;">${pers}</span></div>
-</div>
-<div style="padding:1.1em 1.2em;border-bottom:1px solid rgba(0,0,0,.10);">
-  <div style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:#444444;margin-bottom:.9em;display:flex;align-items:center;gap:8px;">PERSONAL NOTE<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,.15),transparent);"></div></div>
-  <div style="background:#f5f5f5;border:1px solid rgba(0,0,0,.10);border-left:3px solid #444444;padding:1em;">
-    <div style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;color:#444444;margin-bottom:.5em;">특이사항</div>
-    <div style="font-size:13px;color:#555555;line-height:1.8;">${note}</div>
-  </div>
-</div>
-<div style="padding:1.1em 1.2em;border-bottom:1px solid rgba(0,0,0,.10);">
-  <div style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:#444444;margin-bottom:.9em;display:flex;align-items:center;gap:8px;">DUTY RECORD<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,.15),transparent);"></div></div>
-  <div style="background:#f5f5f5;border:1px solid rgba(0,0,0,.10);border-left:3px solid #444444;padding:1em;">
-    <div style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;color:#444444;margin-bottom:.5em;">주요 담당 업무</div>
-    <div style="font-size:13px;color:#555555;line-height:1.8;">${duty}</div>
-    ${tagHTML ? `<div style="display:flex;flex-wrap:wrap;gap:.35em;margin-top:.8em;">${tagHTML}</div>` : ''}
-  </div>
-</div>
-<div style="padding:1.1em 1.2em;border-bottom:1px solid rgba(0,0,0,.10);">
-  <div style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:#444444;margin-bottom:.9em;display:flex;align-items:center;gap:8px;">EVALUATION<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,.15),transparent);"></div></div>
-  <div style="background:#f9f9f9;border:1px solid rgba(0,0,0,.10);border-left:3px solid #886600;padding:1em;">
-    <div style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;color:#886600;margin-bottom:.7em;">업무 평가</div>
-    <div style="font-size:13px;color:#444444;line-height:1.9;">${evalTxt || '<span style="color:#cccccc;">평가 내용을 입력하세요</span>'}</div>
-    <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:#aaaaaa;letter-spacing:1px;margin-top:.6em;text-align:right;">— ${evalFrom}</div>
-  </div>
-</div>
-<div style="background:#333333;padding:1.2em;position:relative;">
-  <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,rgba(255,255,255,.3),transparent);"></div>
-  <div style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:rgba(255,255,255,.35);margin-bottom:.8em;">SCENARIO · 도입부</div>
-  <div style="font-size:13px;color:rgba(255,255,255,.82);line-height:2;">${scenario || '<span style="color:rgba(255,255,255,.2);">도입부를 입력하세요</span>'}</div>
-</div>
-<div style="background:#444444;display:flex;align-items:center;justify-content:space-between;padding:7px 16px;">
-  <span style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:4px;color:#ffffff;">일반 · GENERAL</span>
-  <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(255,255,255,.4);">NSSA-DOC-2026</span>
-  <span style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:4px;color:#ffffff;">일반 · GENERAL</span>
-</div>
-<div style="padding:1em 1.2em 1.5em;display:flex;align-items:flex-end;justify-content:space-between;gap:1em;">
-  <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:#aaaaaa;line-height:1.8;">FILE NO. ${esc(no)}<br>ISSUED 20XX · 특안청 본부<br>DELTA PERSONNEL</div>
-  <div style="flex-shrink:0;border:1.5px solid rgba(0,0,0,.20);padding:.35em .7em;transform:rotate(4deg);opacity:.5;text-align:center;">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:14px;color:#555555;letter-spacing:3px;line-height:1;">VERIFIED</div>
-    <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:#777777;letter-spacing:1px;">NSSA-HQ · 2026</div>
-  </div>
-</div>`;
-}
-
-// ── HTML 복사 ──
-function copyHTML(type) {
-  const inner = document.getElementById(type === 'sigma' ? 's-preview' : 'd-preview').innerHTML;
-  const bg    = type === 'sigma' ? '#ffffff' : '#ffffff';
-  const full  = `<div style="background:${bg};color:#222222;font-family:'IBM Plex Sans KR',sans-serif;font-size:14px;line-height:1.75;max-width:420px;margin:0 auto;padding:0;">\n${inner}\n</div>`;
-  navigator.clipboard.writeText(full).then(() => {
-    const btn = document.getElementById(type === 'sigma' ? 's-copy-btn' : 'd-copy-btn');
-    btn.textContent = '복사 완료!';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'HTML 복사하기'; btn.classList.remove('copied'); }, 2000);
-  });
-}
-
-// ── 이벤트 바인딩 ──
-document.querySelectorAll('input, textarea, select').forEach(el => {
-  el.addEventListener('input', () => {
-    if (el.id.startsWith('s-')) renderSigma();
-    if (el.id.startsWith('d-')) renderDelta();
-  });
-});
-
-renderSigma();
-renderDelta();
-
-// ── 컬러 툴바 ──
-let activeField = null;
-let selStart = 0, selEnd = 0;
-
-document.addEventListener('mouseup', e => {
-  const toolbar = document.getElementById('color-toolbar');
-  if (toolbar.contains(e.target)) return;
-
-  const field = e.target;
-  const isEditable = field.tagName === 'TEXTAREA' || (field.tagName === 'INPUT' && field.type === 'text');
-  if (!isEditable) { hideToolbar(); return; }
-
-  const start = field.selectionStart;
-  const end   = field.selectionEnd;
-  if (start === end) { hideToolbar(); return; }
-
-  activeField = field;
-  selStart = start;
-  selEnd   = end;
-
-  const toolbar2 = document.getElementById('color-toolbar');
-  toolbar2.style.left = (e.clientX - 80) + 'px';
-  toolbar2.style.top  = (e.clientY - 52) + 'px';
-  toolbar2.classList.add('show');
-});
-
-document.addEventListener('mousedown', e => {
-  const toolbar = document.getElementById('color-toolbar');
-  if (!toolbar.contains(e.target)) hideToolbar();
-});
-
-function hideToolbar() {
-  document.getElementById('color-toolbar').classList.remove('show');
-}
-
-function applyColor(color) {
-  if (!activeField) return;
-  const val   = activeField.value;
-  const before = val.slice(0, selStart);
-  const sel    = val.slice(selStart, selEnd);
-  const after  = val.slice(selEnd);
-
-  let newVal;
-  if (color === null) {
-    // 색 태그 제거
-    newVal = before + sel.replace(/<span style="color:[^"]*">([\s\S]*?)<\/span>/g, '$1') + after;
-  } else {
-    newVal = before + `<span style="color:${color}">${sel}</span>` + after;
+function esc(s){
+  if(!s)return'';
+  const allowed=/<(span\s+style="[^"]*"|\/span|b|\/b|i|\/i)>/g;
+  let result='',last=0,m;
+  while((m=allowed.exec(s))!==null){
+    if(m.index>last) result+=escPlain(s.slice(last,m.index));
+    result+=m[0];
+    last=m.index+m[0].length;
   }
-
-  activeField.value = newVal;
-  activeField.dispatchEvent(new Event('input'));
-  hideToolbar();
-  activeField = null;
+  if(last<s.length) result+=escPlain(s.slice(last));
+  return result;
 }
+function escPlain(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
-document.getElementById('color-custom-picker').addEventListener('input', function() {
-  applyColor(this.value);
+/* ── 서식 시스템 ── */
+let lastField=null, savedStart=0, savedEnd=0;
+
+document.addEventListener('focusin',e=>{
+  const f=e.target;
+  if((f.tagName==='TEXTAREA'||(f.tagName==='INPUT'&&f.type==='text'))&&!f.classList.contains('tag-new-input')){
+    lastField=f;
+  }
 });
 
+function saveSel(){if(lastField){savedStart=lastField.selectionStart;savedEnd=lastField.selectionEnd}}
+document.addEventListener('mouseup',()=>setTimeout(saveSel,0));
+document.addEventListener('keyup',saveSel);
+
+function wrapSel(open,close){
+  if(!lastField)return;
+  const s=savedStart,e=savedEnd;
+  if(s===e)return;
+  const v=lastField.value;
+  lastField.value=v.slice(0,s)+open+v.slice(s,e)+close+v.slice(e);
+  lastField.dispatchEvent(new Event('input'));
+  const np=e+open.length+close.length;
+  lastField.focus();lastField.setSelectionRange(np,np);
+}
+function applyWrap(tag){wrapSel('<'+tag+'>','</'+tag+'>')}
+function applyColor(c){wrapSel('<span style="color:'+c+'">','</span>')}
+function applyStrip(){
+  if(!lastField)return;
+  const s=savedStart,e=savedEnd;if(s===e)return;
+  const v=lastField.value;
+  const sel=v.slice(s,e).replace(/<span\s+style="[^"]*">/g,'').replace(/<\/span>/g,'').replace(/<b>/g,'').replace(/<\/b>/g,'').replace(/<i>/g,'').replace(/<\/i>/g,'');
+  lastField.value=v.slice(0,s)+sel+v.slice(e);
+  lastField.dispatchEvent(new Event('input'));
+  lastField.focus();lastField.setSelectionRange(s,s+sel.length);
+}
+document.getElementById('s-color-picker').addEventListener('input',function(){applyColor(this.value)});
+document.getElementById('d-color-picker').addEventListener('input',function(){applyColor(this.value)});
+
+/* ── 시그마 렌더 ── */
+function renderSigma(){
+  const name=g('s-name')||'이름',codename=g('s-codename')||'CODE NAME',img=g('s-img'),type=g('s-type'),grade=g('s-grade'),no=g('s-no')||'NSSA-??-??-SIG',dept=g('s-dept')||'부서명';
+  const gender=esc(g('s-gender'))||'—',age=esc(g('s-age'))||'—',look=esc(g('s-look'))||'—',pers=esc(g('s-personality'))||'—';
+  const abilKo=esc(g('s-abil-ko'))||'능력명',abilEn=esc(g('s-abil-en'))||'ABILITY',abilDesc=esc(g('s-abil-desc'))||'—';
+  const breakdown=esc(g('s-breakdown'))||'—',value=esc(g('s-value'))||'—',note=esc(g('s-note'))||'—',scenario=esc(g('s-scenario'));
+  const tagHTML=tagStore.sigma.map(t=>'<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:1px;border:1px solid rgba(0,0,0,.20);color:#555555;padding:.2em .5em;">'+esc(t)+'</span>').join('');
+  const heroImg=img?'<img src="'+img+'" alt="'+escPlain(name)+'" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;">':'<div style="width:100%;height:100%;background:#cccccc;display:flex;align-items:center;justify-content:center;"><span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:3px;color:#888888;">PHOTO HERE</span></div>';
+
+  document.getElementById('s-preview').innerHTML=
+'<div style="position:relative;width:100%;aspect-ratio:3/4;overflow:hidden;background:#111111;">'+heroImg+
+'<div style="position:absolute;top:1em;right:0;font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:2px;background:#111111;color:#ffffff;padding:.3em .8em;">'+escPlain(grade)+'</div>'+
+'<div style="position:absolute;bottom:0;left:0;right:0;padding:1em 1.2em .9em;background:rgba(255,255,255,.88);border-top:1px solid rgba(0,0,0,.10);">'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#888888;letter-spacing:3px;margin-bottom:.3em;">NSSA · PERSONNEL FILE</div>'+
+'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:3em;color:#111111;line-height:1;letter-spacing:2px;">'+esc(name)+'</div>'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#888888;letter-spacing:2px;margin-top:.3em;">CODE NAME : '+esc(codename)+'</div></div></div>'+
+'<div style="display:flex;flex-wrap:wrap;gap:.35em;padding:.75em 1.2em;">'+
+'<span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:1px;padding:.25em .6em;border:1px solid rgba(0,0,0,.40);color:#111111;font-weight:700;">시그마 Sigma</span>'+
+'<span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:1px;padding:.25em .6em;border:1px solid rgba(0,0,0,.40);color:#111111;font-weight:700;">'+escPlain(type)+'</span>'+
+'<span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:1px;padding:.25em .6em;border:1px solid rgba(0,0,0,.40);color:#111111;font-weight:700;">'+escPlain(grade)+'</span></div>'+
+'<div style="display:flex;align-items:center;gap:1.2em;padding:.55em 1.2em .8em;border-bottom:1px solid rgba(0,0,0,.12);">'+
+'<div style="display:flex;align-items:baseline;gap:.4em;"><span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:2px;color:#aaaaaa;">NO.</span><span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#555555;">'+esc(no)+'</span></div>'+
+'<div style="display:flex;align-items:baseline;gap:.4em;"><span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:2px;color:#aaaaaa;">DEPT.</span><span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#555555;">'+esc(dept)+'</span></div></div>'+
+'<div style="padding:1.1em 1.2em;border-bottom:1px solid rgba(0,0,0,.10);">'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:3px;color:#111111;margin-bottom:.9em;display:flex;align-items:center;gap:8px;">AGENT PROFILE<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,.20),transparent);"></div></div>'+
+'<div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">성별</span><span style="color:#333333;flex:1;line-height:1.7;">'+gender+'</span></div>'+
+'<div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">나이</span><span style="color:#333333;flex:1;line-height:1.7;">'+age+'</span></div>'+
+'<div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">외형</span><span style="color:#333333;flex:1;line-height:1.7;">'+look+'</span></div>'+
+'<div style="display:flex;padding:.5em 0;font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">성격</span><span style="color:#333333;flex:1;line-height:1.7;">'+pers+'</span></div></div>'+
+'<div style="padding:1.1em 1.2em;border-bottom:1px solid rgba(0,0,0,.10);">'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:3px;color:#111111;margin-bottom:.9em;display:flex;align-items:center;gap:8px;">ABILITY RECORD<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,.20),transparent);"></div></div>'+
+'<div style="background:#f5f5f5;border:1px solid rgba(0,0,0,.10);border-left:3px solid #111111;padding:1em;">'+
+'<div style="font-size:15px;font-weight:700;color:#111111;display:flex;align-items:baseline;gap:.5em;margin-bottom:.15em;">'+abilKo+' <span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#888888;font-weight:400;letter-spacing:2px;">'+abilEn+'</span></div>'+
+'<div style="font-size:13px;color:#555555;line-height:1.8;margin-top:.6em;">'+abilDesc+'</div>'+
+(tagHTML?'<div style="display:flex;flex-wrap:wrap;gap:.35em;margin-top:.8em;">'+tagHTML+'</div>':'')+
+'<div style="margin-top:.9em;padding-top:.9em;border-top:1px solid rgba(0,0,0,.10);">'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:2px;color:#cc3333;margin-bottom:.5em;">폭주 전조</div>'+
+'<div style="font-size:13px;color:#555555;line-height:1.8;">'+breakdown+'</div></div></div>'+
+'<div style="background:#f5f5f5;border:1px solid rgba(0,0,0,.10);border-left:3px solid #444444;padding:1em;margin-top:.6em;">'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:2px;color:#444444;margin-bottom:.5em;">전략적 가치</div>'+
+'<div style="font-size:13px;color:#555555;line-height:1.8;">'+value+'</div></div></div>'+
+'<div style="padding:1.1em 1.2em;border-bottom:1px solid rgba(0,0,0,.10);">'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:3px;color:#111111;margin-bottom:.9em;display:flex;align-items:center;gap:8px;">PERSONAL NOTE<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,.20),transparent);"></div></div>'+
+'<div style="background:#f5f5f5;border:1px solid rgba(0,0,0,.10);border-left:3px solid #444444;padding:1em;">'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:2px;color:#444444;margin-bottom:.5em;">특이사항</div>'+
+'<div style="font-size:13px;color:#555555;line-height:1.8;">'+note+'</div></div></div>'+
+'<div style="background:#111111;padding:1.2em;position:relative;">'+
+'<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,rgba(255,255,255,.5),transparent);"></div>'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:3px;color:rgba(255,255,255,.35);margin-bottom:.8em;">SCENARIO · 도입부</div>'+
+'<div style="font-size:13px;color:rgba(255,255,255,.82);line-height:2;">'+(scenario||'<span style="color:rgba(255,255,255,.2);">도입부를 입력하세요</span>')+'</div></div>'+
+'<div style="background:#111111;display:flex;align-items:center;justify-content:space-between;padding:7px 16px;">'+
+'<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:4px;color:#ffffff;">기밀 · CLASSIFIED</span>'+
+'<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;color:rgba(255,255,255,.4);">NSSA-DOC-2026</span>'+
+'<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:4px;color:#ffffff;">기밀 · CLASSIFIED</span></div>'+
+'<div style="padding:1em 1.2em 1.5em;display:flex;align-items:flex-end;justify-content:space-between;gap:1em;">'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:10px;color:#aaaaaa;line-height:1.8;">FILE NO. '+escPlain(no)+'<br>ISSUED 2026 · 특안청 본부<br>ACCESS RESTRICTED</div>'+
+'<div style="flex-shrink:0;border:1.5px solid rgba(0,0,0,.25);padding:.35em .7em;transform:rotate(4deg);opacity:.6;text-align:center;">'+
+'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:14px;color:#333333;letter-spacing:3px;line-height:1;">VERIFIED</div>'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:9px;color:#555555;letter-spacing:1px;">NSSA-HQ · 2026</div></div></div>';
+}
+
+/* ── 델타 렌더 ── */
+function renderDelta(){
+  const name=g('d-name')||'이름',title=g('d-title')||'부서 · 직급',img=g('d-img'),grade=g('d-grade'),no=g('d-no')||'NSSA-??-??-DEL',dept=g('d-dept')||'부서명';
+  const gender=esc(g('d-gender'))||'—',age=esc(g('d-age'))||'—',look=esc(g('d-look'))||'—',pers=esc(g('d-personality'))||'—';
+  const note=esc(g('d-note'))||'—',duty=esc(g('d-duty'))||'—',evalTxt=esc(g('d-eval'))||'',evalFrom=esc(g('d-eval-from'))||'담당 과장 / 20XX',scenario=esc(g('d-scenario'));
+  const tagHTML=tagStore.delta.map(t=>'<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:1px;border:1px solid rgba(0,0,0,.20);color:#555555;padding:.2em .5em;">'+esc(t)+'</span>').join('');
+  const heroImg=img?'<img src="'+img+'" alt="'+escPlain(name)+'" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;">':'<div style="width:100%;height:100%;background:#dddddd;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8em;"><div style="width:60px;height:60px;border-radius:50%;background:rgba(0,0,0,.10);"></div><span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:3px;color:#bbbbbb;">PHOTO HERE</span></div>';
+
+  document.getElementById('d-preview').innerHTML=
+'<div style="position:relative;width:100%;aspect-ratio:3/4;overflow:hidden;background:#cccccc;">'+heroImg+
+'<div style="position:absolute;top:1em;right:0;font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:2px;background:#444444;color:#ffffff;padding:.3em .8em;">DELTA · '+escPlain(grade)+'</div>'+
+'<div style="position:absolute;bottom:0;left:0;right:0;padding:1em 1.2em .9em;background:rgba(255,255,255,.88);border-top:1px solid rgba(0,0,0,.10);">'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#888888;letter-spacing:3px;margin-bottom:.3em;">NSSA · PERSONNEL FILE</div>'+
+'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:3em;color:#111111;line-height:1;letter-spacing:2px;">'+esc(name)+'</div>'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#888888;letter-spacing:2px;margin-top:.3em;">'+esc(title)+'</div></div></div>'+
+'<div style="display:flex;flex-wrap:wrap;gap:.35em;padding:.75em 1.2em;">'+
+'<span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:1px;padding:.25em .6em;border:1px solid #444444;color:#444444;font-weight:700;">델타 Delta</span></div>'+
+'<div style="display:flex;align-items:center;gap:1.2em;padding:.55em 1.2em .8em;border-bottom:1px solid rgba(0,0,0,.12);">'+
+'<div style="display:flex;align-items:baseline;gap:.4em;"><span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:2px;color:#aaaaaa;">NO.</span><span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#555555;">'+esc(no)+'</span></div>'+
+'<div style="display:flex;align-items:baseline;gap:.4em;"><span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:2px;color:#aaaaaa;">DEPT.</span><span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#555555;">'+esc(dept)+'</span></div></div>'+
+'<div style="padding:1.1em 1.2em;border-bottom:1px solid rgba(0,0,0,.10);">'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:3px;color:#444444;margin-bottom:.9em;display:flex;align-items:center;gap:8px;">EMPLOYEE PROFILE<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,.15),transparent);"></div></div>'+
+'<div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">성별</span><span style="color:#333333;flex:1;line-height:1.7;">'+gender+'</span></div>'+
+'<div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">나이</span><span style="color:#333333;flex:1;line-height:1.7;">'+age+'</span></div>'+
+'<div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">외형</span><span style="color:#333333;flex:1;line-height:1.7;">'+look+'</span></div>'+
+'<div style="display:flex;padding:.5em 0;font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">성격</span><span style="color:#333333;flex:1;line-height:1.7;">'+pers+'</span></div></div>'+
+'<div style="padding:1.1em 1.2em;border-bottom:1px solid rgba(0,0,0,.10);">'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:3px;color:#444444;margin-bottom:.9em;display:flex;align-items:center;gap:8px;">PERSONAL NOTE<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,.15),transparent);"></div></div>'+
+'<div style="background:#f5f5f5;border:1px solid rgba(0,0,0,.10);border-left:3px solid #444444;padding:1em;">'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:2px;color:#444444;margin-bottom:.5em;">특이사항</div>'+
+'<div style="font-size:13px;color:#555555;line-height:1.8;">'+note+'</div></div></div>'+
+'<div style="padding:1.1em 1.2em;border-bottom:1px solid rgba(0,0,0,.10);">'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:3px;color:#444444;margin-bottom:.9em;display:flex;align-items:center;gap:8px;">DUTY RECORD<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,.15),transparent);"></div></div>'+
+'<div style="background:#f5f5f5;border:1px solid rgba(0,0,0,.10);border-left:3px solid #444444;padding:1em;">'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:2px;color:#444444;margin-bottom:.5em;">주요 담당 업무</div>'+
+'<div style="font-size:13px;color:#555555;line-height:1.8;">'+duty+'</div>'+
+(tagHTML?'<div style="display:flex;flex-wrap:wrap;gap:.35em;margin-top:.8em;">'+tagHTML+'</div>':'')+
+'</div></div>'+
+'<div style="padding:1.1em 1.2em;border-bottom:1px solid rgba(0,0,0,.10);">'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:3px;color:#444444;margin-bottom:.9em;display:flex;align-items:center;gap:8px;">EVALUATION<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,.15),transparent);"></div></div>'+
+'<div style="background:#f9f9f9;border:1px solid rgba(0,0,0,.10);border-left:3px solid #886600;padding:1em;">'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:2px;color:#886600;margin-bottom:.7em;">업무 평가</div>'+
+'<div style="font-size:13px;color:#444444;line-height:1.9;">'+(evalTxt||'<span style="color:#cccccc;">평가 내용을 입력하세요</span>')+'</div>'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:10px;color:#aaaaaa;letter-spacing:1px;margin-top:.6em;text-align:right;">— '+evalFrom+'</div></div></div>'+
+'<div style="background:#333333;padding:1.2em;position:relative;">'+
+'<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,rgba(255,255,255,.3),transparent);"></div>'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:3px;color:rgba(255,255,255,.35);margin-bottom:.8em;">SCENARIO · 도입부</div>'+
+'<div style="font-size:13px;color:rgba(255,255,255,.82);line-height:2;">'+(scenario||'<span style="color:rgba(255,255,255,.2);">도입부를 입력하세요</span>')+'</div></div>'+
+'<div style="background:#444444;display:flex;align-items:center;justify-content:space-between;padding:7px 16px;">'+
+'<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:4px;color:#ffffff;">일반 · GENERAL</span>'+
+'<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;color:rgba(255,255,255,.4);">NSSA-DOC-2026</span>'+
+'<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:4px;color:#ffffff;">일반 · GENERAL</span></div>'+
+'<div style="padding:1em 1.2em 1.5em;display:flex;align-items:flex-end;justify-content:space-between;gap:1em;">'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:10px;color:#aaaaaa;line-height:1.8;">FILE NO. '+escPlain(no)+'<br>ISSUED 20XX · 특안청 본부<br>DELTA PERSONNEL</div>'+
+'<div style="flex-shrink:0;border:1.5px solid rgba(0,0,0,.20);padding:.35em .7em;transform:rotate(4deg);opacity:.5;text-align:center;">'+
+'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:14px;color:#555555;letter-spacing:3px;line-height:1;">VERIFIED</div>'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:9px;color:#777777;letter-spacing:1px;">NSSA-HQ · 2026</div></div></div>';
+}
+
+/* ── HTML 복사 ── */
+function copyHTML(type){
+  const inner=document.getElementById(type==='sigma'?'s-preview':'d-preview').innerHTML;
+  const full='<div style="background:#ffffff;color:#222222;font-family:\'IBM Plex Sans KR\',sans-serif;font-size:14px;line-height:1.75;max-width:420px;margin:0 auto;padding:0;">\n'+inner+'\n</div>';
+  navigator.clipboard.writeText(full).then(()=>{
+    const btn=document.getElementById(type==='sigma'?'s-copy-btn':'d-copy-btn');
+    btn.textContent='복사 완료!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='HTML 복사하기';btn.classList.remove('copied')},2000);
+  });
+}
+
+document.querySelectorAll('input, textarea, select').forEach(el=>{
+  el.addEventListener('input',()=>{if(el.id.startsWith('s-'))renderSigma();if(el.id.startsWith('d-'))renderDelta()});
+});
+renderSigma();renderDelta();
 </script>
 </body>
 </html>
