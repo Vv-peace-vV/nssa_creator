@@ -283,7 +283,14 @@ initTags('delta', 'd-tag-wrap', 'd-tag-input');
 
 // ── 헬퍼 ──
 function g(id) { const el = document.getElementById(id); return el ? el.value : ''; }
-function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function esc(s) {
+  // span color 태그는 살리고 나머지만 이스케이프
+  const parts = s.split(/(<span style="color:[^"]*">|<\/span>)/g);
+  return parts.map((p, i) => {
+    if (/^<span style="color:[^"]*">$/.test(p) || p === '</span>') return p;
+    return p.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }).join('');
+}
 
 // ── 시그마 렌더 ──
 function renderSigma() {
