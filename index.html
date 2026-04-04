@@ -76,7 +76,6 @@ input[type=color].fmt-custom{width:18px;height:18px;border-radius:50%;border:2px
 </head>
 <body>
 
-<!-- ★ 수정: app-header 태그 복구 -->
 <div class="app-header">
   <div class="app-header-left">
     <div class="app-logo">NSSA</div>
@@ -375,7 +374,7 @@ function syncImgPreview(p){
 document.getElementById('s-img').addEventListener('input',()=>{syncImgPreview('s');renderSigma();});
 document.getElementById('d-img').addEventListener('input',()=>{syncImgPreview('d');renderDelta();});
 
-/* ── 값 읽기 + 찌꺼기 제거 (개선된 버전) ── */
+/* ── ★ 핵심 수정: 완벽한 찌꺼기 제거 + 엔터 스펜 방지 ── */
 function escPlain(s){return s?s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):''}
 
 function domToCleanHTML(node){
@@ -385,14 +384,18 @@ function domToCleanHTML(node){
       out+=escPlain(child.textContent);
     } else if(child.nodeType===1){
       const tag=child.tagName.toLowerCase();
+      // div/p → <br> 변환 (엔터키 버그 수정)
       if(tag==='div'||tag==='p'){
         const inner=domToCleanHTML(child);
         if(inner.trim())out+=inner+'<br>';
         return;
       }
       if(tag==='br'){out+='<br>';return;}
+      
       const inner=domToCleanHTML(child);
-      if(!inner.trim())return; // ★ 빈 태그 찌꺼기 제거
+      // ★ 빈 내용이면 태그 자체를 버림 (찌꺼기 제거)
+      if(!inner.trim())return;
+      
       if(tag==='b'||tag==='strong'){out+=`<b>${inner}</b>`;}
       else if(tag==='i'||tag==='em'){out+=`<i>${inner}</i>`;}
       else if(tag==='span'){
@@ -400,6 +403,15 @@ function domToCleanHTML(node){
         let s='';
         if(fw&&fw!=='400'&&fw!=='normal')s+=`font-weight:${fw};`;
         if(col)s+=`color:${col};`;
+        
+        // ★ 내용이 전부 <br>만으로 구성된 경우 → span 벗기고 br만 남기기 (엔터 스펜 방지)
+        const innerWithoutBr=inner.replace(/<br\s*\/?>/gi,'').trim();
+        if(!innerWithoutBr){
+          out+=inner; // span 없이 br만 출력
+          return;
+        }
+        
+        // 스타일 있는 span만 유지
         if(s)out+=`<span style="${s}">${inner}</span>`;
         else out+=inner;
       } else {out+=inner;}
@@ -407,12 +419,14 @@ function domToCleanHTML(node){
   });
   return out;
 }
+
 function gText(id){
   const el=document.getElementById(id);
   if(!el)return '';
   if(el.hasAttribute('contenteditable'))return el.textContent;
   return el.value;
 }
+
 function r(id){
   const el=document.getElementById(id);
   if(!el)return '';
@@ -424,7 +438,7 @@ function r(id){
   return escPlain(el.value);
 }
 
-/* ── 서식 시스템 (개선된 버전) ── */
+/* ── ★ 핵심 수정: 엔터키 가로채기 + 서식 시스템 ── */
 let savedRange=null,lastRichEdit=null;
 document.querySelectorAll('.rich-edit').forEach(el=>{
   el.addEventListener('focus',()=>{lastRichEdit=el;});
@@ -444,6 +458,7 @@ document.querySelectorAll('.rich-edit').forEach(el=>{
     }
   });
 });
+
 document.querySelectorAll('.fmt-bar').forEach(bar=>{
   bar.addEventListener('mousedown',e=>{
     const sel=window.getSelection();
@@ -707,10 +722,10 @@ function buildDeltaHTML(name,heroImg,grade,no,dept,gender,age,look,pers,duty,tag
   );
 }
 
-/* ── ★ 수정: copyHTML — 680px 반응형 래퍼 적용 ── */
+/* ── ★ 수정: 680px + 카드 내/외부 패딩 충돌 보정 ── */
 function copyHTML(type){
   const inner=document.getElementById(type==='sigma'?'s-preview':'d-preview').innerHTML;
-  const full='<div style="background:#ffffff;color:#222222;font-family:\'IBM Plex Sans KR\',sans-serif;font-size:14px;line-height:1.75;max-width:680px;width:100%;margin:0 auto;padding:0 24px 40px;box-sizing:border-box;">\n'+inner+'\n</div>';
+  const full='<div style="background:#ffffff;color:#222222;font-family:\'IBM Plex Sans KR\',sans-serif;font-size:14px;line-height:1.75;max-width:680px;width:100%;margin:0 auto;padding:0 8px 40px;box-sizing:border-box;">\n'+inner+'\n</div>';
   navigator.clipboard.writeText(full).then(()=>{
     const btn=document.getElementById(type==='sigma'?'s-copy-btn':'d-copy-btn');
     btn.textContent='복사 완료!';
