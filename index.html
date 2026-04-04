@@ -353,15 +353,48 @@ function fmtColor(c){applyWrap('span','color',c)}
 function fmtStrip(){
   if(!restoreSel()) return;
   const sel=window.getSelection();
+  if(sel.isCollapsed) return; // 드래그 안 했으면 무시
+  
   const range=sel.getRangeAt(0);
   let anc=range.commonAncestorContainer;
   if(anc.nodeType===3) anc=anc.parentNode;
   if(!anc.closest('.rich-edit')) return;
-  const text=document.createTextNode(range.toString());
-  range.deleteContents();
-  range.insertNode(text);
+
+  // 선택 범위 안의 노드를 재귀 순회하며 텍스트+br만 남기기
+  function stripNodes(node){
+    const result=document.createDocumentFragment();
+    node.childNodes.forEach(child=>{
+      if(child.nodeType===3){
+        // 텍스트 노드는 그대로 보존
+        result.appendChild(document.createTextNode(child.textContent));
+      } else if(child.nodeType===1){
+        const tag=child.tagName.toLowerCase();
+        if(tag==='br'){
+          // 줄바꿈은 반드시 살려두기
+          result.appendChild(document.createElement('br'));
+        } else {
+          // b, i, span 등 서식 태그는 벗기고 내용만 재귀 처리
+          result.appendChild(stripNodes(child));
+        }
+      }
+    });
+    return result;
+  }
+
+  const frag=range.extractContents();
+  const stripped=stripNodes(frag);
+  range.insertNode(stripped);
+
+  // 처리된 영역을 다시 선택 상태로 유지 (사용자 경험 개선)
+  sel.removeAllRanges();
+  const newRange=document.createRange();
+  newRange.setStartAfter(range.startContainer.parentNode.lastChild||range.startContainer);
+  newRange.collapse(true);
+  sel.addRange(newRange);
+
   triggerRender();
 }
+
 
 function triggerRender(){
   const el=lastRichEdit||document.activeElement;
