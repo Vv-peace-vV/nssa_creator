@@ -52,7 +52,7 @@ input[type=color].fmt-custom{width:18px;height:18px;border-radius:50%;border:2px
 .copy-btn:hover{background:#333}
 .copy-btn.copied{background:#1a6b3a}
 .preview-panel{flex:1;overflow-y:auto;padding:24px;background:#e8e8e8;display:flex;justify-content:center}
-.preview-inner{width:100%;max-width:440px}
+.preview-inner{width:100%;max-width:720px}
 .preview-card{background:#fff;border-radius:2px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.12)}
 .preview-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:#999;text-align:center;margin-bottom:12px}
 .tab-panel{display:none}
@@ -62,8 +62,6 @@ input[type=color].fmt-custom{width:18px;height:18px;border-radius:50%;border:2px
 .chip-option{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.5px;padding:4px 9px;border:1px solid #ddd;border-radius:4px;cursor:pointer;color:#888;background:#fafafa;transition:all .15s;user-select:none}
 .chip-option:hover{border-color:#999;color:#444}
 .chip-option.selected{background:#111;color:#fff;border-color:#111}
-
-/* 이미지 조정 패널 */
 .img-adjust{border:1px solid #e0e0e0;border-radius:6px;background:#fafafa;padding:10px;display:flex;flex-direction:column;gap:8px}
 .img-adjust-preview{width:100%;aspect-ratio:3/4;overflow:hidden;border-radius:4px;background:#cccccc;position:relative;user-select:none}
 .img-adjust-preview img{position:absolute;transform-origin:center center;pointer-events:none}
@@ -77,13 +75,17 @@ input[type=color].fmt-custom{width:18px;height:18px;border-radius:50%;border:2px
 </style>
 </head>
 <body>
-<div class="app-header-left">
-  <div class="app-logo">NSSA</div>
-  <div class="app-subtitle">PERSONNEL FILE EDITOR</div>
-  <a href="creator.html" style="margin-left:15px;background:rgba(255,255,255,.1);color:#fff;text-decoration:none;font-size:11px;padding:6px 12px;border-radius:6px;font-family:'Share Tech Mono',monospace;border:1px solid rgba(255,255,255,.2);transition:.2s;letter-spacing:1px;">📝 코멘트 편집기</a>
-</div>
+
+<!-- ★ 수정: app-header 태그 복구 -->
+<div class="app-header">
+  <div class="app-header-left">
+    <div class="app-logo">NSSA</div>
+    <div class="app-subtitle">PERSONNEL FILE EDITOR</div>
+    <a href="creator.html" style="margin-left:15px;background:rgba(255,255,255,.1);color:#fff;text-decoration:none;font-size:11px;padding:6px 12px;border-radius:6px;font-family:'Share Tech Mono',monospace;border:1px solid rgba(255,255,255,.2);transition:.2s;letter-spacing:1px;">📝 코멘트 편집기</a>
+  </div>
   <div class="app-badge">케이브덕 호환 · 인라인 스타일 출력</div>
 </div>
+
 <div class="tabs">
   <div class="tab active" onclick="switchTab('sigma',this)">⚡ 시그마 Sigma</div>
   <div class="tab" onclick="switchTab('delta',this)">◈ 델타 Delta</div>
@@ -118,12 +120,7 @@ input[type=color].fmt-custom{width:18px;height:18px;border-radius:50%;border:2px
         <div class="section-label">기본 정보</div>
         <div class="field"><label>이름</label><input id="s-name" placeholder="신이한"></div>
         <div class="field"><label>코드네임</label><input id="s-codename" placeholder="SEGYEONG / 세경"></div>
-
-        <!-- 이미지 URL + 조정 패널 -->
-        <div class="field">
-          <label>이미지 URL</label>
-          <input id="s-img" placeholder="https://...">
-        </div>
+        <div class="field"><label>이미지 URL</label><input id="s-img" placeholder="https://..."></div>
         <div class="field">
           <label>이미지 위치 조정</label>
           <div class="img-adjust">
@@ -148,14 +145,13 @@ input[type=color].fmt-custom{width:18px;height:18px;border-radius:50%;border:2px
             <button class="img-reset-btn" onclick="resetImgAdjust('s')">위치 초기화</button>
           </div>
         </div>
-
         <div class="field"><label>유형</label><select id="s-type"><option value="전투형 Combat">전투형 Combat</option><option value="지원형 Support">지원형 Support</option></select></div>
         <div class="field"><label>등급</label><select id="s-grade"><option value="1급 특수요원">1급 특수요원</option><option value="2급 특수요원">2급 특수요원</option><option value="3급 특수요원">3급 특수요원</option><option value="수습요원">수습요원</option><option value="대기요원">대기요원</option></select></div>
         <div class="field"><label>등록번호</label><input id="s-no" placeholder="NSSA-01-13-SEG-SIG"></div>
         <div class="field"><label>부서</label><input id="s-dept" placeholder="특수전략과"></div>
         <div class="section-label">AGENT PROFILE</div>
-        <div class="field"><label>성별</label><input id="s-gender" placeholder="남"></div>
-        <div class="field"><label>나이</label><input id="s-age" placeholder="27세"></div>
+        <div class="field"><label>성별</label><div class="rich-edit" contenteditable="true" id="s-gender" data-placeholder="남"></div></div>
+        <div class="field"><label>나이</label><div class="rich-edit" contenteditable="true" id="s-age" data-placeholder="27세"></div></div>
         <div class="field"><label>외형</label><div class="rich-edit" contenteditable="true" id="s-look" data-placeholder="창백한 피부 · 흑발 · 백안(白眼)"></div></div>
         <div class="field"><label>성격</label><div class="rich-edit" contenteditable="true" id="s-personality" data-placeholder="운명론자. 감정 동요 적음."></div></div>
         <div class="section-label">ABILITY RECORD</div>
@@ -204,12 +200,7 @@ input[type=color].fmt-custom{width:18px;height:18px;border-radius:50%;border:2px
       <div class="form-body" id="delta-form">
         <div class="section-label">기본 정보</div>
         <div class="field"><label>이름</label><input id="d-name" placeholder="홍길동"></div>
-
-        <!-- 이미지 URL + 조정 패널 -->
-        <div class="field">
-          <label>이미지 URL</label>
-          <input id="d-img" placeholder="https://...">
-        </div>
+        <div class="field"><label>이미지 URL</label><input id="d-img" placeholder="https://..."></div>
         <div class="field">
           <label>이미지 위치 조정</label>
           <div class="img-adjust">
@@ -234,7 +225,6 @@ input[type=color].fmt-custom{width:18px;height:18px;border-radius:50%;border:2px
             <button class="img-reset-btn" onclick="resetImgAdjust('d')">위치 초기화</button>
           </div>
         </div>
-
         <div class="field">
           <label>부서</label>
           <div class="chip-selector" id="d-dept-chips">
@@ -261,8 +251,8 @@ input[type=color].fmt-custom{width:18px;height:18px;border-radius:50%;border:2px
         </div>
         <div class="field"><label>등록번호</label><input id="d-no" placeholder="NSSA-??-??-DEL"></div>
         <div class="section-label">EMPLOYEE PROFILE</div>
-        <div class="field"><label>성별</label><input id="d-gender" placeholder="남"></div>
-        <div class="field"><label>나이</label><input id="d-age" placeholder="??세"></div>
+        <div class="field"><label>성별</label><div class="rich-edit" contenteditable="true" id="d-gender" data-placeholder="남"></div></div>
+        <div class="field"><label>나이</label><div class="rich-edit" contenteditable="true" id="d-age" data-placeholder="??세"></div></div>
         <div class="field"><label>외형</label><div class="rich-edit" contenteditable="true" id="d-look" data-placeholder="외형 설명..."></div></div>
         <div class="field"><label>성격</label><div class="rich-edit" contenteditable="true" id="d-personality" data-placeholder="성격 설명..."></div></div>
         <div class="section-label">DUTY RECORD</div>
@@ -281,24 +271,58 @@ input[type=color].fmt-custom{width:18px;height:18px;border-radius:50%;border:2px
 </div>
 
 <script>
-function switchTab(id,el){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');el.classList.add('active')}
+function switchTab(id,el){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  el.classList.add('active');
+}
 
 const tagStore={sigma:[],delta:[]};
-function initTags(key,wrapId,inputId){const input=document.getElementById(inputId);input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const v=input.value.trim();if(v&&!tagStore[key].includes(v)){tagStore[key].push(v);renderTags(key,wrapId,inputId);key==='sigma'?renderSigma():renderDelta()}input.value=''}})}
-function removeTag(key,i,wrapId,inputId){tagStore[key].splice(i,1);renderTags(key,wrapId,inputId);key==='sigma'?renderSigma():renderDelta()}
-function renderTags(key,wrapId,inputId){const wrap=document.getElementById(wrapId);const input=document.getElementById(inputId);wrap.innerHTML='';tagStore[key].forEach((t,i)=>{const chip=document.createElement('span');chip.className='tag-chip';chip.innerHTML=t+'<button onclick="removeTag(\''+key+'\','+i+',\''+wrapId+'\',\''+inputId+'\')">×</button>';wrap.appendChild(chip)});wrap.appendChild(input)}
+function initTags(key,wrapId,inputId){
+  const input=document.getElementById(inputId);
+  input.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){
+      e.preventDefault();
+      const v=input.value.trim();
+      if(v&&!tagStore[key].includes(v)){
+        tagStore[key].push(v);
+        renderTags(key,wrapId,inputId);
+        key==='sigma'?renderSigma():renderDelta();
+      }
+      input.value='';
+    }
+  });
+}
+function removeTag(key,i,wrapId,inputId){
+  tagStore[key].splice(i,1);
+  renderTags(key,wrapId,inputId);
+  key==='sigma'?renderSigma():renderDelta();
+}
+function renderTags(key,wrapId,inputId){
+  const wrap=document.getElementById(wrapId);
+  const input=document.getElementById(inputId);
+  wrap.innerHTML='';
+  tagStore[key].forEach((t,i)=>{
+    const chip=document.createElement('span');
+    chip.className='tag-chip';
+    chip.innerHTML=t+'<button onclick="removeTag(\''+key+'\','+i+',\''+wrapId+'\',\''+inputId+'\')">×</button>';
+    wrap.appendChild(chip);
+  });
+  wrap.appendChild(input);
+}
 initTags('sigma','s-tag-wrap','s-tag-input');
 initTags('delta','d-tag-wrap','d-tag-input');
 
 const chipValues={'d-grade':'대리','d-dept':''};
-function selectChip(key,val,el){chipValues[key]=val;el.parentNode.querySelectorAll('.chip-option').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');renderDelta()}
+function selectChip(key,val,el){
+  chipValues[key]=val;
+  el.parentNode.querySelectorAll('.chip-option').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  renderDelta();
+}
 
-/* ── 이미지 조정 시스템 ── */
-const imgState={
-  s:{x:0,y:0,scale:100},
-  d:{x:0,y:0,scale:100}
-};
-
+const imgState={s:{x:0,y:0,scale:100},d:{x:0,y:0,scale:100}};
 function updateImgAdjust(p){
   const x=parseInt(document.getElementById(p+'-pos-x').value);
   const y=parseInt(document.getElementById(p+'-pos-y').value);
@@ -307,8 +331,6 @@ function updateImgAdjust(p){
   document.getElementById(p+'-pos-x-val').textContent=x+'%';
   document.getElementById(p+'-pos-y-val').textContent=y+'%';
   document.getElementById(p+'-scale-val').textContent=scale+'%';
-
-  // 미리보기 패널 이미지 업데이트
   const previewWrap=document.getElementById(p+'-img-preview');
   const img=previewWrap.querySelector('img');
   if(img){
@@ -323,126 +345,260 @@ function updateImgAdjust(p){
   }
   p==='s'?renderSigma():renderDelta();
 }
-
 function resetImgAdjust(p){
   document.getElementById(p+'-pos-x').value=0;
   document.getElementById(p+'-pos-y').value=0;
   document.getElementById(p+'-scale').value=100;
   updateImgAdjust(p);
 }
-
 function getImgStyle(p){
   const{x,y,scale}=imgState[p];
   return `position:absolute;left:50%;top:50%;width:${scale}%;height:${scale}%;min-width:100%;min-height:100%;object-fit:cover;transform:translate(calc(-50% + ${x}%),calc(-50% + ${y}%));display:block;`;
 }
-
-// URL 입력 시 미리보기 패널 이미지 생성/갱신
 function syncImgPreview(p){
   const url=document.getElementById(p+'-img').value.trim();
   const wrap=document.getElementById(p+'-img-preview');
   const noImg=document.getElementById(p+'-no-img');
   let img=wrap.querySelector('img');
   if(url){
-    if(!img){
-      img=document.createElement('img');
-      img.alt='preview';
-      wrap.appendChild(img);
-    }
+    if(!img){img=document.createElement('img');img.alt='preview';wrap.appendChild(img);}
     img.src=url;
-    img.onerror=()=>{
-      if(noImg) noImg.style.display='flex';
-      noImg.textContent='이미지를 불러올 수 없습니다';
-    };
-    img.onload=()=>{
-      if(noImg) noImg.style.display='none';
-      updateImgAdjust(p);
-    };
-    if(noImg) noImg.style.display='none';
+    img.onerror=()=>{if(noImg){noImg.style.display='flex';noImg.textContent='이미지를 불러올 수 없습니다';}};
+    img.onload=()=>{if(noImg)noImg.style.display='none';updateImgAdjust(p);};
+    if(noImg)noImg.style.display='none';
   } else {
-    if(img) img.remove();
-    if(noImg) {
-      noImg.style.display='flex';
-      noImg.textContent='URL을 입력하세요';
-    }
+    if(img)img.remove();
+    if(noImg){noImg.style.display='flex';noImg.textContent='URL을 입력하세요';}
     imgState[p]={x:0,y:0,scale:100};
   }
 }
+document.getElementById('s-img').addEventListener('input',()=>{syncImgPreview('s');renderSigma();});
+document.getElementById('d-img').addEventListener('input',()=>{syncImgPreview('d');renderDelta();});
 
-document.getElementById('s-img').addEventListener('input',()=>{syncImgPreview('s');renderSigma()});
-document.getElementById('d-img').addEventListener('input',()=>{syncImgPreview('d');renderDelta()});
-
-/* ── 값 읽기 ── */
-function gText(id){const el=document.getElementById(id);if(!el)return '';if(el.hasAttribute('contenteditable'))return el.textContent;return el.value}
+/* ── 값 읽기 + 찌꺼기 제거 (개선된 버전) ── */
 function escPlain(s){return s?s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):''}
-function sanitizeRich(html){
-  if(!html)return '';
-  const tmp=document.createElement('div');tmp.innerHTML=html;
-  function walk(node){let out='';node.childNodes.forEach(child=>{if(child.nodeType===3){out+=escPlain(child.textContent);}else if(child.nodeType===1){const tag=child.tagName.toLowerCase();if(tag==='b'||tag==='strong'){out+='<b>'+walk(child)+'</b>';}else if(tag==='i'||tag==='em'){out+='<i>'+walk(child)+'</i>';}else if(tag==='span'){const fw=child.style.fontWeight,col=child.style.color;let s='';if(fw)s+='font-weight:'+fw+';';if(col)s+='color:'+col+';';if(s)out+='<span style="'+s+'">'+walk(child)+'</span>';else out+=walk(child);}else if(tag==='br'){out+='<br>';}else{out+=walk(child);}}});return out;}
-  return walk(tmp);
-}
-function r(id){const el=document.getElementById(id);if(!el)return '';if(el.hasAttribute('contenteditable')){let html=el.innerHTML.replace(/<div>/gi,'<br>').replace(/<\/div>/gi,'');html=html.replace(/(<br\s*\/?>)+$/i,'');return sanitizeRich(html);}return escPlain(el.value)}
 
-/* ── 서식 시스템 ── */
+function domToCleanHTML(node){
+  let out='';
+  node.childNodes.forEach(child=>{
+    if(child.nodeType===3){
+      out+=escPlain(child.textContent);
+    } else if(child.nodeType===1){
+      const tag=child.tagName.toLowerCase();
+      if(tag==='div'||tag==='p'){
+        const inner=domToCleanHTML(child);
+        if(inner.trim())out+=inner+'<br>';
+        return;
+      }
+      if(tag==='br'){out+='<br>';return;}
+      const inner=domToCleanHTML(child);
+      if(!inner.trim())return; // ★ 빈 태그 찌꺼기 제거
+      if(tag==='b'||tag==='strong'){out+=`<b>${inner}</b>`;}
+      else if(tag==='i'||tag==='em'){out+=`<i>${inner}</i>`;}
+      else if(tag==='span'){
+        const fw=child.style.fontWeight,col=child.style.color;
+        let s='';
+        if(fw&&fw!=='400'&&fw!=='normal')s+=`font-weight:${fw};`;
+        if(col)s+=`color:${col};`;
+        if(s)out+=`<span style="${s}">${inner}</span>`;
+        else out+=inner;
+      } else {out+=inner;}
+    }
+  });
+  return out;
+}
+function gText(id){
+  const el=document.getElementById(id);
+  if(!el)return '';
+  if(el.hasAttribute('contenteditable'))return el.textContent;
+  return el.value;
+}
+function r(id){
+  const el=document.getElementById(id);
+  if(!el)return '';
+  if(el.hasAttribute('contenteditable')){
+    let html=domToCleanHTML(el);
+    html=html.replace(/(<br\s*\/?>)+$/gi,''); // ★ 하단 빈줄 제거
+    return html;
+  }
+  return escPlain(el.value);
+}
+
+/* ── 서식 시스템 (개선된 버전) ── */
 let savedRange=null,lastRichEdit=null;
-document.querySelectorAll('.rich-edit').forEach(el=>{el.addEventListener('focus',()=>{lastRichEdit=el})});
-document.querySelectorAll('.fmt-bar').forEach(bar=>{bar.addEventListener('mousedown',e=>{const sel=window.getSelection();if(sel&&sel.rangeCount>0)savedRange=sel.getRangeAt(0).cloneRange();e.preventDefault()})});
-function restoreSel(){if(!savedRange)return false;const sel=window.getSelection();sel.removeAllRanges();sel.addRange(savedRange);return !sel.isCollapsed}
-function isAllWrapped(range,checkFn){const frag=range.cloneContents();const texts=[];function collect(node){if(node.nodeType===3&&node.textContent.length>0){texts.push({node,inside:checkFn(node)});}node.childNodes.forEach(collect)}collect(frag);if(texts.length===0)return false;return texts.every(t=>t.inside)}
-function hasAncestor(node,checkFn){let cur=node.parentNode;while(cur){if(cur.nodeType===1&&checkFn(cur))return true;cur=cur.parentNode}return false}
+document.querySelectorAll('.rich-edit').forEach(el=>{
+  el.addEventListener('focus',()=>{lastRichEdit=el;});
+  el.addEventListener('input',()=>{
+    if(el.id.startsWith('s-'))renderSigma();
+    else if(el.id.startsWith('d-'))renderDelta();
+  });
+  el.addEventListener('paste',e=>{
+    e.preventDefault();
+    document.execCommand('insertText',false,e.clipboardData.getData('text/plain'));
+  });
+  // ★ 엔터키 → <br> 강제 변환 (div 생성 방지)
+  el.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){
+      e.preventDefault();
+      document.execCommand('insertHTML',false,'<br>');
+    }
+  });
+});
+document.querySelectorAll('.fmt-bar').forEach(bar=>{
+  bar.addEventListener('mousedown',e=>{
+    const sel=window.getSelection();
+    if(sel&&sel.rangeCount>0)savedRange=sel.getRangeAt(0).cloneRange();
+    e.preventDefault();
+  });
+});
+function restoreSel(){
+  if(!savedRange)return false;
+  const sel=window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(savedRange);
+  return !sel.isCollapsed;
+}
+function isAllWrapped(range,checkFn){
+  const frag=range.cloneContents();
+  const texts=[];
+  function collect(node){
+    if(node.nodeType===3&&node.textContent.length>0)texts.push({node,inside:checkFn(node)});
+    node.childNodes.forEach(collect);
+  }
+  collect(frag);
+  return texts.length>0&&texts.every(t=>t.inside);
+}
+function hasAncestor(node,checkFn){
+  let cur=node.parentNode;
+  while(cur){if(cur.nodeType===1&&checkFn(cur))return true;cur=cur.parentNode;}
+  return false;
+}
 function applyWrap(tagName,styleProp,styleVal){
   if(!restoreSel())return;
-  const sel=window.getSelection();const range=sel.getRangeAt(0);
-  let anc=range.commonAncestorContainer;if(anc.nodeType===3)anc=anc.parentNode;if(!anc.closest('.rich-edit'))return;
-  const alreadyApplied=isAllWrapped(range,node=>hasAncestor(node,el=>{if(tagName==='b')return el.tagName==='B'||el.tagName==='STRONG';if(tagName==='i')return el.tagName==='I'||el.tagName==='EM';if(tagName==='span'&&styleProp==='fontWeight')return el.tagName==='SPAN'&&el.style.fontWeight===styleVal;if(tagName==='span'&&styleProp==='color')return el.tagName==='SPAN'&&el.style.color===styleVal;return false}));
+  const sel=window.getSelection();
+  const range=sel.getRangeAt(0);
+  let anc=range.commonAncestorContainer;
+  if(anc.nodeType===3)anc=anc.parentNode;
+  if(!anc.closest('.rich-edit'))return;
+  const alreadyApplied=isAllWrapped(range,node=>hasAncestor(node,el=>{
+    if(tagName==='b')return el.tagName==='B'||el.tagName==='STRONG';
+    if(tagName==='i')return el.tagName==='I'||el.tagName==='EM';
+    if(tagName==='span'&&styleProp==='fontWeight')return el.tagName==='SPAN'&&el.style.fontWeight===styleVal;
+    if(tagName==='span'&&styleProp==='color')return el.tagName==='SPAN'&&el.style.color===styleVal;
+    return false;
+  }));
   const frag=range.extractContents();
   if(alreadyApplied){
-    function unwrap(node){const result=document.createDocumentFragment();node.childNodes.forEach(child=>{if(child.nodeType===3){result.appendChild(child.cloneNode());}else if(child.nodeType===1){const t=child.tagName;let shouldRemove=false;if(tagName==='b'&&(t==='B'||t==='STRONG'))shouldRemove=true;if(tagName==='i'&&(t==='I'||t==='EM'))shouldRemove=true;if(tagName==='span'&&t==='SPAN'){if(styleProp==='fontWeight'&&child.style.fontWeight===styleVal)shouldRemove=true;if(styleProp==='color'&&child.style.color===styleVal)shouldRemove=true;}if(shouldRemove){result.appendChild(unwrap(child));}else{const clone=child.cloneNode(false);clone.appendChild(unwrap(child));result.appendChild(clone);}}});return result}
+    function unwrap(node){
+      const result=document.createDocumentFragment();
+      node.childNodes.forEach(child=>{
+        if(child.nodeType===3){result.appendChild(child.cloneNode());}
+        else if(child.nodeType===1){
+          const t=child.tagName;
+          let shouldRemove=false;
+          if(tagName==='b'&&(t==='B'||t==='STRONG'))shouldRemove=true;
+          if(tagName==='i'&&(t==='I'||t==='EM'))shouldRemove=true;
+          if(tagName==='span'&&t==='SPAN'){
+            if(styleProp==='fontWeight'&&child.style.fontWeight===styleVal)shouldRemove=true;
+            if(styleProp==='color'&&child.style.color===styleVal)shouldRemove=true;
+          }
+          if(shouldRemove){result.appendChild(unwrap(child));}
+          else{const clone=child.cloneNode(false);clone.appendChild(unwrap(child));result.appendChild(clone);}
+        }
+      });
+      return result;
+    }
     range.insertNode(unwrap(frag));
   } else {
-    const wrap=document.createElement(tagName);if(styleProp)wrap.style[styleProp]=styleVal;wrap.appendChild(frag);range.insertNode(wrap);
+    const wrap=document.createElement(tagName);
+    if(styleProp)wrap.style[styleProp]=styleVal;
+    wrap.appendChild(frag);
+    range.insertNode(wrap);
   }
-  triggerRender();
+  if(lastRichEdit){
+    if(lastRichEdit.id.startsWith('s-'))renderSigma();
+    else if(lastRichEdit.id.startsWith('d-'))renderDelta();
+  }
 }
 function fmtBold(){applyWrap('b')}
 function fmtThin(){applyWrap('span','fontWeight','300')}
 function fmtItalic(){applyWrap('i')}
 function fmtColor(c){applyWrap('span','color',c)}
-function triggerRender(){const el=lastRichEdit||document.activeElement;if(!el)return;const id=el.id||'';if(id.startsWith('s-'))renderSigma();else if(id.startsWith('d-'))renderDelta()}
-['s-color-picker','d-color-picker'].forEach(pid=>{document.getElementById(pid).addEventListener('mousedown',()=>{const sel=window.getSelection();if(sel&&sel.rangeCount>0)savedRange=sel.getRangeAt(0).cloneRange()});document.getElementById(pid).addEventListener('input',function(){fmtColor(this.value)})});
 
-/* ── 시그마 렌더 ── */
+['s-color-picker','d-color-picker'].forEach(pid=>{
+  document.getElementById(pid).addEventListener('mousedown',()=>{
+    const sel=window.getSelection();
+    if(sel&&sel.rangeCount>0)savedRange=sel.getRangeAt(0).cloneRange();
+  });
+  document.getElementById(pid).addEventListener('input',function(){fmtColor(this.value);});
+});
+
+document.querySelectorAll('input:not([type=range]):not([type=color]), select').forEach(el=>{
+  const handler=()=>{
+    if(el.id.startsWith('s-'))renderSigma();
+    if(el.id.startsWith('d-'))renderDelta();
+  };
+  el.addEventListener('input',handler);
+  el.addEventListener('change',handler);
+});
+
+/* ── 시그마 렌더 (680px 반응형) ── */
 function renderSigma(){
-  const name=escPlain(gText('s-name'))||'이름',codename=escPlain(gText('s-codename'))||'CODE NAME',img=document.getElementById('s-img').value.trim(),type=gText('s-type'),grade=gText('s-grade'),no=escPlain(gText('s-no'))||'NSSA-??-??-SIG',dept=escPlain(gText('s-dept'))||'부서명';
-  const gender=r('s-gender')||'—',age=r('s-age')||'—',look=r('s-look')||'—',pers=r('s-personality')||'—';
-  const abilKo=r('s-abil-ko')||'능력명',abilEn=r('s-abil-en')||'ABILITY',abilDesc=r('s-abil-desc')||'—';
-  const breakdown=r('s-breakdown')||'—',value=r('s-value')||'—',note=r('s-note')||'—',scenario=r('s-scenario');
-  const tagHTML=tagStore.sigma.map(t=>'<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:1px;border:1px solid rgba(0,0,0,.20);color:#555555;padding:.2em .5em;">'+escPlain(t)+'</span>').join('');
-  const heroImg=img?'<img src="'+escPlain(img)+'" alt="" style="'+getImgStyle('s')+'">':'<div style="width:100%;height:100%;background:#cccccc;display:flex;align-items:center;justify-content:center;"><span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:3px;color:#888888;">PHOTO HERE</span></div>';
+  const name=escPlain(gText('s-name'))||'이름';
+  const codename=escPlain(gText('s-codename'))||'CODE NAME';
+  const img=document.getElementById('s-img').value.trim();
+  const type=gText('s-type');
+  const grade=gText('s-grade');
+  const no=escPlain(gText('s-no'))||'NSSA-??-??-SIG';
+  const dept=escPlain(gText('s-dept'))||'부서명';
+  const gender=r('s-gender')||'—';
+  const age=r('s-age')||'—';
+  const look=r('s-look')||'—';
+  const pers=r('s-personality')||'—';
+  const abilKo=escPlain(gText('s-abil-ko'))||'능력명';
+  const abilEn=escPlain(gText('s-abil-en'))||'ABILITY';
+  const abilDesc=r('s-abil-desc')||'—';
+  const breakdown=r('s-breakdown')||'—';
+  const value=r('s-value')||'—';
+  const note=r('s-note')||'—';
+  const scenario=r('s-scenario');
+  const tagHTML=tagStore.sigma.map(t=>'<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:1px;border:1px solid rgba(0,0,0,.20);color:#555555;padding:.2em .5em;display:inline-block;">'+escPlain(t)+'</span>').join('');
+  const heroImg=img
+    ?'<img src="'+escPlain(img)+'" alt="" style="'+getImgStyle('s')+'">'
+    :'<div style="width:100%;height:100%;background:#cccccc;display:flex;align-items:center;justify-content:center;"><span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:3px;color:#888888;">PHOTO HERE</span></div>';
 
-  document.getElementById('s-preview').innerHTML=
+  document.getElementById('s-preview').innerHTML=buildSigmaHTML(name,codename,heroImg,grade,type,no,dept,gender,age,look,pers,abilKo,abilEn,abilDesc,tagHTML,breakdown,value,note,scenario);
+}
+
+function buildSigmaHTML(name,codename,heroImg,grade,type,no,dept,gender,age,look,pers,abilKo,abilEn,abilDesc,tagHTML,breakdown,value,note,scenario){
+  return (
 '<div style="position:relative;width:100%;aspect-ratio:3/4;overflow:hidden;background:#111111;">'+heroImg+
 '<div style="position:absolute;top:1em;right:0;font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:2px;background:#111111;color:#ffffff;padding:.3em .8em;">'+escPlain(grade)+'</div>'+
 '<div style="position:absolute;bottom:0;left:0;right:0;padding:1em 1.2em .9em;background:rgba(255,255,255,.88);border-top:1px solid rgba(0,0,0,.10);">'+
 '<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#888888;letter-spacing:3px;margin-bottom:.3em;">NSSA · PERSONNEL FILE</div>'+
-'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:3em;color:#111111;line-height:1;letter-spacing:2px;">'+name+'</div>'+
-'<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#888888;letter-spacing:2px;margin-top:.3em;">CODE NAME : '+codename+'</div></div></div>'+
+'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:clamp(2em,8vw,3em);color:#111111;line-height:1;letter-spacing:2px;word-break:keep-all;">'+name+'</div>'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#888888;letter-spacing:2px;margin-top:.3em;">CODE NAME : '+codename+'</div>'+
+'</div></div>'+
 '<div style="display:flex;flex-wrap:wrap;gap:.35em;padding:.75em 1.2em;">'+
 '<span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:1px;padding:.25em .6em;border:1px solid rgba(0,0,0,.40);color:#111111;font-weight:700;">시그마 Sigma</span>'+
 '<span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:1px;padding:.25em .6em;border:1px solid rgba(0,0,0,.40);color:#111111;font-weight:700;">'+escPlain(type)+'</span>'+
-'<span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:1px;padding:.25em .6em;border:1px solid rgba(0,0,0,.40);color:#111111;font-weight:700;">'+escPlain(grade)+'</span></div>'+
-'<div style="display:flex;align-items:center;gap:1.2em;padding:.55em 1.2em .8em;border-bottom:1px solid rgba(0,0,0,.12);">'+
+'<span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:1px;padding:.25em .6em;border:1px solid rgba(0,0,0,.40);color:#111111;font-weight:700;">'+escPlain(grade)+'</span>'+
+'</div>'+
+'<div style="display:flex;flex-wrap:wrap;align-items:center;gap:1.2em;padding:.55em 1.2em .8em;border-bottom:1px solid rgba(0,0,0,.12);">'+
 '<div style="display:flex;align-items:baseline;gap:.4em;"><span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:2px;color:#aaaaaa;">NO.</span><span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#555555;">'+no+'</span></div>'+
-'<div style="display:flex;align-items:baseline;gap:.4em;"><span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:2px;color:#aaaaaa;">DEPT.</span><span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#555555;">'+dept+'</span></div></div>'+
+'<div style="display:flex;align-items:baseline;gap:.4em;"><span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:2px;color:#aaaaaa;">DEPT.</span><span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#555555;">'+dept+'</span></div>'+
+'</div>'+
 '<div style="padding:1.1em 1.2em;border-bottom:1px solid rgba(0,0,0,.10);">'+
 '<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:3px;color:#111111;margin-bottom:.9em;display:flex;align-items:center;gap:8px;">AGENT PROFILE<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,.20),transparent);"></div></div>'+
-'<div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">성별</span><span style="color:#333333;flex:1;line-height:1.7;">'+gender+'</span></div>'+
-'<div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">나이</span><span style="color:#333333;flex:1;line-height:1.7;">'+age+'</span></div>'+
-'<div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">외형</span><span style="color:#333333;flex:1;line-height:1.7;">'+look+'</span></div>'+
-'<div style="display:flex;padding:.5em 0;font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">성격</span><span style="color:#333333;flex:1;line-height:1.7;">'+pers+'</span></div></div>'+
+'<div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">성별</span><span style="color:#333333;flex:1;font-size:13px;line-height:1.7;">'+gender+'</span></div>'+
+'<div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">나이</span><span style="color:#333333;flex:1;font-size:13px;line-height:1.7;">'+age+'</span></div>'+
+'<div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">외형</span><span style="color:#333333;flex:1;font-size:13px;line-height:1.7;">'+look+'</span></div>'+
+'<div style="display:flex;padding:.5em 0;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">성격</span><span style="color:#333333;flex:1;font-size:13px;line-height:1.7;">'+pers+'</span></div>'+
+'</div>'+
 '<div style="padding:1.1em 1.2em;border-bottom:1px solid rgba(0,0,0,.10);">'+
 '<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:3px;color:#111111;margin-bottom:.9em;display:flex;align-items:center;gap:8px;">ABILITY RECORD<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,.20),transparent);"></div></div>'+
 '<div style="background:#f5f5f5;border:1px solid rgba(0,0,0,.10);border-left:3px solid #111111;padding:1em;">'+
-'<div style="font-size:15px;font-weight:700;color:#111111;display:flex;align-items:baseline;gap:.5em;margin-bottom:.15em;">'+abilKo+' <span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#888888;font-weight:400;letter-spacing:2px;">'+abilEn+'</span></div>'+
+'<div style="font-size:15px;font-weight:700;color:#111111;display:flex;align-items:baseline;gap:.5em;flex-wrap:wrap;margin-bottom:.15em;">'+abilKo+' <span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#888888;font-weight:400;letter-spacing:2px;">'+abilEn+'</span></div>'+
 '<div style="font-size:13px;color:#555555;line-height:1.8;margin-top:.6em;">'+abilDesc+'</div>'+
 (tagHTML?'<div style="display:flex;flex-wrap:wrap;gap:.35em;margin-top:.8em;">'+tagHTML+'</div>':'')+
 '<div style="margin-top:.9em;padding-top:.9em;border-top:1px solid rgba(0,0,0,.10);">'+
@@ -464,43 +620,61 @@ function renderSigma(){
 '<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:4px;color:#ffffff;">기밀 · CLASSIFIED</span>'+
 '<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;color:rgba(255,255,255,.4);">NSSA-DOC-2026</span>'+
 '<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:4px;color:#ffffff;">기밀 · CLASSIFIED</span></div>'+
-'<div style="padding:1em 1.2em 1.5em;display:flex;align-items:flex-end;justify-content:space-between;gap:1em;">'+
-'<div style="font-family:\'Share Tech Mono\',monospace;font-size:10px;color:#aaaaaa;line-height:1.8;">FILE NO. '+escPlain(gText('s-no')||'NSSA-??-??-SIG')+'<br>ISSUED 2026 · 특안청 본부<br>ACCESS RESTRICTED</div>'+
+'<div style="padding:1em 1.2em 1.5em;display:flex;align-items:flex-end;justify-content:space-between;gap:1em;flex-wrap:wrap;">'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:10px;color:#aaaaaa;line-height:1.8;">FILE NO. '+no+'<br>ISSUED 2026 · 특안청 본부<br>ACCESS RESTRICTED</div>'+
 '<div style="flex-shrink:0;border:1.5px solid rgba(0,0,0,.25);padding:.35em .7em;transform:rotate(4deg);opacity:.6;text-align:center;">'+
 '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:14px;color:#333333;letter-spacing:3px;line-height:1;">VERIFIED</div>'+
-'<div style="font-family:\'Share Tech Mono\',monospace;font-size:9px;color:#555555;letter-spacing:1px;">NSSA-HQ · 2026</div></div></div>';
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:9px;color:#555555;letter-spacing:1px;">NSSA-HQ · 2026</div></div></div>'
+  );
 }
 
-/* ── 델타 렌더 ── */
+/* ── 델타 렌더 (680px 반응형) ── */
 function renderDelta(){
-  const name=escPlain(gText('d-name'))||'이름',img=document.getElementById('d-img').value.trim(),grade=chipValues['d-grade']||'',no=escPlain(gText('d-no'))||'NSSA-??-??-DEL',dept=chipValues['d-dept']||'';
-  const gender=r('d-gender')||'—',age=r('d-age')||'—',look=r('d-look')||'—',pers=r('d-personality')||'—';
-  const note=r('d-note')||'—',duty=r('d-duty')||'—',evalTxt=r('d-eval')||'',scenario=r('d-scenario');
-  const tagHTML=tagStore.delta.map(t=>'<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:1px;border:1px solid rgba(0,0,0,.20);color:#555555;padding:.2em .5em;">'+escPlain(t)+'</span>').join('');
-  const heroImg=img?'<img src="'+escPlain(img)+'" alt="" style="'+getImgStyle('d')+'">':'<div style="width:100%;height:100%;background:#dddddd;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8em;"><div style="width:60px;height:60px;border-radius:50%;background:rgba(0,0,0,.10);"></div><span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:3px;color:#bbbbbb;">PHOTO HERE</span></div>';
+  const name=escPlain(gText('d-name'))||'이름';
+  const img=document.getElementById('d-img').value.trim();
+  const grade=chipValues['d-grade']||'';
+  const no=escPlain(gText('d-no'))||'NSSA-??-??-DEL';
+  const dept=chipValues['d-dept']||'';
+  const gender=r('d-gender')||'—';
+  const age=r('d-age')||'—';
+  const look=r('d-look')||'—';
+  const pers=r('d-personality')||'—';
+  const note=r('d-note')||'—';
+  const duty=r('d-duty')||'—';
+  const evalTxt=r('d-eval')||'';
+  const scenario=r('d-scenario');
+  const tagHTML=tagStore.delta.map(t=>'<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:1px;border:1px solid rgba(0,0,0,.20);color:#555555;padding:.2em .5em;display:inline-block;">'+escPlain(t)+'</span>').join('');
+  const heroImg=img
+    ?'<img src="'+escPlain(img)+'" alt="" style="'+getImgStyle('d')+'">'
+    :'<div style="width:100%;height:100%;background:#dddddd;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8em;"><div style="width:60px;height:60px;border-radius:50%;background:rgba(0,0,0,.10);"></div><span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:3px;color:#bbbbbb;">PHOTO HERE</span></div>';
 
-  document.getElementById('d-preview').innerHTML=
+  document.getElementById('d-preview').innerHTML=buildDeltaHTML(name,heroImg,grade,no,dept,gender,age,look,pers,duty,tagHTML,evalTxt,note,scenario);
+}
+
+function buildDeltaHTML(name,heroImg,grade,no,dept,gender,age,look,pers,duty,tagHTML,evalTxt,note,scenario){
+  return (
 '<div style="position:relative;width:100%;aspect-ratio:3/4;overflow:hidden;background:#cccccc;">'+heroImg+
 '<div style="position:absolute;top:1em;right:0;font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:2px;background:#444444;color:#ffffff;padding:.3em .8em;">DELTA · '+escPlain(grade)+'</div>'+
 '<div style="position:absolute;bottom:0;left:0;right:0;padding:1em 1.2em .9em;background:rgba(255,255,255,.88);border-top:1px solid rgba(0,0,0,.10);">'+
 '<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#888888;letter-spacing:3px;margin-bottom:.3em;">NSSA · PERSONNEL FILE</div>'+
-'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:3em;color:#111111;line-height:1;letter-spacing:2px;">'+name+'</div>'+
+'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:clamp(2em,8vw,3em);color:#111111;line-height:1;letter-spacing:2px;word-break:keep-all;">'+name+'</div>'+
 '</div></div>'+
 '<div style="display:flex;flex-wrap:wrap;gap:.35em;padding:.75em 1.2em;">'+
 '<span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:1px;padding:.25em .6em;border:1px solid #444444;color:#444444;font-weight:700;">델타 Delta</span>'+
 (dept?'<span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:1px;padding:.25em .6em;border:1px solid #444444;color:#444444;font-weight:700;">'+escPlain(dept)+'</span>':'')+
 (grade?'<span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:1px;padding:.25em .6em;border:1px solid #444444;color:#444444;font-weight:700;">'+escPlain(grade)+'</span>':'')+
 '</div>'+
-'<div style="display:flex;align-items:center;gap:1.2em;padding:.55em 1.2em .8em;border-bottom:1px solid rgba(0,0,0,.12);">'+
+'<div style="display:flex;flex-wrap:wrap;align-items:center;gap:1.2em;padding:.55em 1.2em .8em;border-bottom:1px solid rgba(0,0,0,.12);">'+
 '<div style="display:flex;align-items:baseline;gap:.4em;"><span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:2px;color:#aaaaaa;">NO.</span><span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#555555;">'+no+'</span></div>'+
 (dept?'<div style="display:flex;align-items:baseline;gap:.4em;"><span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:2px;color:#aaaaaa;">DEPT.</span><span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#555555;">'+escPlain(dept)+'</span></div>':'')+
 '</div>'+
 '<div style="padding:1.1em 1.2em;border-bottom:1px solid rgba(0,0,0,.10);">'+
 '<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:3px;color:#444444;margin-bottom:.9em;display:flex;align-items:center;gap:8px;">EMPLOYEE PROFILE<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,.15),transparent);"></div></div>'+
-'<div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">성별</span><span style="color:#333333;flex:1;line-height:1.7;">'+gender+'</span></div>'+
-'<div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">나이</span><span style="color:#333333;flex:1;line-height:1.7;">'+age+'</span></div>'+
-'<div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">외형</span><span style="color:#333333;flex:1;line-height:1.7;">'+look+'</span></div>'+
-'<div style="display:flex;padding:.5em 0;font-size:13px;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">성격</span><span style="color:#333333;flex:1;line-height:1.7;">'+pers+'</span></div></div>'+
+'<div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">성별</span><span style="color:#333333;flex:1;font-size:13px;line-height:1.7;">'+gender+'</span></div>'+
+'<div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">나이</span><span style="color:#333333;flex:1;font-size:13px;line-height:1.7;">'+age+'</span></div>'+
+'<div style="display:flex;padding:.5em 0;border-bottom:1px solid rgba(0,0,0,.07);gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">외형</span><span style="color:#333333;flex:1;font-size:13px;line-height:1.7;">'+look+'</span></div>'+
+'<div style="display:flex;padding:.5em 0;gap:.8em;"><span style="color:#888888;flex-shrink:0;width:4.5em;font-size:12px;">성격</span><span style="color:#333333;flex:1;font-size:13px;line-height:1.7;">'+pers+'</span></div>'+
+'</div>'+
 '<div style="padding:1.1em 1.2em;border-bottom:1px solid rgba(0,0,0,.10);">'+
 '<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;letter-spacing:3px;color:#444444;margin-bottom:.9em;display:flex;align-items:center;gap:8px;">DUTY RECORD<div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,0,0,.15),transparent);"></div></div>'+
 '<div style="background:#f5f5f5;border:1px solid rgba(0,0,0,.10);border-left:3px solid #444444;padding:1em;">'+
@@ -525,33 +699,28 @@ function renderDelta(){
 '<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:4px;color:#ffffff;">일반 · GENERAL</span>'+
 '<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;color:rgba(255,255,255,.4);">NSSA-DOC-2026</span>'+
 '<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;letter-spacing:4px;color:#ffffff;">일반 · GENERAL</span></div>'+
-'<div style="padding:1em 1.2em 1.5em;display:flex;align-items:flex-end;justify-content:space-between;gap:1em;">'+
-'<div style="font-family:\'Share Tech Mono\',monospace;font-size:10px;color:#aaaaaa;line-height:1.8;">FILE NO. '+escPlain(gText('d-no')||'NSSA-??-??-DEL')+'<br>ISSUED 20XX · 특안청 본부<br>DELTA PERSONNEL</div>'+
+'<div style="padding:1em 1.2em 1.5em;display:flex;align-items:flex-end;justify-content:space-between;gap:1em;flex-wrap:wrap;">'+
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:10px;color:#aaaaaa;line-height:1.8;">FILE NO. '+no+'<br>ISSUED 20XX · 특안청 본부<br>DELTA PERSONNEL</div>'+
 '<div style="flex-shrink:0;border:1.5px solid rgba(0,0,0,.20);padding:.35em .7em;transform:rotate(4deg);opacity:.5;text-align:center;">'+
 '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:14px;color:#555555;letter-spacing:3px;line-height:1;">VERIFIED</div>'+
-'<div style="font-family:\'Share Tech Mono\',monospace;font-size:9px;color:#777777;letter-spacing:1px;">NSSA-HQ · 2026</div></div></div>';
+'<div style="font-family:\'Share Tech Mono\',monospace;font-size:9px;color:#777777;letter-spacing:1px;">NSSA-HQ · 2026</div></div></div>'
+  );
 }
 
+/* ── ★ 수정: copyHTML — 680px 반응형 래퍼 적용 ── */
 function copyHTML(type){
   const inner=document.getElementById(type==='sigma'?'s-preview':'d-preview').innerHTML;
-  const full='<div style="background:#ffffff;color:#222222;font-family:\'IBM Plex Sans KR\',sans-serif;font-size:14px;line-height:1.75;max-width:420px;margin:0 auto;padding:0;">\n'+inner+'\n</div>';
+  const full='<div style="background:#ffffff;color:#222222;font-family:\'IBM Plex Sans KR\',sans-serif;font-size:14px;line-height:1.75;max-width:680px;width:100%;margin:0 auto;padding:0 24px 40px;box-sizing:border-box;">\n'+inner+'\n</div>';
   navigator.clipboard.writeText(full).then(()=>{
     const btn=document.getElementById(type==='sigma'?'s-copy-btn':'d-copy-btn');
-    btn.textContent='복사 완료!';btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='HTML 복사하기';btn.classList.remove('copied')},2000);
+    btn.textContent='복사 완료!';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='HTML 복사하기';btn.classList.remove('copied');},2000);
   });
 }
 
-document.querySelectorAll('input:not([type=range]):not([type=color]), select').forEach(el=>{
-  const handler=()=>{if(el.id.startsWith('s-'))renderSigma();if(el.id.startsWith('d-'))renderDelta()};
-  el.addEventListener('input',handler);el.addEventListener('change',handler);
-});
-document.querySelectorAll('.rich-edit').forEach(el=>{
-  el.addEventListener('input',()=>{if(el.id.startsWith('s-'))renderSigma();if(el.id.startsWith('d-'))renderDelta()});
-  el.addEventListener('paste',e=>{e.preventDefault();const text=e.clipboardData.getData('text/plain');document.execCommand('insertText',false,text)});
-});
-
-renderSigma();renderDelta();
+renderSigma();
+renderDelta();
 </script>
 </body>
 </html>
