@@ -90,7 +90,7 @@ input[type=color].fmt-custom{width:18px;height:18px;border-radius:50%;border:2px
       <h2>크리에이터 코멘트 편집기</h2>
       <p>입력하면 미리보기가 실시간으로 바뀌어요</p>
     </div>
-
+    
     <div class="form-scroll">
       <div class="fmt-bar">
         <span class="fmt-bar-label">FORMAT</span>
@@ -191,319 +191,349 @@ input[type=color].fmt-custom{width:18px;height:18px;border-radius:50%;border:2px
 </div>
 
 <script>
-/* ── 테마 데이터 ── */
 const THEMES = {
-  yellow:{bg:'#fffdf0',boxBg:'#ffffff',border:'#ffe87a',badgeBg:'#fff0a0',badgeText:'#cc9900',itemBg:'#fffbe6',text:'#333333',subText:'#555555',commonBadgeBg:'#d6e8ff',commonBadgeText:'#4477cc',commonItemBg:'#eef4ff',commonBorder:'#d6e8ff'},
-  blue:{bg:'#f4f9ff',boxBg:'#ffffff',border:'#b3d4ff',badgeBg:'#d6e8ff',badgeText:'#3366cc',itemBg:'#eef4ff',text:'#333333',subText:'#555555',commonBadgeBg:'#e0e0e0',commonBadgeText:'#555555',commonItemBg:'#f5f5f5',commonBorder:'#e0e0e0'},
-  pink:{bg:'#fff5f7',boxBg:'#ffffff',border:'#ffb3d1',badgeBg:'#ffd6e6',badgeText:'#cc3377',itemBg:'#fff0f5',text:'#333333',subText:'#555555',commonBadgeBg:'#d6e8ff',commonBadgeText:'#4477cc',commonItemBg:'#eef4ff',commonBorder:'#d6e8ff'},
-  green:{bg:'#f4fff7',boxBg:'#ffffff',border:'#a3e6bd',badgeBg:'#ccffdd',badgeText:'#228844',itemBg:'#e6ffec',text:'#333333',subText:'#555555',commonBadgeBg:'#d6e8ff',commonBadgeText:'#4477cc',commonItemBg:'#eef4ff',commonBorder:'#d6e8ff'},
-  gray:{bg:'#f8f8f8',boxBg:'#ffffff',border:'#cccccc',badgeBg:'#e0e0e0',badgeText:'#666666',itemBg:'#f5f5f5',text:'#333333',subText:'#555555',commonBadgeBg:'#d6e8ff',commonBadgeText:'#4477cc',commonItemBg:'#eef4ff',commonBorder:'#d6e8ff'},
-  orange:{bg:'#fff8f0',boxBg:'#ffffff',border:'#ffcc99',badgeBg:'#ffe6cc',badgeText:'#cc6600',itemBg:'#fff5e6',text:'#333333',subText:'#555555',commonBadgeBg:'#d6e8ff',commonBadgeText:'#4477cc',commonItemBg:'#eef4ff',commonBorder:'#d6e8ff'},
-  purple:{bg:'#f8f4ff',boxBg:'#ffffff',border:'#cc99ff',badgeBg:'#e6d6ff',badgeText:'#6633cc',itemBg:'#f0e6ff',text:'#333333',subText:'#555555',commonBadgeBg:'#d6e8ff',commonBadgeText:'#4477cc',commonItemBg:'#eef4ff',commonBorder:'#d6e8ff'},
-  dark:{bg:'#1a1b1e',boxBg:'#24262b',border:'#3a3d45',badgeBg:'#3a3d45',badgeText:'#aeb3c0',itemBg:'#2a2d33',text:'#e4e5e7',subText:'#aeb3c0',commonBadgeBg:'#2c3b59',commonBadgeText:'#7aa1e6',commonItemBg:'#21293d',commonBorder:'#2c3b59'}
+  yellow: {bg:'#fffdf0',boxBg:'#ffffff',border:'#ffe87a',badgeBg:'#fff0a0',badgeText:'#cc9900',itemBg:'#fffbe6',text:'#333333',subText:'#555555',commonBadgeBg:'#d6e8ff',commonBadgeText:'#4477cc',commonItemBg:'#eef4ff',commonBorder:'#d6e8ff'},
+  blue: {bg:'#f4f9ff',boxBg:'#ffffff',border:'#b3d4ff',badgeBg:'#d6e8ff',badgeText:'#3366cc',itemBg:'#eef4ff',text:'#333333',subText:'#555555',commonBadgeBg:'#e0e0e0',commonBadgeText:'#555555',commonItemBg:'#f5f5f5',commonBorder:'#e0e0e0'},
+  pink: {bg:'#fff5f7',boxBg:'#ffffff',border:'#ffb3d1',badgeBg:'#ffd6e6',badgeText:'#cc3377',itemBg:'#fff0f5',text:'#333333',subText:'#555555',commonBadgeBg:'#d6e8ff',commonBadgeText:'#4477cc',commonItemBg:'#eef4ff',commonBorder:'#d6e8ff'},
+  green: {bg:'#f4fff7',boxBg:'#ffffff',border:'#a3e6bd',badgeBg:'#ccffdd',badgeText:'#228844',itemBg:'#e6ffec',text:'#333333',subText:'#555555',commonBadgeBg:'#d6e8ff',commonBadgeText:'#4477cc',commonItemBg:'#eef4ff',commonBorder:'#d6e8ff'},
+  gray: {bg:'#f8f8f8',boxBg:'#ffffff',border:'#cccccc',badgeBg:'#e0e0e0',badgeText:'#666666',itemBg:'#f5f5f5',text:'#333333',subText:'#555555',commonBadgeBg:'#d6e8ff',commonBadgeText:'#4477cc',commonItemBg:'#eef4ff',commonBorder:'#d6e8ff'},
+  orange: {bg:'#fff8f0',boxBg:'#ffffff',border:'#ffcc99',badgeBg:'#ffe6cc',badgeText:'#cc6600',itemBg:'#fff5e6',text:'#333333',subText:'#555555',commonBadgeBg:'#d6e8ff',commonBadgeText:'#4477cc',commonItemBg:'#eef4ff',commonBorder:'#d6e8ff'},
+  purple: {bg:'#f8f4ff',boxBg:'#ffffff',border:'#cc99ff',badgeBg:'#e6d6ff',badgeText:'#6633cc',itemBg:'#f0e6ff',text:'#333333',subText:'#555555',commonBadgeBg:'#d6e8ff',commonBadgeText:'#4477cc',commonItemBg:'#eef4ff',commonBorder:'#d6e8ff'},
+  dark: {bg:'#1a1b1e',boxBg:'#24262b',border:'#3a3d45',badgeBg:'#3a3d45',badgeText:'#aeb3c0',itemBg:'#2a2d33',text:'#e4e5e7',subText:'#aeb3c0',commonBadgeBg:'#2c3b59',commonBadgeText:'#7aa1e6',commonItemBg:'#21293d',commonBorder:'#2c3b59'}
 };
 
-/* ── 상태 ── */
 let currentTheme = 'yellow';
 let currentFooter = '✦ · · · ✦ · · · ✦';
 let commonCmds = [{cmd:'/NSSA',desc:'기관 기본 설정'}];
-let charCmds   = [{cmd:'/외형',desc:'캐릭터 외형 묘사'}];
-let aiModels   = [{name:'Claude 3.5 Sonnet',reason:'안정적 출력'}];
+let charCmds = [{cmd:'/외형',desc:'캐릭터 외형 묘사'}];
+let aiModels = [{name:'Claude 3.5 Sonnet',reason:'안정적 출력'}];
 
-/* ── 테마 선택 ── */
-function selectTheme(theme,el){
+function selectTheme(theme, el) {
   document.querySelectorAll('.theme-chip').forEach(c=>c.classList.remove('selected'));
   el.classList.add('selected');
-  currentTheme=theme; render();
-}
-
-/* ── 푸터 선택 ── */
-function selectFooter(el,val){
-  document.querySelectorAll('.footer-chip').forEach(c=>c.classList.remove('selected'));
-  el.classList.add('selected');
-  currentFooter=val;
-  document.getElementById('footer-custom').value='';
+  currentTheme = theme;
   render();
 }
-function selectFooterCustom(val){
+
+function selectFooter(el, val) {
   document.querySelectorAll('.footer-chip').forEach(c=>c.classList.remove('selected'));
-  currentFooter=val; render();
+  el.classList.add('selected');
+  currentFooter = val;
+  document.getElementById('footer-custom').value = '';
+  render();
 }
 
-/* ── 동적 리스트 ── */
-function renderLists(){
-  document.getElementById('common-list').innerHTML=commonCmds.map((c,i)=>
+function selectFooterCustom(val) {
+  document.querySelectorAll('.footer-chip').forEach(c=>c.classList.remove('selected'));
+  currentFooter = val;
+  render();
+}
+
+function renderLists() {
+  document.getElementById('common-list').innerHTML = commonCmds.map((c,i)=>
     `<div class="list-row">
       <input class="short" placeholder="/명령어" value="${esc(c.cmd)}" oninput="commonCmds[${i}].cmd=this.value;render()">
-      <input class="long"  placeholder="설명"    value="${esc(c.desc)}" oninput="commonCmds[${i}].desc=this.value;render()">
+      <input class="long" placeholder="설명" value="${esc(c.desc)}" oninput="commonCmds[${i}].desc=this.value;render()">
       <button class="del-btn" onclick="commonCmds.splice(${i},1);renderLists();render()">×</button>
     </div>`).join('');
-  document.getElementById('char-list').innerHTML=charCmds.map((c,i)=>
+  
+  document.getElementById('char-list').innerHTML = charCmds.map((c,i)=>
     `<div class="list-row">
       <input class="short" placeholder="/명령어" value="${esc(c.cmd)}" oninput="charCmds[${i}].cmd=this.value;render()">
-      <input class="long"  placeholder="설명"    value="${esc(c.desc)}" oninput="charCmds[${i}].desc=this.value;render()">
+      <input class="long" placeholder="설명" value="${esc(c.desc)}" oninput="charCmds[${i}].desc=this.value;render()">
       <button class="del-btn" onclick="charCmds.splice(${i},1);renderLists();render()">×</button>
     </div>`).join('');
-  document.getElementById('model-list').innerHTML=aiModels.map((m,i)=>
+
+  document.getElementById('model-list').innerHTML = aiModels.map((m,i)=>
     `<div class="list-row">
-      <input class="short" placeholder="모델명"    value="${esc(m.name)}"   oninput="aiModels[${i}].name=this.value;render()">
-      <input class="long"  placeholder="추천 이유" value="${esc(m.reason)}" oninput="aiModels[${i}].reason=this.value;render()">
+      <input class="short" placeholder="모델명" value="${esc(m.name)}" oninput="aiModels[${i}].name=this.value;render()">
+      <input class="long" placeholder="추천 이유" value="${esc(m.reason)}" oninput="aiModels[${i}].reason=this.value;render()">
       <button class="del-btn" onclick="aiModels.splice(${i},1);renderLists();render()">×</button>
     </div>`).join('');
 }
-function addCommon(){commonCmds.push({cmd:'',desc:''});renderLists();render();}
-function addChar()  {charCmds.push({cmd:'',desc:''});renderLists();render();}
-function addModel() {aiModels.push({name:'',reason:''});renderLists();render();}
 
-/* ── 유틸 ── */
-function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function addCommon() { commonCmds.push({cmd:'',desc:''}); renderLists(); render(); }
+function addChar() { charCmds.push({cmd:'',desc:''}); renderLists(); render(); }
+function addModel() { aiModels.push({name:'',reason:''}); renderLists(); render(); }
 
-/* ★ 핵심 수정 1: DOM → 깨끗한 HTML 변환 ★
-   - 빈 노드(텍스트 없는 span/b/i) 완전 제거
-   - div 블록을 <br>로 변환하되 맨 끝 <br> 제거
-   - 중첩 서식 찌꺼기 정리 */
-function domToCleanHTML(node){
-  let out='';
-  node.childNodes.forEach(child=>{
-    if(child.nodeType===3){
-      // 텍스트 노드: 그대로 이스케이프
-      out+=esc(child.textContent);
-    } else if(child.nodeType===1){
-      const tag=child.tagName.toLowerCase();
-      // div/p → <br> 처리 (블록 요소를 줄바꿈으로)
-      if(tag==='div'||tag==='p'){
-        const inner=domToCleanHTML(child);
-        if(inner) out+=inner+'<br>';
+function esc(s) { 
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); 
+}
+
+// ★ 핵심 수정: DOM 직접 순회로 찌꺼기 완전 제거
+function domToCleanHTML(node) {
+  let out = '';
+  node.childNodes.forEach(child => {
+    if(child.nodeType === 3) {
+      out += esc(child.textContent);
+    } else if(child.nodeType === 1) {
+      const tag = child.tagName.toLowerCase();
+      
+      // div/p → <br> 변환 (엔터키 버그 수정)
+      if(tag === 'div' || tag === 'p') {
+        const inner = domToCleanHTML(child);
+        if(inner.trim()) out += inner + '<br>';
         return;
       }
-      if(tag==='br'){out+='<br>';return;}
-      // 재귀적으로 내부 먼저 처리
-      const inner=domToCleanHTML(child);
+      
+      if(tag === 'br') { out += '<br>'; return; }
+      
+      const inner = domToCleanHTML(child);
+      
       // ★ 빈 내용이면 태그 자체를 버림 (찌꺼기 제거)
-      if(!inner) return;
-      if(tag==='b'||tag==='strong'){out+=`<b>${inner}</b>`;return;}
-      if(tag==='i'||tag==='em'){out+=`<i>${inner}</i>`;return;}
-      if(tag==='span'){
-        const fw=child.style.fontWeight;
-        const col=child.style.color;
-        let s='';
-        if(fw&&fw!=='400'&&fw!=='normal') s+=`font-weight:${fw};`;
-        if(col) s+=`color:${col};`;
-        // ★ 스타일 없는 span은 태그 없이 내용만 출력
-        if(s) out+=`<span style="${s}">${inner}</span>`;
-        else  out+=inner;
-        return;
+      if(!inner.trim()) return;
+      
+      if(tag === 'b' || tag === 'strong') {
+        out += `<b>${inner}</b>`;
+      } else if(tag === 'i' || tag === 'em') {
+        out += `<i>${inner}</i>`;
+      } else if(tag === 'span') {
+        const fw = child.style.fontWeight;
+        const col = child.style.color;
+        let s = '';
+        if(fw && fw !== '400' && fw !== 'normal') s += `font-weight:${fw};`;
+        if(col) s += `color:${col};`;
+        
+        // 스타일 없는 span은 태그 없이 내용만
+        if(s) out += `<span style="${s}">${inner}</span>`;
+        else out += inner;
+      } else {
+        out += inner; // 허용되지 않은 태그는 내용만 추출
       }
-      // 그 외 태그는 내용만 추출
-      out+=inner;
     }
   });
   return out;
 }
 
-/* rich-edit → 최종 HTML 문자열 */
-function r(id){
-  const el=document.getElementById(id);
+function r(id) {
+  const el = document.getElementById(id);
   if(!el) return '';
-  // ★ 핵심 수정 2: innerHTML 문자열 파싱 대신 DOM 직접 순회
-  let html=domToCleanHTML(el);
-  // 맨 끝 <br> 제거 (하단 띄어쓰기 버그 수정)
-  html=html.replace(/(<br\s*\/?>)+$/gi,'');
+  
+  let html = domToCleanHTML(el);
+  
+  // ★ 맨 끝 <br> 제거 (하단 띄어쓰기 버그 수정)
+  html = html.replace(/(<br\s*\/?>)+$/gi, '');
+  
   return html;
 }
 
-/* ── 서식 툴바 ── */
-let savedRange=null;
-document.querySelectorAll('.rich-edit').forEach(el=>{
-  el.addEventListener('input',render);
-  el.addEventListener('paste',e=>{
+let savedRange = null;
+
+// ★ 엔터키 → <br> 강제 변환 (div 생성 방지)
+document.querySelectorAll('.rich-edit').forEach(el => {
+  el.addEventListener('input', render);
+  el.addEventListener('paste', e => {
     e.preventDefault();
-    document.execCommand('insertText',false,e.clipboardData.getData('text/plain'));
+    document.execCommand('insertText', false, e.clipboardData.getData('text/plain'));
   });
-  /* ★ 핵심 수정 3: 엔터키 → <br> 강제 삽입 (div 생성 방지) */
-  el.addEventListener('keydown',e=>{
-    if(e.key==='Enter'){
+  el.addEventListener('keydown', e => {
+    if(e.key === 'Enter') {
       e.preventDefault();
-      document.execCommand('insertHTML',false,'<br>');
+      document.execCommand('insertHTML', false, '<br>');
     }
   });
 });
 
-document.querySelector('.fmt-bar').addEventListener('mousedown',e=>{
-  const sel=window.getSelection();
-  if(sel&&sel.rangeCount>0) savedRange=sel.getRangeAt(0).cloneRange();
+document.querySelector('.fmt-bar').addEventListener('mousedown', e => {
+  const sel = window.getSelection();
+  if(sel && sel.rangeCount > 0) savedRange = sel.getRangeAt(0).cloneRange();
   e.preventDefault();
 });
 
-function restoreSel(){
+function restoreSel() {
   if(!savedRange) return false;
-  const sel=window.getSelection();
+  const sel = window.getSelection();
   sel.removeAllRanges();
   sel.addRange(savedRange);
   return !sel.isCollapsed;
 }
 
-function hasAncestor(node,checkFn){
-  let cur=node.parentNode;
-  while(cur){if(cur.nodeType===1&&checkFn(cur))return true;cur=cur.parentNode;}
+function hasAncestor(node, checkFn) {
+  let cur = node.parentNode;
+  while(cur) {
+    if(cur.nodeType === 1 && checkFn(cur)) return true;
+    cur = cur.parentNode;
+  }
   return false;
 }
-function isAllWrapped(range,checkFn){
-  const frag=range.cloneContents();
-  const texts=[];
-  function collect(node){
-    if(node.nodeType===3&&node.textContent.length>0) texts.push({node,inside:checkFn(node)});
+
+function isAllWrapped(range, checkFn) {
+  const frag = range.cloneContents();
+  const texts = [];
+  function collect(node) {
+    if(node.nodeType === 3 && node.textContent.length > 0) texts.push({node, inside: checkFn(node)});
     node.childNodes.forEach(collect);
   }
   collect(frag);
-  return texts.length>0&&texts.every(t=>t.inside);
+  return texts.length > 0 && texts.every(t => t.inside);
 }
 
-function applyWrap(tagName,styleProp,styleVal){
+function applyWrap(tagName, styleProp, styleVal) {
   if(!restoreSel()) return;
-  const sel=window.getSelection();
-  const range=sel.getRangeAt(0);
-  let anc=range.commonAncestorContainer;
-  if(anc.nodeType===3) anc=anc.parentNode;
+  const sel = window.getSelection();
+  const range = sel.getRangeAt(0);
+  let anc = range.commonAncestorContainer;
+  if(anc.nodeType === 3) anc = anc.parentNode;
   if(!anc.closest('.rich-edit')) return;
 
-  const alreadyApplied=isAllWrapped(range,node=>hasAncestor(node,el=>{
-    if(tagName==='b') return el.tagName==='B'||el.tagName==='STRONG';
-    if(tagName==='i') return el.tagName==='I'||el.tagName==='EM';
-    if(tagName==='span'&&styleProp==='fontWeight') return el.tagName==='SPAN'&&el.style.fontWeight===styleVal;
-    if(tagName==='span'&&styleProp==='color') return el.tagName==='SPAN'&&el.style.color===styleVal;
+  const alreadyApplied = isAllWrapped(range, node => hasAncestor(node, el => {
+    if(tagName === 'b') return el.tagName === 'B' || el.tagName === 'STRONG';
+    if(tagName === 'i') return el.tagName === 'I' || el.tagName === 'EM';
+    if(tagName === 'span' && styleProp === 'fontWeight') return el.tagName === 'SPAN' && el.style.fontWeight === styleVal;
+    if(tagName === 'span' && styleProp === 'color') return el.tagName === 'SPAN' && el.style.color === styleVal;
     return false;
   }));
 
-  const frag=range.extractContents();
+  const frag = range.extractContents();
 
-  if(alreadyApplied){
-    function unwrap(node){
-      const result=document.createDocumentFragment();
-      node.childNodes.forEach(child=>{
-        if(child.nodeType===3){result.appendChild(child.cloneNode());return;}
-        if(child.nodeType===1){
-          const t=child.tagName;
-          let remove=false;
-          if(tagName==='b'&&(t==='B'||t==='STRONG')) remove=true;
-          if(tagName==='i'&&(t==='I'||t==='EM'))     remove=true;
-          if(tagName==='span'&&t==='SPAN'){
-            if(styleProp==='fontWeight'&&child.style.fontWeight===styleVal) remove=true;
-            if(styleProp==='color'&&child.style.color===styleVal)           remove=true;
+  if(alreadyApplied) {
+    function unwrap(node) {
+      const result = document.createDocumentFragment();
+      node.childNodes.forEach(child => {
+        if(child.nodeType === 3) {
+          result.appendChild(child.cloneNode());
+        } else if(child.nodeType === 1) {
+          const t = child.tagName;
+          let shouldRemove = false;
+          if(tagName === 'b' && (t === 'B' || t === 'STRONG')) shouldRemove = true;
+          if(tagName === 'i' && (t === 'I' || t === 'EM')) shouldRemove = true;
+          if(tagName === 'span' && t === 'SPAN') {
+            if(styleProp === 'fontWeight' && child.style.fontWeight === styleVal) shouldRemove = true;
+            if(styleProp === 'color' && child.style.color === styleVal) shouldRemove = true;
           }
-          if(remove){result.appendChild(unwrap(child));}
-          else{const cl=child.cloneNode(false);cl.appendChild(unwrap(child));result.appendChild(cl);}
+          if(shouldRemove) {
+            result.appendChild(unwrap(child));
+          } else {
+            const clone = child.cloneNode(false);
+            clone.appendChild(unwrap(child));
+            result.appendChild(clone);
+          }
         }
       });
       return result;
     }
     range.insertNode(unwrap(frag));
   } else {
-    const wrap=document.createElement(tagName);
-    if(styleProp) wrap.style[styleProp]=styleVal;
+    const wrap = document.createElement(tagName);
+    if(styleProp) wrap.style[styleProp] = styleVal;
     wrap.appendChild(frag);
     range.insertNode(wrap);
   }
   render();
 }
 
-function fmtBold()    {applyWrap('b');}
-function fmtThin()    {applyWrap('span','fontWeight','300');}
-function fmtItalic()  {applyWrap('i');}
-function fmtColor(c)  {applyWrap('span','color',c);}
+function fmtBold() { applyWrap('b') }
+function fmtThin() { applyWrap('span', 'fontWeight', '300') }
+function fmtItalic() { applyWrap('i') }
+function fmtColor(c) { applyWrap('span', 'color', c) }
 
-document.getElementById('c-color-picker').addEventListener('mousedown',()=>{
-  const sel=window.getSelection();
-  if(sel&&sel.rangeCount>0) savedRange=sel.getRangeAt(0).cloneRange();
+document.getElementById('c-color-picker').addEventListener('mousedown', () => {
+  const sel = window.getSelection();
+  if(sel && sel.rangeCount > 0) savedRange = sel.getRangeAt(0).cloneRange();
 });
-document.getElementById('c-color-picker').addEventListener('input',function(){fmtColor(this.value);});
+document.getElementById('c-color-picker').addEventListener('input', function() { fmtColor(this.value) });
 
-/* ── 렌더링 ── */
-function render(){
-  const th=THEMES[currentTheme];
-  const name=esc(document.getElementById('c-name').value)||'캐릭터명';
-  const intro      =r('c-intro')    ||'캐릭터 소개를 입력하세요';
-  const modelNote  =r('model-note');
-  const message    =r('c-message')  ||'한마디를 입력하세요';
-  const userForm   =r('user-form')  ||'유저 설정 양식을 입력하세요';
+// ★ 680px 반응형 + Cave Duck 호환 렌더링
+function render() {
+  const th = THEMES[currentTheme];
+  const name = esc(document.getElementById('c-name').value) || '캐릭터명';
+  const intro = r('c-intro') || '캐릭터 소개를 입력하세요';
+  const modelNote = r('model-note');
+  const message = r('c-message') || '한마디를 입력하세요';
+  const userForm = r('user-form') || '유저 설정 양식을 입력하세요';
 
-  const commonHTML=commonCmds.filter(c=>c.cmd||c.desc).map(c=>
+  const commonHTML = commonCmds.filter(c=>c.cmd||c.desc).map(c=>
     `<div style="display:flex;align-items:baseline;gap:8px;font-size:13px;flex-wrap:wrap;">
       <span style="background:${th.commonItemBg};border-radius:4px;color:${th.commonBadgeText};padding:2px 8px;white-space:nowrap;flex-shrink:0;font-weight:700;">${esc(c.cmd)||'/명령어'}</span>
       <span style="color:${th.subText};">: ${esc(c.desc)||'설명'}</span>
     </div>`).join('');
 
-  const charHTML=charCmds.filter(c=>c.cmd||c.desc).map(c=>
+  const charHTML = charCmds.filter(c=>c.cmd||c.desc).map(c=>
     `<div style="display:flex;align-items:baseline;gap:8px;font-size:13px;flex-wrap:wrap;">
       <span style="background:${th.itemBg};border-radius:4px;color:${th.badgeText};padding:2px 8px;white-space:nowrap;flex-shrink:0;font-weight:700;">${esc(c.cmd)||'/명령어'}</span>
       <span style="color:${th.subText};">: ${esc(c.desc)||'설명'}</span>
     </div>`).join('');
 
-  const modelHTML=aiModels.filter(m=>m.name||m.reason).map(m=>
+  const modelHTML = aiModels.filter(m=>m.name||m.reason).map(m=>
     `<div style="display:flex;align-items:center;gap:10px;background:${th.bg};border-radius:10px;padding:10px 14px;border:1px solid ${th.border};flex-wrap:wrap;">
       <span style="font-size:13px;font-weight:700;color:${th.text};white-space:nowrap;flex-shrink:0;">${esc(m.name)||'모델명'}</span>
       <span style="font-size:13px;color:${th.subText};word-break:keep-all;">${esc(m.reason)||'추천 이유'}</span>
     </div>`).join('');
 
-  const html=`<div style="background:${th.bg};color:${th.text};font-family:'IBM Plex Sans KR',sans-serif;font-size:14px;line-height:1.75;max-width:680px;width:100%;margin:0 auto;padding:0 24px 40px;box-sizing:border-box;">
+  const html = `<div style="background:${th.bg};color:${th.text};font-family:'IBM Plex Sans KR',sans-serif;font-size:14px;line-height:1.75;max-width:680px;width:100%;margin:0 auto;padding:0 24px 40px;box-sizing:border-box;">
 
 <div style="text-align:center;padding:36px 0 24px;">
   <div style="display:inline-block;background:${th.badgeBg};border-radius:99px;padding:4px 16px;font-size:12px;color:${th.badgeText};letter-spacing:2px;margin-bottom:12px;">✦ Creator Comment ✦</div>
-  <div style="font-size:clamp(22px,5vw,28px);font-weight:700;color:${th.text};letter-spacing:-0.5px;line-height:1.3;">${name}의<br>크리에이터 코멘트 🌼</div>
+  <div style="font-size:clamp(24px,5.5vw,30px);font-weight:700;color:${th.text};letter-spacing:-0.5px;line-height:1.3;">${name}의<br>크리에이터 코멘트 🌼</div>
 </div>
 
 <div style="margin-bottom:16px;background:${th.boxBg};border-radius:16px;border:1.5px solid ${th.border};padding:18px 20px;box-sizing:border-box;">
-  <div style="margin-bottom:12px;"><span style="background:${th.badgeBg};border-radius:99px;font-size:11px;color:${th.badgeText};padding:3px 12px;font-weight:700;letter-spacing:1px;">🪪 캐릭터 소개</span></div>
+  <div style="margin-bottom:12px;">
+    <span style="background:${th.badgeBg};border-radius:99px;font-size:11px;color:${th.badgeText};padding:3px 12px;font-weight:700;letter-spacing:1px;">🪪 캐릭터 소개</span>
+  </div>
   <div style="font-size:13.5px;color:${th.subText};line-height:1.85;word-break:keep-all;">${intro}</div>
 </div>
 
-${(commonHTML||charHTML)?`<div style="margin-bottom:16px;">
+${(commonHTML || charHTML) ? `<div style="margin-bottom:16px;">
   <div style="font-size:11px;color:${th.badgeText};font-weight:700;letter-spacing:1px;margin-bottom:8px;padding-left:2px;">📖 로어북 명령어</div>
-  ${commonHTML?`<div style="background:${th.boxBg};border-radius:16px;border:1.5px solid ${th.commonBorder};padding:16px 18px;margin-bottom:10px;box-sizing:border-box;">
-    <div style="margin-bottom:10px;"><span style="background:${th.commonBadgeBg};border-radius:99px;font-size:11px;color:${th.commonBadgeText};padding:3px 12px;font-weight:700;letter-spacing:1px;">🌐 NSSA 공통</span></div>
-    <div style="display:flex;flex-direction:column;gap:6px;">${commonHTML}</div>
-  </div>`:''}
-  ${charHTML?`<div style="background:${th.boxBg};border-radius:16px;border:1.5px solid ${th.border};padding:16px 18px;box-sizing:border-box;">
-    <div style="margin-bottom:10px;"><span style="background:${th.badgeBg};border-radius:99px;font-size:11px;color:${th.badgeText};padding:3px 12px;font-weight:700;letter-spacing:1px;">🌼 캐릭터 전용</span></div>
-    <div style="display:flex;flex-direction:column;gap:6px;">${charHTML}</div>
-  </div>`:''}
-</div>`:''}
+  ${commonHTML ? `<div style="background:${th.boxBg};border-radius:16px;border:1.5px solid ${th.commonBorder};padding:16px 18px;margin-bottom:10px;box-sizing:border-box;">
+    <div style="margin-bottom:10px;">
+      <span style="background:${th.commonBadgeBg};border-radius:99px;font-size:11px;color:${th.commonBadgeText};padding:3px 12px;font-weight:700;letter-spacing:1px;">🌐 NSSA 공통</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:7px;">${commonHTML}</div>
+  </div>` : ''}
+  ${charHTML ? `<div style="background:${th.boxBg};border-radius:16px;border:1.5px solid ${th.border};padding:16px 18px;box-sizing:border-box;">
+    <div style="margin-bottom:10px;">
+      <span style="background:${th.badgeBg};border-radius:99px;font-size:11px;color:${th.badgeText};padding:3px 12px;font-weight:700;letter-spacing:1px;">🌼 캐릭터 전용</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:7px;">${charHTML}</div>
+  </div>` : ''}
+</div>` : ''}
 
-${modelHTML?`<div style="background:${th.boxBg};border-radius:16px;border:1.5px solid ${th.border};padding:18px 20px;margin-bottom:16px;box-sizing:border-box;">
-  <div style="margin-bottom:12px;"><span style="background:${th.badgeBg};border-radius:99px;font-size:11px;color:${th.badgeText};padding:3px 12px;font-weight:700;letter-spacing:1px;">🤖 AI 모델 추천</span></div>
+${modelHTML ? `<div style="background:${th.boxBg};border-radius:16px;border:1.5px solid ${th.border};padding:18px 20px;margin-bottom:16px;box-sizing:border-box;">
+  <div style="margin-bottom:12px;">
+    <span style="background:${th.badgeBg};border-radius:99px;font-size:11px;color:${th.badgeText};padding:3px 12px;font-weight:700;letter-spacing:1px;">🤖 AI 모델 추천</span>
+  </div>
   <div style="display:flex;flex-direction:column;gap:8px;">${modelHTML}</div>
-  ${modelNote?`<div style="font-size:12px;color:${th.subText};margin-top:12px;line-height:1.7;word-break:keep-all;opacity:0.8;">${modelNote}</div>`:''}
-</div>`:''}
+  ${modelNote ? `<div style="font-size:12px;color:${th.subText};margin-top:12px;line-height:1.7;word-break:keep-all;opacity:0.8;">${modelNote}</div>` : ''}
+</div>` : ''}
 
 <div style="margin-bottom:16px;background:${th.boxBg};border-radius:16px;border:1.5px solid ${th.border};padding:18px 20px;box-sizing:border-box;">
-  <div style="margin-bottom:12px;"><span style="background:${th.badgeBg};border-radius:99px;font-size:11px;color:${th.badgeText};padding:3px 12px;font-weight:700;letter-spacing:1px;">💌 한마디</span></div>
+  <div style="margin-bottom:12px;">
+    <span style="background:${th.badgeBg};border-radius:99px;font-size:11px;color:${th.badgeText};padding:3px 12px;font-weight:700;letter-spacing:1px;">💌 한마디</span>
+  </div>
   <div style="font-size:13.5px;color:${th.subText};line-height:1.85;word-break:keep-all;">${message}</div>
 </div>
 
 <div style="margin-bottom:16px;background:${th.boxBg};border-radius:16px;border:1.5px solid ${th.border};padding:18px 20px;box-sizing:border-box;">
-  <div style="margin-bottom:12px;"><span style="background:${th.badgeBg};border-radius:99px;font-size:11px;color:${th.badgeText};padding:3px 12px;font-weight:700;letter-spacing:1px;">🪄 유저 설정 양식</span></div>
+  <div style="margin-bottom:12px;">
+    <span style="background:${th.badgeBg};border-radius:99px;font-size:11px;color:${th.badgeText};padding:3px 12px;font-weight:700;letter-spacing:1px;">🪄 유저 설정 양식</span>
+  </div>
   <div style="background:${th.bg};border:1.5px dashed ${th.badgeText};border-radius:12px;padding:16px 18px;font-size:13.5px;color:${th.subText};line-height:2.2;word-break:keep-all;box-sizing:border-box;">${userForm}</div>
 </div>
 
-${currentFooter?`<div style="text-align:center;padding-top:16px;"><span style="font-size:13px;color:${th.badgeText};letter-spacing:2px;">${esc(currentFooter)}</span></div>`:''}
+${currentFooter ? `<div style="text-align:center;padding-top:18px;">
+  <span style="font-size:13px;color:${th.badgeText};letter-spacing:2px;">${esc(currentFooter)}</span>
+</div>` : ''}
 
 </div>`;
 
-  document.getElementById('preview').innerHTML=html;
+  document.getElementById('preview').innerHTML = html;
 }
 
-/* ── 복사 ── */
-function copyHTML(){
-  const html=document.getElementById('preview').innerHTML;
-  navigator.clipboard.writeText(html).then(()=>{
-    const btn=document.getElementById('copy-btn');
-    btn.textContent='복사 완료!';
+function copyHTML() {
+  const html = document.getElementById('preview').innerHTML;
+  navigator.clipboard.writeText(html).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = '복사 완료!';
     btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='HTML 복사하기';btn.classList.remove('copied');},2000);
+    setTimeout(() => {
+      btn.textContent = 'HTML 복사하기';
+      btn.classList.remove('copied');
+    }, 2000);
   });
 }
 
-/* ── 초기화 ── */
 renderLists();
 render();
 </script>
