@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NSSA · About Creator 편집기</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Share+Tech+Mono&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',sans-serif;background:#f0f0f0;color:#222;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.app-header{background:#111;padding:11px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.app-logo{font-family:'Bebas Neue',sans-serif;font-size:1.3em;letter-spacing:3px;color:#fff}
+.app-subtitle{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.38);margin-left:10px}
+.app-badge{font-family:'Share Tech Mono',monospace;font-size:9px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.4);padding:3px 8px;border-radius:4px}
+.main{display:flex;flex:1;overflow:hidden}
+.form-panel{width:330px;flex-shrink:0;background:#fff;border-right:1px solid #ddd;display:flex;flex-direction:column;overflow:hidden}
+.form-panel-header{padding:11px 16px;border-bottom:1px solid #eee;background:#fafafa;flex-shrink:0}
+.form-panel-header h2{font-size:13px;font-weight:700;color:#111}
+.form-panel-header p{font-size:11px;color:#999;margin-top:2px}
+.form-scroll-area{flex:1;overflow-y:auto}
+.form-body{padding:11px 14px;display:flex;flex-direction:column;gap:9px}
+.fmt-bar{display:flex;align-items:center;gap:5px;padding:7px 14px;background:#1a1a1a;border-bottom:1px solid #333;flex-shrink:0;flex-wrap:wrap;position:sticky;top:0;z-index:20}
+.fmt-bar-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.28);margin-right:2px;flex-shrink:0}
+.fmt-btn{width:26px;height:26px;border-radius:5px;border:1px solid rgba(255,255,255,.14);background:none;color:rgba(255,255,255,.6);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;font-family:'Noto Sans KR',sans-serif;flex-shrink:0}
+.fmt-btn:hover{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.28)}
+.fmt-divider{width:1px;height:18px;background:rgba(255,255,255,.11);margin:0 2px;flex-shrink:0}
+.fmt-swatch{width:17px;height:17px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .1s,border-color .1s;flex-shrink:0}
+.fmt-swatch:hover{transform:scale(1.22);border-color:rgba(255,255,255,.5)}
+.fmt-swatch.dark{border-color:rgba(255,255,255,.24)}
+input[type=color].fmt-custom{width:17px;height:17px;border-radius:50%;border:2px solid rgba(255,255,255,.2);cursor:pointer;padding:0;background:none;flex-shrink:0}
+.fmt-hint{font-family:'Share Tech Mono',monospace;font-size:8px;color:rgba(255,255,255,.18);width:100%;margin-top:1px}
+.section-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:#bbb;padding:5px 0 2px;border-bottom:1px solid #f0f0f0;margin-top:4px}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11px;font-weight:500;color:#666;letter-spacing:.3px}
+.field input,.field select{font-size:12px;padding:7px 10px;border:1px solid #e0e0e0;border-radius:6px;background:#fafafa;color:#222;width:100%;transition:border .15s;font-family:'Noto Sans KR',sans-serif}
+.field input:focus,.field select:focus{outline:none;border-color:#999;background:#fff}
+.rich-edit{font-size:12px;padding:7px 10px;border:1px solid #e0e0e0;border-radius:6px;background:#fafafa;color:#222;width:100%;transition:border .15s;font-family:'Noto Sans KR',sans-serif;min-height:52px;outline:none;line-height:1.7;word-break:break-word;overflow-wrap:break-word}
+.rich-edit:focus{border-color:#999;background:#fff}
+.rich-edit:empty::before{content:attr(data-placeholder);color:#bbb;pointer-events:none}
+.rich-edit.tall{min-height:80px}
+.avatar-upload-wrap{display:flex;align-items:center;gap:10px}
+.avatar-preview-circle{width:52px;height:52px;border-radius:50%;border:1px solid #ddd;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;flex-shrink:0}
+.avatar-preview-circle img{width:100%;height:100%;object-fit:cover}
+.avatar-btns{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}
+.avatar-url-input{font-size:11px;padding:5px 8px;border:1px solid #e0e0e0;border-radius:5px;background:#fafafa;color:#222;width:100%;font-family:'Noto Sans KR',sans-serif;outline:none}
+.avatar-url-input:focus{border-color:#999}
+.avatar-emoji-row{display:flex;gap:4px;flex-wrap:wrap}
+.emoji-btn{width:26px;height:26px;border-radius:5px;border:1px solid #e0e0e0;background:#fafafa;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .12s}
+.emoji-btn:hover{background:#efefef;border-color:#ccc}
+.emoji-btn.selected{border-color:#111;background:#f0f0f0;box-shadow:0 0 0 1px #111}
+.img-input-group{border:1px solid #e0e0e0;border-radius:6px;background:#fafafa;overflow:hidden}
+.img-preview-thumb{width:100%;aspect-ratio:3/1.4;background:#e5e5e5;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.img-preview-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.img-preview-thumb .no-img{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:#bbb}
+.img-url-input{width:100%;border:none;border-top:1px solid #e0e0e0;padding:6px 10px;font-size:11px;background:#fff;color:#222;font-family:'Noto Sans KR',sans-serif;outline:none}
+.img-url-input::placeholder{color:#ccc}
+.chip-selector{display:flex;flex-wrap:wrap;gap:4px;padding:2px 0}
+.chip-option{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.5px;padding:4px 9px;border:1px solid #ddd;border-radius:4px;cursor:pointer;color:#888;background:#fafafa;transition:all .15s;user-select:none}
+.chip-option:hover{border-color:#999;color:#444}
+.chip-option.selected{background:#111;color:#fff;border-color:#111}
+.copy-btn{margin:10px 14px 14px;padding:10px;background:#111;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;letter-spacing:1px;cursor:pointer;font-family:'Share Tech Mono',monospace;transition:background .2s;flex-shrink:0}
+.copy-btn:hover{background:#333}
+.copy-btn.copied{background:#1a6b3a}
+.preview-panel{flex:1;overflow-y:auto;padding:24px;background:#e8e8e8;display:flex;justify-content:center}
+.preview-inner{width:100%;max-width:460px}
+.preview-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:#999;text-align:center;margin-bottom:12px}
+@media(max-width:700px){
+  .main{flex-direction:column}
+  .form-panel{width:100%;height:52vh;border-right:none;border-bottom:1px solid #ddd}
+  .preview-panel{padding:14px}
+}
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div style="display:flex;align-items:center">
+    <div class="app-logo">NSSA</div>
+    <div class="app-subtitle">ABOUT CREATOR EDITOR</div>
+  </div>
+  <div class="app-badge">인라인 스타일 · 케이브덕 호환</div>
+</div>
+
+<div class="main">
+
+  <div class="form-panel">
+    <div class="form-panel-header">
+      <h2>About Creator 편집기</h2>
+      <p>입력하면 오른쪽 미리보기가 실시간으로 바뀌어요</p>
+    </div>
+
+    <div class="form-scroll-area">
+      <div class="fmt-bar">
+        <span class="fmt-bar-label">FORMAT</span>
+        <button class="fmt-btn" onmousedown="event.preventDefault()" onclick="fmtBold()" title="굵게"><b>B</b></button>
+        <button class="fmt-btn" onmousedown="event.preventDefault()" onclick="fmtThin()" title="얇게"><span style="font-weight:300;font-size:12px">T</span></button>
+        <button class="fmt-btn" onmousedown="event.preventDefault()" onclick="fmtItalic()" title="기울기"><span style="font-style:italic;font-weight:400">I</span></button>
+        <div class="fmt-divider"></div>
+        <span class="fmt-swatch dark" style="background:#111" onmousedown="event.preventDefault()" onclick="fmtColor('#111111')"></span>
+        <span class="fmt-swatch" style="background:#fff;border:1px solid #ccc" onmousedown="event.preventDefault()" onclick="fmtColor('#ffffff')"></span>
+        <span class="fmt-swatch" style="background:#ff6b6b" onmousedown="event.preventDefault()" onclick="fmtColor('#ff6b6b')"></span>
+        <span class="fmt-swatch" style="background:#ffa94d" onmousedown="event.preventDefault()" onclick="fmtColor('#ffa94d')"></span>
+        <span class="fmt-swatch" style="background:#ffe066" onmousedown="event.preventDefault()" onclick="fmtColor('#ffe066')"></span>
+        <span class="fmt-swatch" style="background:#69db7c" onmousedown="event.preventDefault()" onclick="fmtColor('#69db7c')"></span>
+        <span class="fmt-swatch" style="background:#74c0fc" onmousedown="event.preventDefault()" onclick="fmtColor('#74c0fc')"></span>
+        <span class="fmt-swatch" style="background:#cc99ff" onmousedown="event.preventDefault()" onclick="fmtColor('#cc99ff')"></span>
+        <span class="fmt-swatch" style="background:#f783ac" onmousedown="event.preventDefault()" onclick="fmtColor('#f783ac')"></span>
+        <span class="fmt-swatch" style="background:#aaa" onmousedown="event.preventDefault()" onclick="fmtColor('#aaaaaa')"></span>
+        <div class="fmt-divider"></div>
+        <input type="color" class="fmt-custom" id="color-picker" value="#111111" title="직접 선택" onchange="fmtColor(this.value)">
+        <div class="fmt-hint">텍스트 드래그 후 버튼 클릭 · B/I는 토글</div>
+      </div>
+
+      <div class="form-body">
+
+        <div class="section-label">CREATOR PROFILE</div>
+
+        <div class="field">
+          <label>프사 (이모지 또는 이미지 URL)</label>
+          <div class="avatar-upload-wrap">
+            <div class="avatar-preview-circle" id="avatar-preview-circle">
+              <span id="avatar-emoji-display">🖤</span>
+            </div>
+            <div class="avatar-btns">
+              <input class="avatar-url-input" id="avatar-url" placeholder="이미지 URL (비워두면 이모지)" oninput="onAvatarUrl()">
+              <div class="avatar-emoji-row">
+                <button class="emoji-btn selected" onclick="pickEmoji(this,'🖤')">🖤</button>
+                <button class="emoji-btn" onclick="pickEmoji(this,'🤍')">🤍</button>
+                <button class="emoji-btn" onclick="pickEmoji(this,'🐺')">🐺</button>
+                <button class="emoji-btn" onclick="pickEmoji(this,'🐈‍⬛')">🐈‍⬛</button>
+                <button class="emoji-btn" onclick="pickEmoji(this,'⚡')">⚡</button>
+                <button class="emoji-btn" onclick="pickEmoji(this,'🌙')">🌙</button>
+                <button class="emoji-btn" onclick="pickEmoji(this,'🔫')">🔫</button>
+                <button class="emoji-btn" onclick="pickEmoji(this,'🗡️')">🗡️</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>크리에이터 닉네임</label>
+          <input id="creator-name" placeholder="닉네임" oninput="render()" value="">
+        </div>
+
+        <div class="field">
+          <label>하단 작은 글</label>
+          <input id="creator-sub" placeholder="케이브덕 · NSSA 세계관" oninput="render()" value="케이브덕 · NSSA 세계관">
+        </div>
+
+        <div class="field">
+          <label>크리에이터 한마디</label>
+          <div class="rich-edit tall" contenteditable="true" id="creator-comment" data-placeholder="안녕하세요 🖤"></div>
+        </div>
+
+        <div class="section-label">WORLDVIEW</div>
+
+        <div class="field">
+          <label>기관명 (제목)</label>
+          <input id="world-title" placeholder="특안청" oninput="render()" value="특안청">
+        </div>
+
+        <div class="field">
+          <label>부제 (영문 소자막)</label>
+          <input id="world-subtitle" placeholder="NSSA · NATIONAL SPECIAL SECURITY AGENCY · 2026" oninput="render()" value="NSSA · NATIONAL SPECIAL SECURITY AGENCY · 2026">
+        </div>
+
+        <div class="field">
+          <label>세계관 설명 텍스트</label>
+          <div class="rich-edit" contenteditable="true" id="world-desc" data-placeholder="신인류 출현 이후 25년..."></div>
+        </div>
+
+        <div class="field">
+          <label>설정집 링크 URL</label>
+          <input id="world-link" placeholder="https://..." oninput="render()" value="">
+        </div>
+
+        <div class="section-label">CHARACTER SPOILER</div>
+
+        <div class="field">
+          <label>이미지 칸 수</label>
+          <div class="chip-selector">
+            <div class="chip-option selected" onclick="selectChip('slot','1',this)">1칸 (전체)</div>
+            <div class="chip-option" onclick="selectChip('slot','2',this)">2칸 (반반)</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>도장 타입</label>
+          <div class="chip-selector">
+            <div class="chip-option selected" onclick="selectChip('stamp','circle',this)">원형 도장</div>
+            <div class="chip-option" onclick="selectChip('stamp','rect',this)">네모 도장</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>캐릭터 이름 — 1번 칸</label>
+          <input id="char-name-1" placeholder="캐릭터 이름" oninput="render()" value="CHAR · 01">
+        </div>
+        <div class="field">
+          <label>1번 칸 이미지 URL</label>
+          <div class="img-input-group">
+            <div class="img-preview-thumb" id="thumb-1">
+              <span class="no-img">NO IMAGE</span>
+            </div>
+            <input class="img-url-input" id="char-img-1" placeholder="이미지 URL (비워두면 배경 없이 도장만)" oninput="onCharImg(1)">
+          </div>
+        </div>
+
+        <div id="slot2-fields" style="display:none;flex-direction:column;gap:9px">
+          <div class="field">
+            <label>캐릭터 이름 — 2번 칸</label>
+            <input id="char-name-2" placeholder="캐릭터 이름" oninput="render()" value="CHAR · 02">
+          </div>
+          <div class="field">
+            <label>2번 칸 이미지 URL</label>
+            <div class="img-input-group">
+              <div class="img-preview-thumb" id="thumb-2">
+                <span class="no-img">NO IMAGE</span>
+              </div>
+              <input class="img-url-input" id="char-img-2" placeholder="이미지 URL (비워두면 배경 없이 도장만)" oninput="onCharImg(2)">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <button class="copy-btn" id="copy-btn" onclick="copyHTML()">HTML 복사하기</button>
+  </div>
+
+  <div class="preview-panel">
+    <div class="preview-inner">
+      <div class="preview-label">PREVIEW · 실시간 미리보기</div>
+      <div id="preview-root"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const state={avatarEmoji:'🖤',avatarUrl:'',slot:'1',stamp:'circle',charImg1:'',charImg2:''};
+
+/* ── 아바타 ── */
+function pickEmoji(el,emoji){
+  state.avatarEmoji=emoji;state.avatarUrl='';
+  document.getElementById('avatar-url').value='';
+  document.getElementById('avatar-emoji-display').textContent=emoji;
+  const c=document.getElementById('avatar-preview-circle');
+  const img=c.querySelector('img');if(img)img.remove();
+  document.getElementById('avatar-emoji-display').style.display='';
+  document.querySelectorAll('.emoji-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');render();
+}
+function onAvatarUrl(){
+  const url=document.getElementById('avatar-url').value.trim();
+  state.avatarUrl=url;
+  const c=document.getElementById('avatar-preview-circle');
+  let img=c.querySelector('img');
+  const sp=document.getElementById('avatar-emoji-display');
+  if(url){
+    if(!img){img=document.createElement('img');img.alt='av';img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%';c.appendChild(img);}
+    img.src=url;sp.style.display='none';
+    document.querySelectorAll('.emoji-btn').forEach(b=>b.classList.remove('selected'));
+  }else{if(img)img.remove();sp.style.display='';}
+  render();
+}
+
+/* ── 캐릭터 이미지 ── */
+function onCharImg(n){
+  const url=document.getElementById('char-img-'+n).value.trim();
+  state['charImg'+n]=url;
+  const thumb=document.getElementById('thumb-'+n);
+  let img=thumb.querySelector('img');
+  const noImg=thumb.querySelector('.no-img');
+  if(url){
+    if(!img){img=document.createElement('img');thumb.appendChild(img);}
+    img.src=url;
+    if(noImg)noImg.style.display='none';
+  }else{
+    if(img)img.remove();
+    if(noImg)noImg.style.display='';
+  }
+  render();
+}
+
+/* ── 칩 ── */
+function selectChip(key,val,el){
+  state[key]=val;
+  el.parentNode.querySelectorAll('.chip-option').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  if(key==='slot'){
+    document.getElementById('slot2-fields').style.display=val==='2'?'flex':'none';
+  }
+  render();
+}
+
+/* ── rich-edit 서식 ── */
+let savedRange=null;
+let savedRichEl=null;
+
+document.querySelectorAll('.rich-edit').forEach(el=>{
+  el.addEventListener('focus',()=>{savedRichEl=el;});
+  el.addEventListener('input',render);
+  el.addEventListener('paste',e=>{
+    e.preventDefault();
+    document.execCommand('insertText',false,e.clipboardData.getData('text/plain'));
+  });
+  el.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){e.preventDefault();document.execCommand('insertHTML',false,'<br>');}
+  });
+  el.addEventListener('mouseup',saveCurrentRange);
+  el.addEventListener('keyup',saveCurrentRange);
+});
+
+function saveCurrentRange(){
+  const sel=window.getSelection();
+  if(sel&&sel.rangeCount>0){
+    const range=sel.getRangeAt(0);
+    let container=range.commonAncestorContainer;
+    if(container.nodeType===3)container=container.parentNode;
+    const richParent=container.closest('.rich-edit');
+    if(richParent){savedRange=range.cloneRange();savedRichEl=richParent;}
+  }
+}
+
+const fmtBar=document.querySelector('.fmt-bar');
+function onFmtBarDown(e){saveCurrentRange();e.preventDefault();}
+fmtBar.addEventListener('mousedown',onFmtBarDown);
+fmtBar.addEventListener('touchstart',onFmtBarDown,{passive:false});
+
+function restoreSel(){
+  if(!savedRange||!savedRichEl)return false;
+  const sel=window.getSelection();sel.removeAllRanges();sel.addRange(savedRange);
+  return !sel.isCollapsed;
+}
+
+function cleanEmptyNodes(root){
+  root.querySelectorAll('b,i,em,strong,span').forEach(el=>{
+    if(el.textContent.trim()===''&&!el.querySelector('br')){
+      while(el.firstChild)el.parentNode.insertBefore(el.firstChild,el);
+      el.remove();
+    }
+  });
+}
+
+function stripColorSpans(frag){
+  frag.querySelectorAll('span').forEach(sp=>{
+    if(sp.style.color){
+      sp.style.removeProperty('color');
+      if(!sp.getAttribute('style')||sp.getAttribute('style').trim()===''){
+        while(sp.firstChild)sp.parentNode.insertBefore(sp.firstChild,sp);
+        sp.remove();
+      }
+    }
+  });
+  return frag;
+}
+
+function hasAnc(node,fn){let c=node.parentNode;while(c){if(c.nodeType===1&&fn(c))return true;c=c.parentNode;}return false;}
+function isAllWrapped(range,fn){
+  const frag=range.cloneContents();const texts=[];
+  function col(n){if(n.nodeType===3&&n.textContent.length>0)texts.push(fn(n));n.childNodes.forEach(col);}
+  col(frag);return texts.length>0&&texts.every(Boolean);
+}
+
+function applyWrap(tagName,styleProp,styleVal){
+  if(!restoreSel())return;
+  const sel=window.getSelection();const range=sel.getRangeAt(0);
+  let anc=range.commonAncestorContainer;if(anc.nodeType===3)anc=anc.parentNode;
+  const richRoot=anc.closest('.rich-edit');if(!richRoot)return;
+
+  const already=isAllWrapped(range,node=>hasAnc(node,el=>{
+    if(tagName==='b')return el.tagName==='B'||el.tagName==='STRONG';
+    if(tagName==='i')return el.tagName==='I'||el.tagName==='EM';
+    if(tagName==='span'&&styleProp==='fontWeight')return el.tagName==='SPAN'&&el.style.fontWeight===styleVal;
+    return false;
+  }));
+
+  const frag=range.extractContents();
+  if(already){
+    function unwrap(node){
+      const df=document.createDocumentFragment();
+      node.childNodes.forEach(child=>{
+        if(child.nodeType===3){df.appendChild(child.cloneNode());}
+        else if(child.nodeType===1){
+          const t=child.tagName;let rm=false;
+          if(tagName==='b'&&(t==='B'||t==='STRONG'))rm=true;
+          if(tagName==='i'&&(t==='I'||t==='EM'))rm=true;
+          if(tagName==='span'&&t==='SPAN'&&styleProp==='fontWeight'&&child.style.fontWeight===styleVal)rm=true;
+          if(rm){df.appendChild(unwrap(child));}
+          else{const cl=child.cloneNode(false);cl.appendChild(unwrap(child));df.appendChild(cl);}
+        }
+      });return df;
+    }
+    range.insertNode(unwrap(frag));
+  }else{
+    const w=document.createElement(tagName);
+    if(styleProp)w.style[styleProp]=styleVal;
+    w.appendChild(frag);range.insertNode(w);
+  }
+  cleanEmptyNodes(richRoot);render();
+}
+
+function fmtBold(){applyWrap('b',null,null);}
+function fmtThin(){applyWrap('span','fontWeight','300');}
+function fmtItalic(){applyWrap('i',null,null);}
+
+function fmtColor(hex){
+  if(!restoreSel())return;
+  const sel=window.getSelection();const range=sel.getRangeAt(0);
+  let anc=range.commonAncestorContainer;if(anc.nodeType===3)anc=anc.parentNode;
+  const richRoot=anc.closest('.rich-edit');if(!richRoot)return;
+  const frag=range.extractContents();
+  stripColorSpans(frag);
+  const sp=document.createElement('span');sp.style.color=hex;
+  sp.appendChild(frag);range.insertNode(sp);
+  cleanEmptyNodes(richRoot);render();
+}
+
+/* ── 이스케이프 ── */
+function esc(s){return s?s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
+function escAttr(s){return s?s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):''}
+
+/* ── DOM → 인라인 HTML ── */
+function domToHTML(node){
+  let out='';
+  node.childNodes.forEach(child=>{
+    if(child.nodeType===3){out+=esc(child.textContent);}
+    else if(child.nodeType===1){
+      const tag=child.tagName.toLowerCase();
+      if(tag==='div'||tag==='p'){const inner=domToHTML(child);if(inner.trim())out+=inner+'<br>';return;}
+      if(tag==='br'){out+='<br>';return;}
+      const inner=domToHTML(child);
+      if(!inner.trim()&&!inner.includes('<br'))return;
+      if(tag==='b'||tag==='strong')out+=`<b>${inner}</b>`;
+      else if(tag==='i'||tag==='em')out+=`<i>${inner}</i>`;
+      else if(tag==='span'){
+        const fw=child.style.fontWeight,col=child.style.color;let s='';
+        if(fw&&fw!=='400'&&fw!=='normal')s+=`font-weight:${fw};`;
+        if(col)s+=`color:${col};`;
+        const nb=inner.replace(/<br\s*\/?>/gi,'').trim();
+        if(!nb){out+=inner;return;}
+        out+=s?`<span style="${s}">${inner}</span>`:inner;
+      }else out+=inner;
+    }
+  });
+  return out;
+}
+function r(id){
+  const el=document.getElementById(id);if(!el)return '';
+  if(el.hasAttribute('contenteditable')){let h=domToHTML(el);h=h.replace(/(<br\s*\/?>)+$/gi,'');return h;}
+  return esc(el.value);
+}
+function gv(id){const el=document.getElementById(id);return el?el.value.trim():'';}
+
+/* ── 도장 HTML (케이브덕 허용 태그만) ── */
+function stampHTML(type){
+  const inner='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-align:center;">'
+    +'<span style="font-family:monospace;font-size:7px;letter-spacing:.22em;color:rgba(180,30,30,.72);text-transform:uppercase;">NSSA</span>'
+    +'<div style="width:62px;height:2px;background:rgba(180,30,30,.45);margin:2px 0;"></div>'
+    +'<span style="font-family:monospace;font-size:14px;font-weight:700;color:rgba(180,30,30,.8);letter-spacing:.08em;text-transform:uppercase;line-height:1.2;">COMING<br>SOON</span>'
+    +'<div style="width:62px;height:2px;background:rgba(180,30,30,.45);margin:2px 0;"></div>'
+    +'<span style="font-family:monospace;font-size:6.5px;letter-spacing:.2em;color:rgba(180,30,30,.55);text-transform:uppercase;">classified</span>'
+    +'</div>';
+  const overlay='position:absolute;inset:0;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);background:rgba(0,0,0,.05);display:flex;align-items:center;justify-content:center;';
+  if(type==='circle'){
+    return '<div style="'+overlay+'"><div style="display:flex;align-items:center;justify-content:center;width:116px;height:116px;border-radius:50%;border:4px solid rgba(180,30,30,.62);transform:rotate(-18deg);position:relative;flex-shrink:0;"><div style="position:absolute;inset:7px;border-radius:50%;border:1.5px solid rgba(180,30,30,.28);"></div>'+inner+'</div></div>';
+  }else{
+    return '<div style="'+overlay+'"><div style="display:flex;align-items:center;justify-content:center;padding:12px 18px;border:4px solid rgba(180,30,30,.62);transform:rotate(-10deg);position:relative;flex-shrink:0;"><div style="position:absolute;inset:6px;border:1.5px solid rgba(180,30,30,.28);"></div>'+inner+'</div></div>';
+  }
+}
+
+/* ── 셀 배경 (SVG 제거 → 텍스트 대체) ── */
+function cellBgHTML(imgUrl){
+  if(!imgUrl) return '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><span style="font-family:monospace;font-size:9px;letter-spacing:2px;color:#ccc;">NO IMAGE</span></div>';
+  return '<img src="'+escAttr(imgUrl)+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">';
+}
+
+/* ── 메인 렌더 ── */
+function render(){
+  const name    = gv('creator-name')||'크리에이터 닉네임';
+  const sub     = gv('creator-sub')||'케이브덕 · NSSA 세계관';
+  const comment = r('creator-comment')||'안녕하세요, 특안청 세계관을 운영하고 있어요.<br>천천히, 오래 함께해요 🖤';
+  const wTitle  = gv('world-title')||'특안청';
+  const wSub    = gv('world-subtitle')||'NSSA · NATIONAL SPECIAL SECURITY AGENCY · 2026';
+  const wDesc   = r('world-desc')||'신인류 출현 이후 25년.<br>감각의 최전선에서 안보를 지키는 기관의 이야기.';
+  const link    = gv('world-link')||'#';
+  const cn1     = gv('char-name-1')||'CHAR · 01';
+  const cn2     = gv('char-name-2')||'CHAR · 02';
+  const slot    = state.slot;
+  const stamp   = state.stamp;
+  const img1    = state.charImg1;
+  const img2    = state.charImg2;
+
+  const avatarHTML = state.avatarUrl
+    ?'<img src="'+escAttr(state.avatarUrl)+'" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">'
+    :'<span style="font-size:20px;">'+state.avatarEmoji+'</span>';
+
+  let safeLink='#';
+  if(link&&link!=='#'){
+    try{const u=new URL(link);if(u.protocol==='http:'||u.protocol==='https:')safeLink=escAttr(link);}catch(e){safeLink='#';}
+  }
+
+  const asp1 = slot==='1'?'aspect-ratio:16/6.5;':'aspect-ratio:2/2.8;';
+  const bdr1 = slot==='2'?'border-right:1px solid #eee;':'';
+  const captionStyle='position:absolute;bottom:0;left:0;right:0;padding:7px 10px;background:rgba(0,0,0,.32);font-family:monospace;font-size:12px;font-weight:700;color:rgba(255,255,255,.82);letter-spacing:.1em;text-align:center;';
+
+  const cell1='<div style="position:relative;background:#ececec;overflow:hidden;'+asp1+bdr1+'">'+cellBgHTML(img1)+stampHTML(stamp)+'<div style="'+captionStyle+'">'+esc(cn1)+'</div></div>';
+  const cell2=slot==='2'?'<div style="position:relative;background:#ececec;overflow:hidden;'+asp1+'">'+cellBgHTML(img2)+stampHTML(stamp)+'<div style="'+captionStyle+'">'+esc(cn2)+'</div></div>':'';
+  const gridCols=slot==='1'?'1fr':'1fr 1fr';
+
+  document.getElementById('preview-root').innerHTML=
+'<div style="display:flex;flex-direction:column;gap:10px;padding:16px;background:#f2f2f0;border-radius:12px;font-family:\'Noto Sans KR\',sans-serif;">'
+
+/* ── 크리에이터 카드 ── */
++'<div style="border-radius:10px;overflow:hidden;background:#fdf9d6;border:1px solid #e8d98a;">'
++'<div style="padding:.85rem 1.1rem;display:flex;align-items:center;gap:.8rem;background:#fdf9d6;">'
++'<div style="width:46px;height:46px;border-radius:50%;background:#f5eeaa;border:1px solid #e8d98a;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">'+avatarHTML+'</div>'
++'<div><div style="font-size:14px;font-weight:500;color:#5a4e1a;">'+esc(name)+'</div><div style="font-size:10px;color:#9a8830;font-family:monospace;letter-spacing:.04em;margin-top:2px;">'+esc(sub)+'</div></div>'
++'</div>'
++'<div style="background:#fff;padding:.8rem 1.1rem .95rem;border-top:1px solid #e8d98a;">'
++'<span style="font-family:Georgia,serif;font-size:22px;color:#c8b84a;line-height:1;display:block;margin-bottom:-2px;opacity:.55;">&ldquo;</span>'
++'<div style="font-size:12px;color:#555;line-height:1.9;font-weight:300;margin-top:.35rem;">'+comment+'</div>'
++'</div></div>'
+
+/* ── 세계관 카드 ── */
++'<div style="position:relative;border-radius:10px;overflow:hidden;border:1px solid #222;">'
++'<div style="position:absolute;inset:0;background:#111;"></div>'
++'<div style="position:absolute;inset:0;opacity:.07;background-image:linear-gradient(rgba(255,255,255,.9) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.9) 1px,transparent 1px);background-size:22px 22px;"></div>'
++'<div style="position:relative;z-index:1;padding:1.1rem 1.2rem;display:flex;flex-direction:column;gap:.38rem;">'
++'<div style="font-family:monospace;font-size:9px;letter-spacing:.25em;color:rgba(255,255,255,.3);text-transform:uppercase;display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:12px;height:.5px;background:rgba(255,255,255,.3);vertical-align:middle;"></span>worldview</div>'
++'<div style="font-size:20px;font-weight:700;color:#fff;">'+esc(wTitle)+'</div>'
++'<div style="font-family:monospace;font-size:9px;color:rgba(255,255,255,.3);letter-spacing:.1em;margin-top:-2px;">'+esc(wSub)+'</div>'
++'<div style="font-size:12px;color:#fff;line-height:1.75;font-weight:300;margin-top:.3rem;">'+wDesc+'</div>'
++'<a href="'+safeLink+'" target="_blank" style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:7px;padding:.5rem .85rem;margin-top:.3rem;text-decoration:none;"><span style="font-family:monospace;font-size:10px;color:rgba(255,255,255,.65);letter-spacing:.08em;">설정집 바로가기 →</span></a>'
++'<div style="font-family:monospace;font-size:7.5px;color:rgba(255,255,255,.2);letter-spacing:.15em;margin-top:.2rem;">● SEMI-PUBLIC · NSSA-2026</div>'
++'</div></div>'
+
+/* ── 캐릭터 스포일러 카드 ── */
++'<div style="border-radius:10px;overflow:hidden;border:1px solid #ddd;background:#fff;">'
++'<div style="padding:.75rem 1.1rem .65rem;border-bottom:1px solid #eee;">'
++'<div style="font-family:monospace;font-size:17px;font-weight:700;color:#111;letter-spacing:.06em;text-transform:uppercase;">New Characters</div>'
++'<div style="font-size:9.5px;color:#aaa;font-family:monospace;letter-spacing:.05em;margin-top:2px;">// classified</div>'
++'</div>'
++'<div style="display:grid;grid-template-columns:'+gridCols+';">'+cell1+cell2+'</div>'
++'<div style="padding:.55rem 1.1rem;border-top:1px solid #eee;"><div style="font-size:9.5px;color:#bbb;font-family:monospace;letter-spacing:.05em;text-align:center;">// 업데이트 예정</div></div>'
++'</div>'
+
++'</div>';
+}
+
+/* ── 복사 (케이브덕용: 안쪽 본문만) ── */
+function copyHTML(){
+  const inner=document.getElementById('preview-root').innerHTML;
+  navigator.clipboard.writeText(inner).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='HTML 복사하기';btn.classList.remove('copied');},2200);
+  });
+}
+
+render();
+</script>
+</body>
+</html>
