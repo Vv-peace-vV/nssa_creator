@@ -58,6 +58,9 @@ input[type=color].fmt-custom{width:17px;height:17px;border-radius:50%;border:2px
 .chip-option{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.5px;padding:4px 9px;border:1px solid #ddd;border-radius:4px;cursor:pointer;color:#888;background:#fafafa;transition:all .15s;user-select:none}
 .chip-option:hover{border-color:#999;color:#444}
 .chip-option.selected{background:#111;color:#fff;border-color:#111}
+.range-wrap{display:flex;align-items:center;gap:8px}
+.range-wrap input[type=range]{flex:1;accent-color:#111;height:4px}
+.range-val{font-family:'Share Tech Mono',monospace;font-size:10px;color:#999;min-width:32px;text-align:right}
 .copy-btn{margin:10px 14px 14px;padding:10px;background:#111;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;letter-spacing:1px;cursor:pointer;font-family:'Share Tech Mono',monospace;transition:background .2s;flex-shrink:0}
 .copy-btn:hover{background:#333}
 .copy-btn.copied{background:#1a6b3a}
@@ -174,51 +177,55 @@ input[type=color].fmt-custom{width:17px;height:17px;border-radius:50%;border:2px
           <input id="world-link" placeholder="https://..." oninput="render()" value="">
         </div>
 
-        <div class="section-label">CHARACTER SPOILER</div>
+        <div class="section-label">NEW CHARACTER</div>
 
         <div class="field">
-          <label>이미지 칸 수</label>
+          <label>캐릭터 이름</label>
+          <input id="char-name" placeholder="홍길동" oninput="render()" value="">
+        </div>
+
+        <div class="field">
+          <label>구분</label>
           <div class="chip-selector">
-            <div class="chip-option selected" onclick="selectChip('slot','1',this)">1칸 (전체)</div>
-            <div class="chip-option" onclick="selectChip('slot','2',this)">2칸 (반반)</div>
+            <div class="chip-option selected" onclick="selectChip('charType','sigma-combat',this)">시그마 · 전투형</div>
+            <div class="chip-option" onclick="selectChip('charType','sigma-support',this)">시그마 · 지원형</div>
+            <div class="chip-option" onclick="selectChip('charType','delta',this)">델타</div>
           </div>
         </div>
 
         <div class="field">
-          <label>도장 타입</label>
-          <div class="chip-selector">
-            <div class="chip-option selected" onclick="selectChip('stamp','circle',this)">원형 도장</div>
-            <div class="chip-option" onclick="selectChip('stamp','rect',this)">네모 도장</div>
-          </div>
+          <label>직급</label>
+          <input id="char-rank" placeholder="2급 특수요원" oninput="render()" value="">
         </div>
 
         <div class="field">
-          <label>캐릭터 이름 — 1번 칸</label>
-          <input id="char-name-1" placeholder="캐릭터 이름" oninput="render()" value="CHAR · 01">
+          <label>부서</label>
+          <input id="char-dept" placeholder="특수전략과" oninput="render()" value="">
         </div>
+
         <div class="field">
-          <label>1번 칸 이미지 URL</label>
+          <label>캐릭터 이미지 URL</label>
           <div class="img-input-group">
             <div class="img-preview-thumb" id="thumb-1">
               <span class="no-img">NO IMAGE</span>
             </div>
-            <input class="img-url-input" id="char-img-1" placeholder="이미지 URL (비워두면 배경 없이 도장만)" oninput="onCharImg(1)">
+            <input class="img-url-input" id="char-img" placeholder="이미지 URL (비워두면 다크 배경)" oninput="onCharImg()">
           </div>
         </div>
 
-        <div id="slot2-fields" style="display:none;flex-direction:column;gap:9px">
-          <div class="field">
-            <label>캐릭터 이름 — 2번 칸</label>
-            <input id="char-name-2" placeholder="캐릭터 이름" oninput="render()" value="CHAR · 02">
+        <div class="field">
+          <label>블러 강도</label>
+          <div class="range-wrap">
+            <input type="range" id="blur-range" min="0" max="30" value="12" oninput="onBlurChange()">
+            <span class="range-val" id="blur-val">12px</span>
           </div>
-          <div class="field">
-            <label>2번 칸 이미지 URL</label>
-            <div class="img-input-group">
-              <div class="img-preview-thumb" id="thumb-2">
-                <span class="no-img">NO IMAGE</span>
-              </div>
-              <input class="img-url-input" id="char-img-2" placeholder="이미지 URL (비워두면 배경 없이 도장만)" oninput="onCharImg(2)">
-            </div>
+        </div>
+
+        <div class="field">
+          <label>배경 어둡기</label>
+          <div class="range-wrap">
+            <input type="range" id="dim-range" min="30" max="90" value="65" oninput="onDimChange()">
+            <span class="range-val" id="dim-val">65%</span>
           </div>
         </div>
 
@@ -238,7 +245,10 @@ input[type=color].fmt-custom{width:17px;height:17px;border-radius:50%;border:2px
 </div>
 
 <script>
-const state={avatarEmoji:'🖤',avatarUrl:'',slot:'1',stamp:'circle',charImg1:'',charImg2:''};
+const state={
+  avatarEmoji:'🖤',avatarUrl:'',
+  charType:'sigma-combat',charImg:'',blurPx:12,dimPct:65
+};
 
 /* ── 아바타 ── */
 function pickEmoji(el,emoji){
@@ -266,20 +276,30 @@ function onAvatarUrl(){
 }
 
 /* ── 캐릭터 이미지 ── */
-function onCharImg(n){
-  const url=document.getElementById('char-img-'+n).value.trim();
-  state['charImg'+n]=url;
-  const thumb=document.getElementById('thumb-'+n);
+function onCharImg(){
+  const url=document.getElementById('char-img').value.trim();
+  state.charImg=url;
+  const thumb=document.getElementById('thumb-1');
   let img=thumb.querySelector('img');
   const noImg=thumb.querySelector('.no-img');
   if(url){
     if(!img){img=document.createElement('img');thumb.appendChild(img);}
-    img.src=url;
-    if(noImg)noImg.style.display='none';
+    img.src=url;if(noImg)noImg.style.display='none';
   }else{
-    if(img)img.remove();
-    if(noImg)noImg.style.display='';
+    if(img)img.remove();if(noImg)noImg.style.display='';
   }
+  render();
+}
+
+/* ── 슬라이더 ── */
+function onBlurChange(){
+  state.blurPx=document.getElementById('blur-range').value;
+  document.getElementById('blur-val').textContent=state.blurPx+'px';
+  render();
+}
+function onDimChange(){
+  state.dimPct=document.getElementById('dim-range').value;
+  document.getElementById('dim-val').textContent=state.dimPct+'%';
   render();
 }
 
@@ -288,94 +308,70 @@ function selectChip(key,val,el){
   state[key]=val;
   el.parentNode.querySelectorAll('.chip-option').forEach(c=>c.classList.remove('selected'));
   el.classList.add('selected');
-  if(key==='slot'){
-    document.getElementById('slot2-fields').style.display=val==='2'?'flex':'none';
-  }
   render();
 }
 
-/* ── rich-edit 서식 ── */
-let savedRange=null;
-let savedRichEl=null;
-
+/* ── rich-edit ── */
+let savedRange=null,savedRichEl=null;
 document.querySelectorAll('.rich-edit').forEach(el=>{
   el.addEventListener('focus',()=>{savedRichEl=el;});
   el.addEventListener('input',render);
-  el.addEventListener('paste',e=>{
-    e.preventDefault();
-    document.execCommand('insertText',false,e.clipboardData.getData('text/plain'));
-  });
-  el.addEventListener('keydown',e=>{
-    if(e.key==='Enter'){e.preventDefault();document.execCommand('insertHTML',false,'<br>');}
-  });
+  el.addEventListener('paste',e=>{e.preventDefault();document.execCommand('insertText',false,e.clipboardData.getData('text/plain'));});
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();document.execCommand('insertHTML',false,'<br>');}});
   el.addEventListener('mouseup',saveCurrentRange);
   el.addEventListener('keyup',saveCurrentRange);
 });
-
 function saveCurrentRange(){
   const sel=window.getSelection();
   if(sel&&sel.rangeCount>0){
-    const range=sel.getRangeAt(0);
-    let container=range.commonAncestorContainer;
+    const range=sel.getRangeAt(0);let container=range.commonAncestorContainer;
     if(container.nodeType===3)container=container.parentNode;
-    const richParent=container.closest('.rich-edit');
-    if(richParent){savedRange=range.cloneRange();savedRichEl=richParent;}
+    const rp=container.closest('.rich-edit');
+    if(rp){savedRange=range.cloneRange();savedRichEl=rp;}
   }
 }
-
 const fmtBar=document.querySelector('.fmt-bar');
 function onFmtBarDown(e){saveCurrentRange();e.preventDefault();}
 fmtBar.addEventListener('mousedown',onFmtBarDown);
 fmtBar.addEventListener('touchstart',onFmtBarDown,{passive:false});
-
 function restoreSel(){
   if(!savedRange||!savedRichEl)return false;
   const sel=window.getSelection();sel.removeAllRanges();sel.addRange(savedRange);
   return !sel.isCollapsed;
 }
-
 function cleanEmptyNodes(root){
   root.querySelectorAll('b,i,em,strong,span').forEach(el=>{
     if(el.textContent.trim()===''&&!el.querySelector('br')){
-      while(el.firstChild)el.parentNode.insertBefore(el.firstChild,el);
-      el.remove();
+      while(el.firstChild)el.parentNode.insertBefore(el.firstChild,el);el.remove();
     }
   });
 }
-
 function stripColorSpans(frag){
   frag.querySelectorAll('span').forEach(sp=>{
-    if(sp.style.color){
-      sp.style.removeProperty('color');
+    if(sp.style.color){sp.style.removeProperty('color');
       if(!sp.getAttribute('style')||sp.getAttribute('style').trim()===''){
-        while(sp.firstChild)sp.parentNode.insertBefore(sp.firstChild,sp);
-        sp.remove();
+        while(sp.firstChild)sp.parentNode.insertBefore(sp.firstChild,sp);sp.remove();
       }
     }
-  });
-  return frag;
+  });return frag;
 }
-
 function hasAnc(node,fn){let c=node.parentNode;while(c){if(c.nodeType===1&&fn(c))return true;c=c.parentNode;}return false;}
 function isAllWrapped(range,fn){
   const frag=range.cloneContents();const texts=[];
   function col(n){if(n.nodeType===3&&n.textContent.length>0)texts.push(fn(n));n.childNodes.forEach(col);}
   col(frag);return texts.length>0&&texts.every(Boolean);
 }
-
 function applyWrap(tagName,styleProp,styleVal){
   if(!restoreSel())return;
   const sel=window.getSelection();const range=sel.getRangeAt(0);
   let anc=range.commonAncestorContainer;if(anc.nodeType===3)anc=anc.parentNode;
   const richRoot=anc.closest('.rich-edit');if(!richRoot)return;
-
   const already=isAllWrapped(range,node=>hasAnc(node,el=>{
     if(tagName==='b')return el.tagName==='B'||el.tagName==='STRONG';
     if(tagName==='i')return el.tagName==='I'||el.tagName==='EM';
     if(tagName==='span'&&styleProp==='fontWeight')return el.tagName==='SPAN'&&el.style.fontWeight===styleVal;
     return false;
   }));
-
   const frag=range.extractContents();
   if(already){
     function unwrap(node){
@@ -394,24 +390,20 @@ function applyWrap(tagName,styleProp,styleVal){
     }
     range.insertNode(unwrap(frag));
   }else{
-    const w=document.createElement(tagName);
-    if(styleProp)w.style[styleProp]=styleVal;
+    const w=document.createElement(tagName);if(styleProp)w.style[styleProp]=styleVal;
     w.appendChild(frag);range.insertNode(w);
   }
   cleanEmptyNodes(richRoot);render();
 }
-
 function fmtBold(){applyWrap('b',null,null);}
 function fmtThin(){applyWrap('span','fontWeight','300');}
 function fmtItalic(){applyWrap('i',null,null);}
-
 function fmtColor(hex){
   if(!restoreSel())return;
   const sel=window.getSelection();const range=sel.getRangeAt(0);
   let anc=range.commonAncestorContainer;if(anc.nodeType===3)anc=anc.parentNode;
   const richRoot=anc.closest('.rich-edit');if(!richRoot)return;
-  const frag=range.extractContents();
-  stripColorSpans(frag);
+  const frag=range.extractContents();stripColorSpans(frag);
   const sp=document.createElement('span');sp.style.color=hex;
   sp.appendChild(frag);range.insertNode(sp);
   cleanEmptyNodes(richRoot);render();
@@ -432,19 +424,18 @@ function domToHTML(node){
       if(tag==='br'){out+='<br>';return;}
       const inner=domToHTML(child);
       if(!inner.trim()&&!inner.includes('<br'))return;
-      if(tag==='b'||tag==='strong')out+=`<b>${inner}</b>`;
-      else if(tag==='i'||tag==='em')out+=`<i>${inner}</i>`;
+      if(tag==='b'||tag==='strong')out+='<b>'+inner+'</b>';
+      else if(tag==='i'||tag==='em')out+='<i>'+inner+'</i>';
       else if(tag==='span'){
         const fw=child.style.fontWeight,col=child.style.color;let s='';
-        if(fw&&fw!=='400'&&fw!=='normal')s+=`font-weight:${fw};`;
-        if(col)s+=`color:${col};`;
+        if(fw&&fw!=='400'&&fw!=='normal')s+='font-weight:'+fw+';';
+        if(col)s+='color:'+col+';';
         const nb=inner.replace(/<br\s*\/?>/gi,'').trim();
         if(!nb){out+=inner;return;}
-        out+=s?`<span style="${s}">${inner}</span>`:inner;
+        out+=s?'<span style="'+s+'">'+inner+'</span>':inner;
       }else out+=inner;
     }
-  });
-  return out;
+  });return out;
 }
 function r(id){
   const el=document.getElementById(id);if(!el)return '';
@@ -453,27 +444,40 @@ function r(id){
 }
 function gv(id){const el=document.getElementById(id);return el?el.value.trim():'';}
 
-/* ── 도장 HTML (케이브덕 허용 태그만) ── */
-function stampHTML(type){
-  const inner='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-align:center;">'
-    +'<span style="font-family:monospace;font-size:7px;letter-spacing:.22em;color:rgba(180,30,30,.72);text-transform:uppercase;">NSSA</span>'
-    +'<div style="width:62px;height:2px;background:rgba(180,30,30,.45);margin:2px 0;"></div>'
-    +'<span style="font-family:monospace;font-size:14px;font-weight:700;color:rgba(180,30,30,.8);letter-spacing:.08em;text-transform:uppercase;line-height:1.2;">COMING<br>SOON</span>'
-    +'<div style="width:62px;height:2px;background:rgba(180,30,30,.45);margin:2px 0;"></div>'
-    +'<span style="font-family:monospace;font-size:6.5px;letter-spacing:.2em;color:rgba(180,30,30,.55);text-transform:uppercase;">classified</span>'
-    +'</div>';
-  const overlay='position:absolute;inset:0;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);background:rgba(0,0,0,.05);display:flex;align-items:center;justify-content:center;';
-  if(type==='circle'){
-    return '<div style="'+overlay+'"><div style="display:flex;align-items:center;justify-content:center;width:116px;height:116px;border-radius:50%;border:4px solid rgba(180,30,30,.62);transform:rotate(-18deg);position:relative;flex-shrink:0;"><div style="position:absolute;inset:7px;border-radius:50%;border:1.5px solid rgba(180,30,30,.28);"></div>'+inner+'</div></div>';
-  }else{
-    return '<div style="'+overlay+'"><div style="display:flex;align-items:center;justify-content:center;padding:12px 18px;border:4px solid rgba(180,30,30,.62);transform:rotate(-10deg);position:relative;flex-shrink:0;"><div style="position:absolute;inset:6px;border:1.5px solid rgba(180,30,30,.28);"></div>'+inner+'</div></div>';
-  }
+/* ── 도장 HTML (정적 glow) ── */
+function stampHTML(){
+  return '<div style="filter:drop-shadow(0 0 10px rgba(200,50,50,.3));flex-shrink:0;">'
+    +'<div style="width:110px;height:110px;border-radius:50%;border:4px solid rgb(200,50,50);display:flex;align-items:center;justify-content:center;position:relative;transform:rotate(-16deg);">'
+    +'<div style="position:absolute;inset:6px;border-radius:50%;border:1.5px solid rgba(200,50,50,.45);"></div>'
+    +'<div style="position:absolute;top:13px;left:50%;transform:translateX(-50%);font-family:monospace;font-size:7px;font-weight:700;letter-spacing:.28em;color:rgb(200,50,50);text-transform:uppercase;white-space:nowrap;">CLASSIFIED</div>'
+    +'<div style="position:absolute;top:25px;left:50%;transform:translateX(-50%);display:flex;gap:4px;"><span style="font-size:5px;color:rgb(200,50,50);">★</span><span style="font-size:5px;color:rgb(200,50,50);">★</span><span style="font-size:5px;color:rgb(200,50,50);">★</span></div>'
+    +'<div style="position:absolute;top:50%;left:50%;width:126px;transform:translate(-50%,-50%) rotate(-8deg);background:rgb(200,50,50);padding:4px 0;display:flex;align-items:center;justify-content:center;border-top:1.5px solid rgba(150,30,30,.5);border-bottom:1.5px solid rgba(150,30,30,.5);"><span style="font-family:monospace;font-size:12px;font-weight:700;letter-spacing:.12em;color:#fff;text-transform:uppercase;">COMING SOON</span></div>'
+    +'<div style="position:absolute;bottom:25px;left:50%;transform:translateX(-50%);display:flex;gap:4px;"><span style="font-size:5px;color:rgb(200,50,50);">★</span><span style="font-size:5px;color:rgb(200,50,50);">★</span><span style="font-size:5px;color:rgb(200,50,50);">★</span></div>'
+    +'<div style="position:absolute;bottom:13px;left:50%;transform:translateX(-50%);font-family:monospace;font-size:6px;font-weight:700;letter-spacing:.22em;color:rgb(200,50,50);text-transform:uppercase;white-space:nowrap;">NSSA · 2026</div>'
+    +'</div></div>';
 }
 
-/* ── 셀 배경 (SVG 제거 → 텍스트 대체) ── */
-function cellBgHTML(imgUrl){
-  if(!imgUrl) return '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><span style="font-family:monospace;font-size:9px;letter-spacing:2px;color:#ccc;">NO IMAGE</span></div>';
-  return '<img src="'+escAttr(imgUrl)+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">';
+/* ── 인적사항 HTML ── */
+function personnelHTML(name,type,rank,dept){
+  let typeLabel='',typeColor='',subLabel='';
+  if(type==='sigma-combat'){typeLabel='SIGMA';typeColor='rgb(200,50,50)';subLabel='전투형';}
+  else if(type==='sigma-support'){typeLabel='SIGMA';typeColor='rgb(200,50,50)';subLabel='지원형';}
+  else{typeLabel='DELTA';typeColor='rgba(255,255,255,.5)';subLabel='행정';}
+
+  return '<div style="display:flex;flex-direction:column;gap:0;min-width:0;">'
+    +'<div style="font-family:monospace;font-size:7px;letter-spacing:.3em;color:rgba(255,255,255,.25);text-transform:uppercase;margin-bottom:6px;">PERSONNEL FILE</div>'
+    +'<div style="font-size:18px;font-weight:700;color:#fff;letter-spacing:.06em;margin-bottom:2px;word-break:keep-all;">'+esc(name)+'</div>'
+    +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">'
+    +'<span style="font-family:monospace;font-size:10px;font-weight:700;letter-spacing:.1em;color:'+typeColor+';text-transform:uppercase;">'+typeLabel+'</span>'
+    +'<span style="font-family:monospace;font-size:9px;color:rgba(255,255,255,.4);">'+subLabel+'</span>'
+    +'</div>'
+    +'<div style="width:100%;height:1px;background:rgba(255,255,255,.1);margin-bottom:7px;"></div>'
+    +'<div style="display:flex;gap:16px;flex-wrap:wrap;">'
+    +'<div><div style="font-family:monospace;font-size:6px;letter-spacing:.2em;color:rgba(255,255,255,.25);text-transform:uppercase;margin-bottom:2px;">RANK</div><div style="font-size:11px;font-weight:500;color:rgba(255,255,255,.85);">'+esc(rank)+'</div></div>'
+    +'<div><div style="font-family:monospace;font-size:6px;letter-spacing:.2em;color:rgba(255,255,255,.25);text-transform:uppercase;margin-bottom:2px;">DEPT</div><div style="font-size:11px;font-weight:500;color:rgba(255,255,255,.85);">'+esc(dept)+'</div></div>'
+    +'</div>'
+    +'<div style="font-family:monospace;font-size:7px;letter-spacing:.15em;color:rgba(255,255,255,.12);text-transform:uppercase;margin-top:8px;">ID · NSSA-'+(type==='delta'?'D':'S')+'-0000</div>'
+    +'</div>';
 }
 
 /* ── 메인 렌더 ── */
@@ -485,29 +489,30 @@ function render(){
   const wSub    = gv('world-subtitle')||'NSSA · NATIONAL SPECIAL SECURITY AGENCY · 2026';
   const wDesc   = r('world-desc')||'신인류 출현 이후 25년.<br>감각의 최전선에서 안보를 지키는 기관의 이야기.';
   const link    = gv('world-link')||'#';
-  const cn1     = gv('char-name-1')||'CHAR · 01';
-  const cn2     = gv('char-name-2')||'CHAR · 02';
-  const slot    = state.slot;
-  const stamp   = state.stamp;
-  const img1    = state.charImg1;
-  const img2    = state.charImg2;
+  const cName   = gv('char-name')||'홍길동';
+  const cRank   = gv('char-rank')||'2급 특수요원';
+  const cDept   = gv('char-dept')||'특수전략과';
+  const cType   = state.charType;
+  const cImg    = state.charImg;
+  const blur    = state.blurPx;
+  const dim     = state.dimPct;
+  const dimAlpha = (dim/100).toFixed(2);
 
   const avatarHTML = state.avatarUrl
     ?'<img src="'+escAttr(state.avatarUrl)+'" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">'
     :'<span style="font-size:20px;">'+state.avatarEmoji+'</span>';
 
   let safeLink='#';
-  if(link&&link!=='#'){
-    try{const u=new URL(link);if(u.protocol==='http:'||u.protocol==='https:')safeLink=escAttr(link);}catch(e){safeLink='#';}
+  if(link&&link!=='#'){try{const u=new URL(link);if(u.protocol==='http:'||u.protocol==='https:')safeLink=escAttr(link);}catch(e){safeLink='#';}}
+
+  /* 캐릭터 카드 배경 — height 고정 + backdrop-filter 폴백 */
+  let charBg='';
+  if(cImg){
+    charBg='<img src="'+escAttr(cImg)+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">'
+      +'<div style="position:absolute;inset:0;backdrop-filter:blur('+blur+'px);-webkit-backdrop-filter:blur('+blur+'px);background:rgba(0,0,0,'+dimAlpha+');z-index:1;"></div>';
+  }else{
+    charBg='<div style="position:absolute;inset:0;background:rgba(0,0,0,.88);z-index:1;"></div>';
   }
-
-  const asp1 = slot==='1'?'aspect-ratio:16/6.5;':'aspect-ratio:2/2.8;';
-  const bdr1 = slot==='2'?'border-right:1px solid #eee;':'';
-  const captionStyle='position:absolute;bottom:0;left:0;right:0;padding:7px 10px;background:rgba(0,0,0,.32);font-family:monospace;font-size:12px;font-weight:700;color:rgba(255,255,255,.82);letter-spacing:.1em;text-align:center;';
-
-  const cell1='<div style="position:relative;background:#ececec;overflow:hidden;'+asp1+bdr1+'">'+cellBgHTML(img1)+stampHTML(stamp)+'<div style="'+captionStyle+'">'+esc(cn1)+'</div></div>';
-  const cell2=slot==='2'?'<div style="position:relative;background:#ececec;overflow:hidden;'+asp1+'">'+cellBgHTML(img2)+stampHTML(stamp)+'<div style="'+captionStyle+'">'+esc(cn2)+'</div></div>':'';
-  const gridCols=slot==='1'?'1fr':'1fr 1fr';
 
   document.getElementById('preview-root').innerHTML=
 '<div style="display:flex;flex-direction:column;gap:10px;padding:16px;background:#f2f2f0;border-radius:12px;font-family:\'Noto Sans KR\',sans-serif;">'
@@ -536,20 +541,29 @@ function render(){
 +'<div style="font-family:monospace;font-size:7.5px;color:rgba(255,255,255,.2);letter-spacing:.15em;margin-top:.2rem;">● SEMI-PUBLIC · NSSA-2026</div>'
 +'</div></div>'
 
-/* ── 캐릭터 스포일러 카드 ── */
+/* ── 구분선 ── */
++'<div style="border-top:1px solid #ddd;margin:4px 0;"></div>'
+
+/* ── 캐릭터 카드 (height 고정 16:9) ── */
 +'<div style="border-radius:10px;overflow:hidden;border:1px solid #ddd;background:#fff;">'
 +'<div style="padding:.75rem 1.1rem .65rem;border-bottom:1px solid #eee;">'
 +'<div style="font-family:monospace;font-size:17px;font-weight:700;color:#111;letter-spacing:.06em;text-transform:uppercase;">New Characters</div>'
 +'<div style="font-size:9.5px;color:#aaa;font-family:monospace;letter-spacing:.05em;margin-top:2px;">// classified</div>'
 +'</div>'
-+'<div style="display:grid;grid-template-columns:'+gridCols+';">'+cell1+cell2+'</div>'
++'<div style="position:relative;background:#111;overflow:hidden;width:100%;height:0;padding-bottom:56.25%;">'
++charBg
++'<div style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;gap:18px;padding:16px;">'
++stampHTML()
++personnelHTML(cName,cType,cRank,cDept)
++'</div>'
++'</div>'
 +'<div style="padding:.55rem 1.1rem;border-top:1px solid #eee;"><div style="font-size:9.5px;color:#bbb;font-family:monospace;letter-spacing:.05em;text-align:center;">// 업데이트 예정</div></div>'
 +'</div>'
 
 +'</div>';
 }
 
-/* ── 복사 (케이브덕용: 안쪽 본문만) ── */
+/* ── 복사 (케이브덕용) ── */
 function copyHTML(){
   const inner=document.getElementById('preview-root').innerHTML;
   navigator.clipboard.writeText(inner).then(()=>{
