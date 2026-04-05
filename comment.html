@@ -250,7 +250,6 @@ const state={
   charType:'sigma-combat',charImg:'',blurPx:12,dimPct:65
 };
 
-/* ── 아바타 ── */
 function pickEmoji(el,emoji){
   state.avatarEmoji=emoji;state.avatarUrl='';
   document.getElementById('avatar-url').value='';
@@ -274,8 +273,6 @@ function onAvatarUrl(){
   }else{if(img)img.remove();sp.style.display='';}
   render();
 }
-
-/* ── 캐릭터 이미지 ── */
 function onCharImg(){
   const url=document.getElementById('char-img').value.trim();
   state.charImg=url;
@@ -290,8 +287,6 @@ function onCharImg(){
   }
   render();
 }
-
-/* ── 슬라이더 ── */
 function onBlurChange(){
   state.blurPx=document.getElementById('blur-range').value;
   document.getElementById('blur-val').textContent=state.blurPx+'px';
@@ -302,16 +297,12 @@ function onDimChange(){
   document.getElementById('dim-val').textContent=state.dimPct+'%';
   render();
 }
-
-/* ── 칩 ── */
 function selectChip(key,val,el){
   state[key]=val;
   el.parentNode.querySelectorAll('.chip-option').forEach(c=>c.classList.remove('selected'));
-  el.classList.add('selected');
-  render();
+  el.classList.add('selected');render();
 }
 
-/* ── rich-edit ── */
 let savedRange=null,savedRichEl=null;
 document.querySelectorAll('.rich-edit').forEach(el=>{
   el.addEventListener('focus',()=>{savedRichEl=el;});
@@ -409,11 +400,9 @@ function fmtColor(hex){
   cleanEmptyNodes(richRoot);render();
 }
 
-/* ── 이스케이프 ── */
 function esc(s){return s?s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
 function escAttr(s){return s?s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):''}
 
-/* ── DOM → 인라인 HTML ── */
 function domToHTML(node){
   let out='';
   node.childNodes.forEach(child=>{
@@ -444,39 +433,41 @@ function r(id){
 }
 function gv(id){const el=document.getElementById(id);return el?el.value.trim():'';}
 
-/* ── 도장 HTML (정적 glow) ── */
+/* ── 도장 HTML (상대 크기) ── */
 function stampHTML(){
-  return '<div style="filter:drop-shadow(0 0 10px rgba(200,50,50,.3));flex-shrink:0;">'
-    +'<div style="width:110px;height:110px;border-radius:50%;border:4px solid rgb(200,50,50);display:flex;align-items:center;justify-content:center;position:relative;transform:rotate(-16deg);">'
-    +'<div style="position:absolute;inset:6px;border-radius:50%;border:1.5px solid rgba(200,50,50,.45);"></div>'
-    +'<div style="position:absolute;top:13px;left:50%;transform:translateX(-50%);font-family:monospace;font-size:7px;font-weight:700;letter-spacing:.28em;color:rgb(200,50,50);text-transform:uppercase;white-space:nowrap;">CLASSIFIED</div>'
-    +'<div style="position:absolute;top:25px;left:50%;transform:translateX(-50%);display:flex;gap:4px;"><span style="font-size:5px;color:rgb(200,50,50);">★</span><span style="font-size:5px;color:rgb(200,50,50);">★</span><span style="font-size:5px;color:rgb(200,50,50);">★</span></div>'
-    +'<div style="position:absolute;top:50%;left:50%;width:126px;transform:translate(-50%,-50%) rotate(-8deg);background:rgb(200,50,50);padding:4px 0;display:flex;align-items:center;justify-content:center;border-top:1.5px solid rgba(150,30,30,.5);border-bottom:1.5px solid rgba(150,30,30,.5);"><span style="font-family:monospace;font-size:12px;font-weight:700;letter-spacing:.12em;color:#fff;text-transform:uppercase;">COMING SOON</span></div>'
-    +'<div style="position:absolute;bottom:25px;left:50%;transform:translateX(-50%);display:flex;gap:4px;"><span style="font-size:5px;color:rgb(200,50,50);">★</span><span style="font-size:5px;color:rgb(200,50,50);">★</span><span style="font-size:5px;color:rgb(200,50,50);">★</span></div>'
-    +'<div style="position:absolute;bottom:13px;left:50%;transform:translateX(-50%);font-family:monospace;font-size:6px;font-weight:700;letter-spacing:.22em;color:rgb(200,50,50);text-transform:uppercase;white-space:nowrap;">NSSA · 2026</div>'
-    +'</div></div>';
+  /* vw 기반 대신 %와 em 조합으로 부모에 맞춰 스케일 */
+  return '<div style="filter:drop-shadow(0 0 10px rgba(200,50,50,.3));flex-shrink:0;width:35%;max-width:150px;min-width:90px;">'
+    +'<div style="width:100%;padding-bottom:100%;position:relative;">'
+    +'<div style="position:absolute;inset:0;border-radius:50%;border:4px solid rgb(200,50,50);display:flex;align-items:center;justify-content:center;transform:rotate(-16deg);">'
+    +'<div style="position:absolute;inset:8%;border-radius:50%;border:1.5px solid rgba(200,50,50,.45);"></div>'
+    +'<div style="position:absolute;top:14%;left:50%;transform:translateX(-50%);font-family:monospace;font-size:clamp(5px,1.8vw,8px);font-weight:700;letter-spacing:.28em;color:rgb(200,50,50);text-transform:uppercase;white-space:nowrap;">CLASSIFIED</div>'
+    +'<div style="position:absolute;top:26%;left:50%;transform:translateX(-50%);display:flex;gap:3px;"><span style="font-size:clamp(4px,1.2vw,6px);color:rgb(200,50,50);">★</span><span style="font-size:clamp(4px,1.2vw,6px);color:rgb(200,50,50);">★</span><span style="font-size:clamp(4px,1.2vw,6px);color:rgb(200,50,50);">★</span></div>'
+    +'<div style="position:absolute;top:50%;left:50%;width:115%;transform:translate(-50%,-50%) rotate(-8deg);background:rgb(200,50,50);padding:clamp(3px,1vw,6px) 0;display:flex;align-items:center;justify-content:center;border-top:1.5px solid rgba(150,30,30,.5);border-bottom:1.5px solid rgba(150,30,30,.5);"><span style="font-family:monospace;font-size:clamp(8px,2.8vw,14px);font-weight:700;letter-spacing:.12em;color:#fff;text-transform:uppercase;">COMING SOON</span></div>'
+    +'<div style="position:absolute;bottom:26%;left:50%;transform:translateX(-50%);display:flex;gap:3px;"><span style="font-size:clamp(4px,1.2vw,6px);color:rgb(200,50,50);">★</span><span style="font-size:clamp(4px,1.2vw,6px);color:rgb(200,50,50);">★</span><span style="font-size:clamp(4px,1.2vw,6px);color:rgb(200,50,50);">★</span></div>'
+    +'<div style="position:absolute;bottom:14%;left:50%;transform:translateX(-50%);font-family:monospace;font-size:clamp(4px,1.4vw,7px);font-weight:700;letter-spacing:.22em;color:rgb(200,50,50);text-transform:uppercase;white-space:nowrap;">NSSA · 2026</div>'
+    +'</div></div></div>';
 }
 
-/* ── 인적사항 HTML ── */
+/* ── 인적사항 HTML (상대 크기) ── */
 function personnelHTML(name,type,rank,dept){
   let typeLabel='',typeColor='',subLabel='';
   if(type==='sigma-combat'){typeLabel='SIGMA';typeColor='rgb(200,50,50)';subLabel='전투형';}
   else if(type==='sigma-support'){typeLabel='SIGMA';typeColor='rgb(200,50,50)';subLabel='지원형';}
   else{typeLabel='DELTA';typeColor='rgba(255,255,255,.5)';subLabel='행정';}
 
-  return '<div style="display:flex;flex-direction:column;gap:0;min-width:0;">'
-    +'<div style="font-family:monospace;font-size:7px;letter-spacing:.3em;color:rgba(255,255,255,.25);text-transform:uppercase;margin-bottom:6px;">PERSONNEL FILE</div>'
-    +'<div style="font-size:18px;font-weight:700;color:#fff;letter-spacing:.06em;margin-bottom:2px;word-break:keep-all;">'+esc(name)+'</div>'
-    +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">'
-    +'<span style="font-family:monospace;font-size:10px;font-weight:700;letter-spacing:.1em;color:'+typeColor+';text-transform:uppercase;">'+typeLabel+'</span>'
-    +'<span style="font-family:monospace;font-size:9px;color:rgba(255,255,255,.4);">'+subLabel+'</span>'
+  return '<div style="display:flex;flex-direction:column;gap:0;min-width:0;flex:1;">'
+    +'<div style="font-family:monospace;font-size:clamp(5px,1.5vw,7px);letter-spacing:.3em;color:rgba(255,255,255,.25);text-transform:uppercase;margin-bottom:clamp(4px,1.5vw,8px);">PERSONNEL FILE</div>'
+    +'<div style="font-size:clamp(14px,4vw,22px);font-weight:700;color:#fff;letter-spacing:.06em;margin-bottom:2px;word-break:keep-all;">'+esc(name)+'</div>'
+    +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:clamp(6px,2vw,10px);">'
+    +'<span style="font-family:monospace;font-size:clamp(8px,2.2vw,11px);font-weight:700;letter-spacing:.1em;color:'+typeColor+';text-transform:uppercase;">'+typeLabel+'</span>'
+    +'<span style="font-family:monospace;font-size:clamp(7px,1.8vw,9px);color:rgba(255,255,255,.4);">'+subLabel+'</span>'
     +'</div>'
-    +'<div style="width:100%;height:1px;background:rgba(255,255,255,.1);margin-bottom:7px;"></div>'
-    +'<div style="display:flex;gap:16px;flex-wrap:wrap;">'
-    +'<div><div style="font-family:monospace;font-size:6px;letter-spacing:.2em;color:rgba(255,255,255,.25);text-transform:uppercase;margin-bottom:2px;">RANK</div><div style="font-size:11px;font-weight:500;color:rgba(255,255,255,.85);">'+esc(rank)+'</div></div>'
-    +'<div><div style="font-family:monospace;font-size:6px;letter-spacing:.2em;color:rgba(255,255,255,.25);text-transform:uppercase;margin-bottom:2px;">DEPT</div><div style="font-size:11px;font-weight:500;color:rgba(255,255,255,.85);">'+esc(dept)+'</div></div>'
+    +'<div style="width:100%;height:1px;background:rgba(255,255,255,.1);margin-bottom:clamp(5px,1.5vw,8px);"></div>'
+    +'<div style="display:flex;gap:clamp(10px,3vw,20px);flex-wrap:wrap;">'
+    +'<div><div style="font-family:monospace;font-size:clamp(4px,1.2vw,6px);letter-spacing:.2em;color:rgba(255,255,255,.25);text-transform:uppercase;margin-bottom:2px;">RANK</div><div style="font-size:clamp(9px,2.4vw,12px);font-weight:500;color:rgba(255,255,255,.85);">'+esc(rank)+'</div></div>'
+    +'<div><div style="font-family:monospace;font-size:clamp(4px,1.2vw,6px);letter-spacing:.2em;color:rgba(255,255,255,.25);text-transform:uppercase;margin-bottom:2px;">DEPT</div><div style="font-size:clamp(9px,2.4vw,12px);font-weight:500;color:rgba(255,255,255,.85);">'+esc(dept)+'</div></div>'
     +'</div>'
-    +'<div style="font-family:monospace;font-size:7px;letter-spacing:.15em;color:rgba(255,255,255,.12);text-transform:uppercase;margin-top:8px;">ID · NSSA-'+(type==='delta'?'D':'S')+'-0000</div>'
+    +'<div style="font-family:monospace;font-size:clamp(5px,1.4vw,7px);letter-spacing:.15em;color:rgba(255,255,255,.12);text-transform:uppercase;margin-top:clamp(5px,2vw,10px);">ID · NSSA-'+(type==='delta'?'D':'S')+'-0000</div>'
     +'</div>';
 }
 
@@ -505,7 +496,6 @@ function render(){
   let safeLink='#';
   if(link&&link!=='#'){try{const u=new URL(link);if(u.protocol==='http:'||u.protocol==='https:')safeLink=escAttr(link);}catch(e){safeLink='#';}}
 
-  /* 캐릭터 카드 배경 — height 고정 + backdrop-filter 폴백 */
   let charBg='';
   if(cImg){
     charBg='<img src="'+escAttr(cImg)+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">'
@@ -517,34 +507,39 @@ function render(){
   document.getElementById('preview-root').innerHTML=
 '<div style="display:flex;flex-direction:column;gap:10px;padding:16px;background:#f2f2f0;border-radius:12px;font-family:\'Noto Sans KR\',sans-serif;">'
 
-/* ── 크리에이터 카드 ── */
-+'<div style="border-radius:10px;overflow:hidden;background:#fdf9d6;border:1px solid #e8d98a;">'
+/* ── 크리에이터 + 세계관 (flex-wrap) ── */
++'<div style="display:flex;flex-wrap:wrap;gap:10px;">'
+
+/* 크리에이터 카드 */
++'<div style="flex:1 1 240px;min-width:240px;border-radius:10px;overflow:hidden;background:#fdf9d6;border:1px solid #e8d98a;display:flex;flex-direction:column;">'
 +'<div style="padding:.85rem 1.1rem;display:flex;align-items:center;gap:.8rem;background:#fdf9d6;">'
 +'<div style="width:46px;height:46px;border-radius:50%;background:#f5eeaa;border:1px solid #e8d98a;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">'+avatarHTML+'</div>'
 +'<div><div style="font-size:14px;font-weight:500;color:#5a4e1a;">'+esc(name)+'</div><div style="font-size:10px;color:#9a8830;font-family:monospace;letter-spacing:.04em;margin-top:2px;">'+esc(sub)+'</div></div>'
 +'</div>'
-+'<div style="background:#fff;padding:.8rem 1.1rem .95rem;border-top:1px solid #e8d98a;">'
++'<div style="background:#fff;padding:.8rem 1.1rem .95rem;border-top:1px solid #e8d98a;flex:1;">'
 +'<span style="font-family:Georgia,serif;font-size:22px;color:#c8b84a;line-height:1;display:block;margin-bottom:-2px;opacity:.55;">&ldquo;</span>'
 +'<div style="font-size:12px;color:#555;line-height:1.9;font-weight:300;margin-top:.35rem;">'+comment+'</div>'
 +'</div></div>'
 
-/* ── 세계관 카드 ── */
-+'<div style="position:relative;border-radius:10px;overflow:hidden;border:1px solid #222;">'
+/* 세계관 카드 */
++'<div style="flex:1 1 240px;min-width:240px;position:relative;border-radius:10px;overflow:hidden;border:1px solid #222;display:flex;flex-direction:column;">'
 +'<div style="position:absolute;inset:0;background:#111;"></div>'
 +'<div style="position:absolute;inset:0;opacity:.07;background-image:linear-gradient(rgba(255,255,255,.9) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.9) 1px,transparent 1px);background-size:22px 22px;"></div>'
-+'<div style="position:relative;z-index:1;padding:1.1rem 1.2rem;display:flex;flex-direction:column;gap:.38rem;">'
++'<div style="position:relative;z-index:1;padding:1.1rem 1.2rem;display:flex;flex-direction:column;gap:.38rem;flex:1;">'
 +'<div style="font-family:monospace;font-size:9px;letter-spacing:.25em;color:rgba(255,255,255,.3);text-transform:uppercase;display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:12px;height:.5px;background:rgba(255,255,255,.3);vertical-align:middle;"></span>worldview</div>'
 +'<div style="font-size:20px;font-weight:700;color:#fff;">'+esc(wTitle)+'</div>'
 +'<div style="font-family:monospace;font-size:9px;color:rgba(255,255,255,.3);letter-spacing:.1em;margin-top:-2px;">'+esc(wSub)+'</div>'
 +'<div style="font-size:12px;color:#fff;line-height:1.75;font-weight:300;margin-top:.3rem;">'+wDesc+'</div>'
-+'<a href="'+safeLink+'" target="_blank" style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:7px;padding:.5rem .85rem;margin-top:.3rem;text-decoration:none;"><span style="font-family:monospace;font-size:10px;color:rgba(255,255,255,.65);letter-spacing:.08em;">설정집 바로가기 →</span></a>'
-+'<div style="font-family:monospace;font-size:7.5px;color:rgba(255,255,255,.2);letter-spacing:.15em;margin-top:.2rem;">● SEMI-PUBLIC · NSSA-2026</div>'
++'<a href="'+safeLink+'" target="_blank" style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:7px;padding:.5rem .85rem;margin-top:auto;text-decoration:none;"><span style="font-family:monospace;font-size:10px;color:rgba(255,255,255,.65);letter-spacing:.08em;">설정집 바로가기 →</span></a>'
++'<div style="font-family:monospace;font-size:7.5px;color:rgba(255,255,255,.2);letter-spacing:.15em;margin-top:.3rem;">● SEMI-PUBLIC · NSSA-2026</div>'
 +'</div></div>'
+
++'</div>'/* flex-wrap 끝 */
 
 /* ── 구분선 ── */
 +'<div style="border-top:1px solid #ddd;margin:4px 0;"></div>'
 
-/* ── 캐릭터 카드 (height 고정 16:9) ── */
+/* ── 캐릭터 카드 (16:9 고정) ── */
 +'<div style="border-radius:10px;overflow:hidden;border:1px solid #ddd;background:#fff;">'
 +'<div style="padding:.75rem 1.1rem .65rem;border-bottom:1px solid #eee;">'
 +'<div style="font-family:monospace;font-size:17px;font-weight:700;color:#111;letter-spacing:.06em;text-transform:uppercase;">New Characters</div>'
@@ -552,7 +547,7 @@ function render(){
 +'</div>'
 +'<div style="position:relative;background:#111;overflow:hidden;width:100%;height:0;padding-bottom:56.25%;">'
 +charBg
-+'<div style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;gap:18px;padding:16px;">'
++'<div style="position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;gap:clamp(12px,3.5vw,24px);padding:clamp(10px,3vw,20px);">'
 +stampHTML()
 +personnelHTML(cName,cType,cRank,cDept)
 +'</div>'
@@ -563,7 +558,6 @@ function render(){
 +'</div>';
 }
 
-/* ── 복사 (케이브덕용) ── */
 function copyHTML(){
   const inner=document.getElementById('preview-root').innerHTML;
   navigator.clipboard.writeText(inner).then(()=>{
