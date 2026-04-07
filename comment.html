@@ -355,7 +355,7 @@ function resetCharImg() {
 }
 function getCharImgStyle() {
   var d = state.imgPos;
-  return 'position:absolute;left:50%;top:50%;width:' + d.s + '%;height:' + d.s + '%;min-width:100%;min-height:100%;object-fit:cover;transform:translate(calc(-50% + ' + d.x + '%), calc(-50% + ' + d.y + '%));display:block;';
+  return 'position:absolute;left:50%;top:50%;width:' + d.s + '%;height:' + d.s + '%;object-fit:contain;transform:translate(calc(-50% + ' + d.x + '%), calc(-50% + ' + d.y + '%));display:block;';
 }
 
 /* ═══════════════════════════════════════
