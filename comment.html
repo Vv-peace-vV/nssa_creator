@@ -252,7 +252,7 @@ input[type=color].fmt-custom{width:17px;height:17px;border-radius:50%;border:2px
 /* ═══════════════════════════════════════
    상태
 ═══════════════════════════════════════ */
-const state = {
+var state = {
   avatarEmoji: '🖤',
   avatarUrl: '',
   charType: 'sigma-combat',
@@ -265,19 +265,15 @@ const state = {
    아바타
 ═══════════════════════════════════════ */
 function pickEmoji(el, emoji) {
-  state.avatarEmoji = emoji;
-  state.avatarUrl = '';
+  state.avatarEmoji = emoji; state.avatarUrl = '';
   document.getElementById('avatar-url').value = '';
   document.getElementById('avatar-emoji-display').textContent = emoji;
   var c = document.getElementById('avatar-preview-circle');
-  var img = c.querySelector('img');
-  if (img) img.remove();
+  var img = c.querySelector('img'); if (img) img.remove();
   document.getElementById('avatar-emoji-display').style.display = '';
   document.querySelectorAll('.emoji-btn').forEach(function(b) { b.classList.remove('selected'); });
-  el.classList.add('selected');
-  render();
+  el.classList.add('selected'); render();
 }
-
 function onAvatarUrl() {
   var url = document.getElementById('avatar-url').value.trim();
   state.avatarUrl = url;
@@ -303,11 +299,9 @@ function onCharImg() {
   var noImg = thumb.querySelector('.no-img');
   if (url) {
     if (!img) { img = document.createElement('img'); thumb.appendChild(img); }
-    img.src = url;
-    if (noImg) noImg.style.display = 'none';
+    img.src = url; if (noImg) noImg.style.display = 'none';
   } else {
-    if (img) img.remove();
-    if (noImg) noImg.style.display = '';
+    if (img) img.remove(); if (noImg) noImg.style.display = '';
   }
   render();
 }
@@ -329,35 +323,32 @@ function onDimChange() {
 }
 
 /* ═══════════════════════════════════════
-   칩 선택
+   칩
 ═══════════════════════════════════════ */
 function selectChip(key, val, el) {
   state[key] = val;
   el.parentNode.querySelectorAll('.chip-option').forEach(function(c) { c.classList.remove('selected'); });
-  el.classList.add('selected');
-  render();
+  el.classList.add('selected'); render();
 }
 
 /* ═══════════════════════════════════════
-   리치 에딧 — 선택 영역 저장/복원
+   리치에딧
 ═══════════════════════════════════════ */
-var savedRange = null;
-var lastRich = null;
+var savedRange = null, lastRich = null;
 
 document.querySelectorAll('.rich-edit').forEach(function(el) {
   el.addEventListener('focus', function() { lastRich = el; });
   el.addEventListener('input', render);
   el.addEventListener('mouseup', function() {
     var sel = window.getSelection();
-    if (sel && sel.rangeCount > 0) savedRange = sel.getRangeAt(0).cloneRange();
+    if (sel && sel.rangeCount > 0) { savedRange = sel.getRangeAt(0).cloneRange(); lastRich = el; }
   });
   el.addEventListener('keyup', function() {
     var sel = window.getSelection();
-    if (sel && sel.rangeCount > 0) savedRange = sel.getRangeAt(0).cloneRange();
+    if (sel && sel.rangeCount > 0) { savedRange = sel.getRangeAt(0).cloneRange(); lastRich = el; }
   });
   el.addEventListener('paste', function(e) {
-    e.preventDefault();
-    document.execCommand('insertText', false, e.clipboardData.getData('text/plain'));
+    e.preventDefault(); document.execCommand('insertText', false, e.clipboardData.getData('text/plain'));
   });
   el.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') { e.preventDefault(); document.execCommand('insertHTML', false, '<br>'); }
@@ -377,15 +368,11 @@ document.querySelector('.fmt-bar').addEventListener('touchstart', function(e) {
 
 function restoreSel() {
   if (!savedRange) return false;
-  var sel = window.getSelection();
-  sel.removeAllRanges();
-  sel.addRange(savedRange);
+  var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(savedRange);
   return !sel.isCollapsed;
 }
 
-/* ═══════════════════════════════════════
-   서식 — 빈 태그 정리
-═══════════════════════════════════════ */
+/* ── 빈 태그 정리 ── */
 function cleanEmptyNodes(root) {
   if (!root) return;
   root.querySelectorAll('b,i,span,strong,em').forEach(function(el) {
@@ -398,9 +385,7 @@ function cleanEmptyNodes(root) {
   });
 }
 
-/* ═══════════════════════════════════════
-   서식 — 색상 스팬 벗기기
-═══════════════════════════════════════ */
+/* ── 색상 스팬 벗기기 ── */
 function stripColorSpans(container) {
   container.querySelectorAll('span').forEach(function(sp) {
     if (sp.style.color) {
@@ -410,34 +395,22 @@ function stripColorSpans(container) {
   });
 }
 
-/* ═══════════════════════════════════════
-   서식 — 토글 (굵게/기울기/얇게)
-═══════════════════════════════════════ */
+/* ── 서식 토글 ── */
 function hasAnc(node, fn) {
   var c = node.parentNode;
   while (c) { if (c.nodeType === 1 && fn(c)) return true; c = c.parentNode; }
   return false;
 }
 function isAllWrapped(range, fn) {
-  var frag = range.cloneContents();
-  var texts = [];
-  function col(n) {
-    if (n.nodeType === 3 && n.textContent.length > 0) texts.push(fn(n));
-    n.childNodes.forEach(col);
-  }
-  col(frag);
-  return texts.length > 0 && texts.every(Boolean);
+  var frag = range.cloneContents(); var texts = [];
+  function col(n) { if (n.nodeType === 3 && n.textContent.length > 0) texts.push(fn(n)); n.childNodes.forEach(col); }
+  col(frag); return texts.length > 0 && texts.every(Boolean);
 }
-
 function applyWrap(tagName, styleProp, styleVal) {
   if (!restoreSel()) return;
-  var sel = window.getSelection();
-  var range = sel.getRangeAt(0);
-  var anc = range.commonAncestorContainer;
-  if (anc.nodeType === 3) anc = anc.parentNode;
-  var richEl = anc.closest('.rich-edit');
-  if (!richEl) return;
-
+  var sel = window.getSelection(); var range = sel.getRangeAt(0);
+  var anc = range.commonAncestorContainer; if (anc.nodeType === 3) anc = anc.parentNode;
+  var richEl = anc.closest('.rich-edit'); if (!richEl) return;
   var already = isAllWrapped(range, function(node) {
     return hasAnc(node, function(el) {
       if (tagName === 'b') return el.tagName === 'B' || el.tagName === 'STRONG';
@@ -446,7 +419,6 @@ function applyWrap(tagName, styleProp, styleVal) {
       return false;
     });
   });
-
   var frag = range.extractContents();
   if (already) {
     function unwrap(node) {
@@ -458,69 +430,47 @@ function applyWrap(tagName, styleProp, styleVal) {
           if (tagName === 'b' && (t === 'B' || t === 'STRONG')) rm = true;
           if (tagName === 'i' && (t === 'I' || t === 'EM')) rm = true;
           if (tagName === 'span' && t === 'SPAN' && styleProp === 'fontWeight' && child.style.fontWeight === styleVal) rm = true;
-          if (rm) { df.appendChild(unwrap(child)); }
+          if (rm) df.appendChild(unwrap(child));
           else { var cl = child.cloneNode(false); cl.appendChild(unwrap(child)); df.appendChild(cl); }
         }
-      });
-      return df;
+      }); return df;
     }
     range.insertNode(unwrap(frag));
   } else {
     var w = document.createElement(tagName);
     if (styleProp) w.style[styleProp] = styleVal;
     w.appendChild(frag);
-    if (w.textContent.trim() === '') {
-      while (w.firstChild) range.insertNode(w.firstChild);
-    } else {
-      range.insertNode(w);
-    }
+    if (w.textContent.trim() === '') { while (w.firstChild) range.insertNode(w.firstChild); }
+    else range.insertNode(w);
   }
-  cleanEmptyNodes(richEl);
-  render();
+  cleanEmptyNodes(richEl); render();
 }
-
 function fmtBold() { applyWrap('b', null, null); }
 function fmtThin() { applyWrap('span', 'fontWeight', '300'); }
 function fmtItalic() { applyWrap('i', null, null); }
-
 function fmtColor(hex) {
   if (!restoreSel()) return;
-  var sel = window.getSelection();
-  var range = sel.getRangeAt(0);
-  var anc = range.commonAncestorContainer;
-  if (anc.nodeType === 3) anc = anc.parentNode;
-  var richEl = anc.closest('.rich-edit');
-  if (!richEl) return;
-
+  var sel = window.getSelection(); var range = sel.getRangeAt(0);
+  var anc = range.commonAncestorContainer; if (anc.nodeType === 3) anc = anc.parentNode;
+  var richEl = anc.closest('.rich-edit'); if (!richEl) return;
   var contents = range.extractContents();
-  var tempDiv = document.createElement('div');
-  tempDiv.appendChild(contents);
+  var tempDiv = document.createElement('div'); tempDiv.appendChild(contents);
   stripColorSpans(tempDiv);
-
-  var sp = document.createElement('span');
-  sp.style.color = hex;
+  var sp = document.createElement('span'); sp.style.color = hex;
   while (tempDiv.firstChild) sp.appendChild(tempDiv.firstChild);
-
-  if (sp.textContent.trim() === '') {
-    while (sp.firstChild) range.insertNode(sp.firstChild);
-  } else {
-    range.insertNode(sp);
-  }
-  cleanEmptyNodes(richEl);
-  render();
+  if (sp.textContent.trim() === '') { while (sp.firstChild) range.insertNode(sp.firstChild); }
+  else range.insertNode(sp);
+  cleanEmptyNodes(richEl); render();
 }
 
 /* ═══════════════════════════════════════
    이스케이프
 ═══════════════════════════════════════ */
-function esc(s) {
-  if (!s) return '';
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
+function esc(s) { return s ? s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') : ''; }
 function escAttr(s) { return esc(s); }
 
 /* ═══════════════════════════════════════
-   DOM → 인라인 HTML (허용 태그만)
+   DOM → 인라인 HTML
 ═══════════════════════════════════════ */
 function domToHTML(node) {
   var out = '';
@@ -528,19 +478,14 @@ function domToHTML(node) {
     if (child.nodeType === 3) { out += esc(child.textContent); }
     else if (child.nodeType === 1) {
       var tag = child.tagName.toLowerCase();
-      if (tag === 'div' || tag === 'p') {
-        var inner = domToHTML(child);
-        if (inner.trim()) out += inner + '<br>';
-        return;
-      }
+      if (tag === 'div' || tag === 'p') { var inner = domToHTML(child); if (inner.trim()) out += inner + '<br>'; return; }
       if (tag === 'br') { out += '<br>'; return; }
       var inner2 = domToHTML(child);
       if (!inner2.trim()) return;
       if (tag === 'b' || tag === 'strong') out += '<b>' + inner2 + '</b>';
       else if (tag === 'i' || tag === 'em') out += '<i>' + inner2 + '</i>';
       else if (tag === 'span') {
-        var fw = child.style.fontWeight, col = child.style.color;
-        var s = '';
+        var fw = child.style.fontWeight, col = child.style.color; var s = '';
         if (fw && fw !== '400' && fw !== 'normal') s += 'font-weight:' + fw + ';';
         if (col) s += 'color:' + col + ';';
         var nb = inner2.replace(/<br\s*\/?>/gi, '').trim();
@@ -548,28 +493,17 @@ function domToHTML(node) {
         out += s ? '<span style="' + s + '">' + inner2 + '</span>' : inner2;
       } else out += inner2;
     }
-  });
-  return out;
+  }); return out;
 }
-
 function r(id) {
-  var el = document.getElementById(id);
-  if (!el) return '';
-  if (el.hasAttribute('contenteditable')) {
-    var h = domToHTML(el);
-    h = h.replace(/(<br\s*\/?>)+$/gi, '');
-    return h;
-  }
+  var el = document.getElementById(id); if (!el) return '';
+  if (el.hasAttribute('contenteditable')) { var h = domToHTML(el); return h.replace(/(<br\s*\/?>)+$/gi, ''); }
   return esc(el.value);
 }
-
-function gv(id) {
-  var el = document.getElementById(id);
-  return el ? el.value.trim() : '';
-}
+function gv(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
 
 /* ═══════════════════════════════════════
-   렌더
+   렌더 — 원본 디자인 유지, 캐릭터 카드만 변경
 ═══════════════════════════════════════ */
 function render() {
   var name    = gv('creator-name')    || '크리에이터 닉네임';
@@ -583,147 +517,130 @@ function render() {
   var cRank   = gv('char-rank')       || '직급';
   var cDept   = gv('char-dept')       || '부서';
 
-  /* 아바타 */
   var avatarHTML = state.avatarUrl
     ? '<img src="' + escAttr(state.avatarUrl) + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">'
     : '<span style="font-size:20px;">' + state.avatarEmoji + '</span>';
 
-  /* 타입 */
   var typeLabel = 'SIGMA · COMBAT', typeColor = 'rgb(200,50,50)';
   if (state.charType === 'sigma-support') { typeLabel = 'SIGMA · SUPPORT'; typeColor = 'rgb(200,50,50)'; }
   else if (state.charType === 'delta') { typeLabel = 'DELTA'; typeColor = '#aaa'; }
 
-  /* 링크 */
-  var linkHTML = '';
+  var linkBtn = '';
   if (wLink && /^https?:\/\//.test(wLink)) {
-    linkHTML = '<a href="' + escAttr(wLink) + '" target="_blank" style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:7px;padding:8px 13px;margin-top:4px;text-decoration:none;">'
+    linkBtn = '<a href="' + escAttr(wLink) + '" target="_blank" style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:7px;padding:8px 13px;margin-top:4px;text-decoration:none;">'
       + '<span style="font-family:monospace;font-size:10px;color:rgba(255,255,255,.65);letter-spacing:.08em;">설정집 바로가기 →</span></a>';
   }
 
   /* 캐릭터 배경 */
   var blurVal = state.blurPx || 0;
   var dimVal = (state.dimPct != null ? state.dimPct : 65) / 100;
-
   var charBgImg = state.charImg
     ? '<img src="' + escAttr(state.charImg) + '" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">'
     : '';
-
-  /* ★ backdrop-filter + background rgba 폴백 동시 적용 */
   var overlayStyle = state.charImg
     ? 'position:absolute;inset:0;backdrop-filter:blur(' + blurVal + 'px);-webkit-backdrop-filter:blur(' + blurVal + 'px);background:rgba(0,0,0,' + dimVal + ');'
     : 'position:absolute;inset:0;background:rgba(0,0,0,' + dimVal + ');';
 
-  /* ★ 도장 — width:35%, clamp 폰트, 정적 glow */
+  /* ★ 도장 — 고정 px 크기로 깨짐 방지, 넉넉한 사이즈 */
   var stamp = ''
-    + '<div style="width:35%;max-width:150px;min-width:80px;flex-shrink:0;filter:drop-shadow(0 0 10px rgba(200,50,50,.3));">'
-    +   '<div style="width:100%;height:0;padding-bottom:100%;position:relative;">'
-    +     '<div style="position:absolute;inset:0;border-radius:50%;border:4px solid rgb(180,30,30);display:flex;align-items:center;justify-content:center;flex-direction:column;">'
-    +       '<div style="position:absolute;inset:6%;border-radius:50%;border:1.5px solid rgba(180,30,30,.5);"></div>'
-    +       '<div style="position:absolute;top:14%;left:50%;transform:translateX(-50%);font-family:monospace;font-size:clamp(5px,2vw,9px);font-weight:700;letter-spacing:.35em;color:rgb(180,30,30);white-space:nowrap;">CLASSIFIED</div>'
-    +       '<div style="position:absolute;top:25%;left:50%;transform:translateX(-50%);display:flex;gap:4px;">'
-    +         '<span style="font-size:clamp(4px,1.5vw,7px);color:rgb(180,30,30);">★</span>'
-    +         '<span style="font-size:clamp(4px,1.5vw,7px);color:rgb(180,30,30);">★</span>'
-    +         '<span style="font-size:clamp(4px,1.5vw,7px);color:rgb(180,30,30);">★</span>'
-    +       '</div>'
-    +       '<div style="position:absolute;top:50%;left:50%;width:110%;transform:translate(-50%,-50%) rotate(-8deg);background:rgb(180,30,30);padding:5% 0;display:flex;align-items:center;justify-content:center;border-top:2px solid rgba(120,20,20,.6);border-bottom:2px solid rgba(120,20,20,.6);">'
-    +         '<span style="font-family:monospace;font-size:clamp(8px,3.5vw,17px);font-weight:700;letter-spacing:.12em;color:#fff;white-space:nowrap;">COMING SOON</span>'
-    +       '</div>'
-    +       '<div style="position:absolute;bottom:25%;left:50%;transform:translateX(-50%);display:flex;gap:4px;">'
-    +         '<span style="font-size:clamp(4px,1.5vw,7px);color:rgb(180,30,30);">★</span>'
-    +         '<span style="font-size:clamp(4px,1.5vw,7px);color:rgb(180,30,30);">★</span>'
-    +         '<span style="font-size:clamp(4px,1.5vw,7px);color:rgb(180,30,30);">★</span>'
-    +       '</div>'
-    +       '<div style="position:absolute;bottom:14%;left:50%;transform:translateX(-50%);font-family:monospace;font-size:clamp(5px,1.8vw,8px);font-weight:700;letter-spacing:.3em;color:rgb(180,30,30);white-space:nowrap;">NSSA · 2026</div>'
+    + '<div style="width:160px;height:160px;flex-shrink:0;filter:drop-shadow(0 0 12px rgba(200,50,50,.35));">'
+    +   '<div style="width:160px;height:160px;border-radius:50%;border:5px solid rgb(180,30,30);position:relative;overflow:hidden;">'
+    +     '<div style="position:absolute;inset:8px;border-radius:50%;border:2px solid rgba(180,30,30,.45);"></div>'
+    +     '<div style="position:absolute;top:20px;left:0;right:0;text-align:center;font-family:monospace;font-size:9px;font-weight:700;letter-spacing:.3em;color:rgb(180,30,30);">CLASSIFIED</div>'
+    +     '<div style="position:absolute;top:34px;left:0;right:0;text-align:center;display:flex;justify-content:center;gap:5px;">'
+    +       '<span style="font-size:7px;color:rgb(180,30,30);">★</span>'
+    +       '<span style="font-size:7px;color:rgb(180,30,30);">★</span>'
+    +       '<span style="font-size:7px;color:rgb(180,30,30);">★</span>'
     +     '</div>'
+    +     '<div style="position:absolute;top:50%;left:50%;width:180px;transform:translate(-50%,-50%) rotate(-8deg);background:rgb(180,30,30);padding:7px 0;text-align:center;border-top:2px solid rgba(120,20,20,.6);border-bottom:2px solid rgba(120,20,20,.6);">'
+    +       '<span style="font-family:monospace;font-size:18px;font-weight:700;letter-spacing:.1em;color:#fff;">COMING SOON</span>'
+    +     '</div>'
+    +     '<div style="position:absolute;bottom:34px;left:0;right:0;text-align:center;display:flex;justify-content:center;gap:5px;">'
+    +       '<span style="font-size:7px;color:rgb(180,30,30);">★</span>'
+    +       '<span style="font-size:7px;color:rgb(180,30,30);">★</span>'
+    +       '<span style="font-size:7px;color:rgb(180,30,30);">★</span>'
+    +     '</div>'
+    +     '<div style="position:absolute;bottom:18px;left:0;right:0;text-align:center;font-family:monospace;font-size:8px;font-weight:700;letter-spacing:.25em;color:rgb(180,30,30);">NSSA · 2026</div>'
     +   '</div>'
     + '</div>';
 
-  /* ★ 인적사항 — flex:1, clamp 폰트 */
+  /* ★ 인적사항 */
   var personnel = ''
     + '<div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:6px;">'
-    +   '<div style="font-family:monospace;font-size:clamp(6px,2vw,9px);letter-spacing:.3em;color:rgba(255,255,255,.4);">PERSONNEL FILE</div>'
-    +   '<div style="font-family:monospace;font-size:clamp(14px,5vw,24px);font-weight:700;letter-spacing:.08em;color:#fff;word-break:break-word;">' + esc(cName) + '</div>'
-    +   '<div style="font-family:monospace;font-size:clamp(7px,2.2vw,11px);font-weight:700;letter-spacing:.2em;color:' + typeColor + ';">' + esc(typeLabel) + '</div>'
-    +   '<div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:4px 12px;">'
-    +     '<div><span style="font-family:monospace;font-size:clamp(5px,1.6vw,7px);letter-spacing:.15em;color:rgba(255,255,255,.35);">RANK</span><br><span style="font-family:monospace;font-size:clamp(8px,2.5vw,12px);color:rgba(255,255,255,.85);letter-spacing:.04em;">' + esc(cRank) + '</span></div>'
-    +     '<div><span style="font-family:monospace;font-size:clamp(5px,1.6vw,7px);letter-spacing:.15em;color:rgba(255,255,255,.35);">DEPT</span><br><span style="font-family:monospace;font-size:clamp(8px,2.5vw,12px);color:rgba(255,255,255,.85);letter-spacing:.04em;">' + esc(cDept) + '</span></div>'
+    +   '<div style="font-family:monospace;font-size:9px;letter-spacing:.3em;color:rgba(255,255,255,.4);">PERSONNEL FILE</div>'
+    +   '<div style="font-family:monospace;font-size:22px;font-weight:700;letter-spacing:.08em;color:#fff;word-break:break-word;">' + esc(cName) + '</div>'
+    +   '<div style="font-family:monospace;font-size:11px;font-weight:700;letter-spacing:.2em;color:' + typeColor + ';">' + esc(typeLabel) + '</div>'
+    +   '<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px 16px;">'
+    +     '<div><span style="font-family:monospace;font-size:7px;letter-spacing:.15em;color:rgba(255,255,255,.35);">RANK</span><br><span style="font-family:monospace;font-size:13px;color:rgba(255,255,255,.85);letter-spacing:.04em;">' + esc(cRank) + '</span></div>'
+    +     '<div><span style="font-family:monospace;font-size:7px;letter-spacing:.15em;color:rgba(255,255,255,.35);">DEPT</span><br><span style="font-family:monospace;font-size:13px;color:rgba(255,255,255,.85);letter-spacing:.04em;">' + esc(cDept) + '</span></div>'
     +   '</div>'
-    +   '<div style="margin-top:6px;font-family:monospace;font-size:clamp(5px,1.5vw,7px);letter-spacing:.2em;color:rgba(255,255,255,.2);">NSSA-' + (state.charType === 'delta' ? 'D' : 'S') + '-0000</div>'
+    +   '<div style="margin-top:8px;font-family:monospace;font-size:7px;letter-spacing:.2em;color:rgba(255,255,255,.2);">NSSA-' + (state.charType === 'delta' ? 'D' : 'S') + '-0000</div>'
     + '</div>';
 
-  /* ===== 전체 HTML 조립 ===== */
+  /* ===== 전체 HTML ===== */
   document.getElementById('preview-root').innerHTML = ''
-    /* 최외곽 — 세로 쌓기, 고정 넓이 */
     + '<div style="display:flex;flex-direction:column;gap:10px;max-width:420px;margin:0 auto;padding:16px;background:#f2f2f0;border-radius:12px;font-family:\'Noto Sans KR\',sans-serif;">'
 
-    /* ── 크리에이터 카드 ── */
+    /* ── 크리에이터 카드 (원본 그대로) ── */
     + '<div style="border-radius:10px;overflow:hidden;background:#fdf9d6;border:1px solid #e8d98a;">'
-    +   '<div style="padding:13px 17px;display:flex;align-items:center;gap:12px;background:#fdf9d6;">'
+    +   '<div style="padding:.85rem 1.1rem;display:flex;align-items:center;gap:.8rem;background:#fdf9d6;">'
     +     '<div style="width:46px;height:46px;border-radius:50%;background:#f5eeaa;border:1px solid #e8d98a;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">' + avatarHTML + '</div>'
-    +     '<div>'
-    +       '<div style="font-size:14px;font-weight:500;color:#5a4e1a;">' + esc(name) + '</div>'
-    +       '<div style="font-size:10px;color:#9a8830;font-family:monospace;letter-spacing:.04em;margin-top:2px;">' + esc(sub) + '</div>'
-    +     '</div>'
+    +     '<div><div style="font-size:14px;font-weight:500;color:#5a4e1a;">' + esc(name) + '</div><div style="font-size:10px;color:#9a8830;font-family:monospace;letter-spacing:.04em;margin-top:2px;">' + esc(sub) + '</div></div>'
     +   '</div>'
-    +   '<div style="background:#fff;padding:12px 17px 14px;border-top:1px solid #e8d98a;">'
+    +   '<div style="background:#fff;padding:.8rem 1.1rem .95rem;border-top:1px solid #e8d98a;">'
     +     '<span style="font-family:Georgia,serif;font-size:22px;color:#c8b84a;line-height:1;display:block;margin-bottom:-2px;opacity:.55;">"</span>'
-    +     '<div style="font-size:12px;color:#555;line-height:1.9;font-weight:300;margin-top:5px;">' + comment + '</div>'
+    +     '<div style="font-size:12px;color:#555;line-height:1.9;font-weight:300;margin-top:.35rem;">' + comment + '</div>'
     +   '</div>'
     + '</div>'
 
-    /* ── 세계관 카드 ── */
+    /* ── 세계관 카드 (원본 그대로) ── */
     + '<div style="position:relative;border-radius:10px;overflow:hidden;border:1px solid #222;">'
     +   '<div style="position:absolute;inset:0;background:#111;"></div>'
     +   '<div style="position:absolute;inset:0;opacity:.07;background-image:linear-gradient(rgba(255,255,255,.9) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.9) 1px,transparent 1px);background-size:22px 22px;"></div>'
-    +   '<div style="position:relative;z-index:1;padding:17px 19px;display:flex;flex-direction:column;gap:5px;">'
+    +   '<div style="position:relative;z-index:1;padding:1.1rem 1.2rem;display:flex;flex-direction:column;gap:.38rem;">'
     +     '<div style="font-family:monospace;font-size:9px;letter-spacing:.25em;color:rgba(255,255,255,.3);display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:12px;height:.5px;background:rgba(255,255,255,.3);vertical-align:middle;"></span>WORLDVIEW</div>'
     +     '<div style="font-size:20px;font-weight:700;color:#fff;">' + esc(wTitle) + '</div>'
     +     '<div style="font-family:monospace;font-size:9px;color:rgba(255,255,255,.3);letter-spacing:.1em;margin-top:-2px;">' + esc(wSub) + '</div>'
-    +     '<div style="font-size:12px;color:#fff;line-height:1.75;font-weight:300;margin-top:4px;">' + wDesc + '</div>'
-    +     linkHTML
-    +     '<div style="font-family:monospace;font-size:7.5px;color:rgba(255,255,255,.2);letter-spacing:.15em;margin-top:3px;">● SEMI-PUBLIC · NSSA-2026</div>'
+    +     '<div style="font-size:12px;color:#fff;line-height:1.75;font-weight:300;margin-top:.3rem;">' + wDesc + '</div>'
+    +     linkBtn
+    +     '<div style="font-family:monospace;font-size:7.5px;color:rgba(255,255,255,.2);letter-spacing:.15em;margin-top:.2rem;">● SEMI-PUBLIC · NSSA-2026</div>'
     +   '</div>'
     + '</div>'
 
     /* ── 구분선 ── */
     + '<div style="text-align:center;padding:6px 0;"><span style="font-family:monospace;font-size:9px;letter-spacing:.4em;color:#bbb;">──────────</span></div>'
 
-    /* ── 뉴 캐릭터 카드 (1칸 고정, 4:3) ── */
+    /* ── 뉴 캐릭터 카드 ── */
     + '<div style="border-radius:10px;overflow:hidden;border:1px solid #ddd;background:#fff;">'
     +   '<div style="padding:10px 17px 8px;border-bottom:1px solid #eee;">'
-    +     '<div style="font-family:monospace;font-size:15px;font-weight:700;color:#111;letter-spacing:.05em;">NEW CHARACTER</div>'
-    +     '<div style="font-size:9px;color:#aaa;font-family:monospace;letter-spacing:.04em;margin-top:2px;">// classified</div>'
+    +     '<div style="font-family:monospace;font-size:17px;font-weight:700;color:#111;letter-spacing:.06em;">NEW CHARACTER</div>'
     +   '</div>'
-    /* ★ 4:3 = padding-bottom:75% , 도장+인적사항 정중앙 */
+    /* 4:3 비율 */
     +   '<div style="position:relative;width:100%;height:0;padding-bottom:75%;overflow:hidden;background:#1a1a1a;">'
     +     charBgImg
     +     '<div style="' + overlayStyle + '"></div>'
-    +     '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:clamp(10px,4vw,28px);padding:clamp(8px,3vw,20px);z-index:2;">'
+    /* ★ 정중앙 배치 */
+    +     '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:24px;padding:20px;z-index:2;">'
     +       stamp
     +       personnel
     +     '</div>'
     +     '<div style="position:absolute;top:8px;left:10px;font-family:monospace;font-size:7px;letter-spacing:.2em;color:rgba(255,255,255,.15);z-index:1;">RESTRICTED</div>'
     +     '<div style="position:absolute;bottom:8px;right:10px;font-family:monospace;font-size:7px;letter-spacing:.2em;color:rgba(255,255,255,.15);z-index:1;">NSSA-DOC-2026</div>'
     +   '</div>'
-    +   '<div style="padding:7px 17px;border-top:1px solid #eee;"><div style="font-size:9px;color:#bbb;font-family:monospace;letter-spacing:.04em;text-align:center;">// 업데이트 예정</div></div>'
     + '</div>'
 
-    + '</div>'; /* 최외곽 끝 */
+    + '</div>';
 }
 
 /* ═══════════════════════════════════════
-   복사 — innerHTML만 (케이브덕 호환)
+   복사 — innerHTML만
 ═══════════════════════════════════════ */
 function copyHTML() {
   var inner = document.getElementById('preview-root').innerHTML;
   navigator.clipboard.writeText(inner).then(function() {
     var btn = document.getElementById('copy-btn');
-    btn.textContent = '복사 완료!';
-    btn.classList.add('copied');
-    setTimeout(function() {
-      btn.textContent = 'HTML 복사하기';
-      btn.classList.remove('copied');
-    }, 2200);
+    btn.textContent = '복사 완료!'; btn.classList.add('copied');
+    setTimeout(function() { btn.textContent = 'HTML 복사하기'; btn.classList.remove('copied'); }, 2200);
   });
 }
 
