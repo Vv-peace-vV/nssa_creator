@@ -216,6 +216,29 @@ input[type=color].fmt-custom{width:17px;height:17px;border-radius:50%;border:2px
           </div>
         </div>
 
+        <!-- ★ 이미지 위치 조정 (이미지 넣으면 나타남) -->
+        <div class="field" id="img-adjust-char" style="display:none">
+          <label>이미지 위치 조정</label>
+          <div style="display:flex;flex-direction:column;gap:6px;border:1px solid #e0e0e0;border-radius:6px;background:#fafafa;padding:10px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:11px;color:#999;width:28px;">↕</span>
+              <input type="range" id="char-pos-y" min="-50" max="50" value="0" oninput="updateCharImg()" style="flex:1;accent-color:#111">
+              <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:#bbb;width:30px;text-align:right;" id="char-pos-y-val">0%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:11px;color:#999;width:28px;">↔</span>
+              <input type="range" id="char-pos-x" min="-50" max="50" value="0" oninput="updateCharImg()" style="flex:1;accent-color:#111">
+              <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:#bbb;width:30px;text-align:right;" id="char-pos-x-val">0%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:11px;color:#999;width:28px;">🔍</span>
+              <input type="range" id="char-scale" min="100" max="300" value="100" oninput="updateCharImg()" style="flex:1;accent-color:#111">
+              <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:#bbb;width:30px;text-align:right;" id="char-scale-val">100%</span>
+            </div>
+            <button onclick="resetCharImg()" style="font-family:'Share Tech Mono',monospace;font-size:9px;color:#999;background:none;border:1px solid #e0e0e0;border-radius:4px;padding:3px 8px;cursor:pointer;align-self:flex-end;">위치 초기화</button>
+          </div>
+        </div>
+
         <div class="field">
           <label>배경 블러</label>
           <div class="slider-row">
@@ -258,7 +281,8 @@ var state = {
   charType: 'sigma-combat',
   charImg: '',
   blurPx: 12,
-  dimPct: 65
+  dimPct: 65,
+  imgPos: { x: 0, y: 0, s: 100 }
 };
 
 /* ═══════════════════════════════════════
@@ -297,13 +321,41 @@ function onCharImg() {
   var thumb = document.getElementById('thumb-char');
   var img = thumb.querySelector('img');
   var noImg = thumb.querySelector('.no-img');
+  var adjust = document.getElementById('img-adjust-char');
   if (url) {
     if (!img) { img = document.createElement('img'); thumb.appendChild(img); }
     img.src = url; if (noImg) noImg.style.display = 'none';
+    if (adjust) adjust.style.display = '';
   } else {
     if (img) img.remove(); if (noImg) noImg.style.display = '';
+    if (adjust) adjust.style.display = 'none';
+    state.imgPos = { x: 0, y: 0, s: 100 };
   }
   render();
+}
+
+/* ═══════════════════════════════════════
+   이미지 위치 조정
+═══════════════════════════════════════ */
+function updateCharImg() {
+  var x = parseInt(document.getElementById('char-pos-x').value);
+  var y = parseInt(document.getElementById('char-pos-y').value);
+  var s = parseInt(document.getElementById('char-scale').value);
+  state.imgPos = { x: x, y: y, s: s };
+  document.getElementById('char-pos-x-val').textContent = x + '%';
+  document.getElementById('char-pos-y-val').textContent = y + '%';
+  document.getElementById('char-scale-val').textContent = s + '%';
+  render();
+}
+function resetCharImg() {
+  document.getElementById('char-pos-x').value = 0;
+  document.getElementById('char-pos-y').value = 0;
+  document.getElementById('char-scale').value = 100;
+  updateCharImg();
+}
+function getCharImgStyle() {
+  var d = state.imgPos;
+  return 'position:absolute;left:50%;top:50%;width:' + d.s + '%;height:' + d.s + '%;min-width:100%;min-height:100%;object-fit:cover;transform:translate(calc(-50% + ' + d.x + '%), calc(-50% + ' + d.y + '%));display:block;';
 }
 
 /* ═══════════════════════════════════════
@@ -372,7 +424,6 @@ function restoreSel() {
   return !sel.isCollapsed;
 }
 
-/* ── 빈 태그 정리 ── */
 function cleanEmptyNodes(root) {
   if (!root) return;
   root.querySelectorAll('b,i,span,strong,em').forEach(function(el) {
@@ -385,7 +436,6 @@ function cleanEmptyNodes(root) {
   });
 }
 
-/* ── 색상 스팬 벗기기 ── */
 function stripColorSpans(container) {
   container.querySelectorAll('span').forEach(function(sp) {
     if (sp.style.color) {
@@ -395,7 +445,6 @@ function stripColorSpans(container) {
   });
 }
 
-/* ── 서식 토글 ── */
 function hasAnc(node, fn) {
   var c = node.parentNode;
   while (c) { if (c.nodeType === 1 && fn(c)) return true; c = c.parentNode; }
@@ -503,7 +552,7 @@ function r(id) {
 function gv(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
 
 /* ═══════════════════════════════════════
-   렌더 — 원본 디자인 유지, 캐릭터 카드만 변경
+   렌더
 ═══════════════════════════════════════ */
 function render() {
   var name    = gv('creator-name')    || '크리에이터 닉네임';
@@ -525,23 +574,21 @@ function render() {
   if (state.charType === 'sigma-support') { typeLabel = 'SIGMA · SUPPORT'; typeColor = 'rgb(200,50,50)'; }
   else if (state.charType === 'delta') { typeLabel = 'DELTA'; typeColor = '#aaa'; }
 
-  var linkBtn = '';
-  if (wLink && /^https?:\/\//.test(wLink)) {
-    linkBtn = '<a href="' + escAttr(wLink) + '" target="_blank" style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:7px;padding:8px 13px;margin-top:4px;text-decoration:none;">'
-      + '<span style="font-family:monospace;font-size:10px;color:rgba(255,255,255,.65);letter-spacing:.08em;">설정집 바로가기 →</span></a>';
-  }
+  /* ★ 링크 — 원본처럼 항상 표시, URL 없으면 href="#" */
+  var safeLink = (wLink && /^https?:\/\//.test(wLink)) ? escAttr(wLink) : '#';
+  var linkBtn = '<a href="' + safeLink + '" target="_blank" style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:7px;padding:8px 13px;margin-top:4px;text-decoration:none;">'
+    + '<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;color:rgba(255,255,255,.65);letter-spacing:.08em;">설정집 바로가기 →</span></a>';
 
-  /* 캐릭터 배경 */
+  /* 캐릭터 배경 — ★ 이미지 위치 조정 반영 */
   var blurVal = state.blurPx || 0;
   var dimVal = (state.dimPct != null ? state.dimPct : 65) / 100;
   var charBgImg = state.charImg
-    ? '<img src="' + escAttr(state.charImg) + '" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">'
+    ? '<img src="' + escAttr(state.charImg) + '" alt="" style="' + getCharImgStyle() + '">'
     : '';
   var overlayStyle = state.charImg
     ? 'position:absolute;inset:0;backdrop-filter:blur(' + blurVal + 'px);-webkit-backdrop-filter:blur(' + blurVal + 'px);background:rgba(0,0,0,' + dimVal + ');'
     : 'position:absolute;inset:0;background:rgba(0,0,0,' + dimVal + ');';
 
-  /* ★ 도장 — 고정 px 크기로 깨짐 방지, 넉넉한 사이즈 */
   var stamp = ''
     + '<div style="width:160px;height:160px;flex-shrink:0;filter:drop-shadow(0 0 12px rgba(200,50,50,.35));">'
     +   '<div style="width:160px;height:160px;border-radius:50%;border:5px solid rgb(180,30,30);position:relative;overflow:hidden;">'
@@ -564,7 +611,6 @@ function render() {
     +   '</div>'
     + '</div>';
 
-  /* ★ 인적사항 */
   var personnel = ''
     + '<div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:6px;">'
     +   '<div style="font-family:monospace;font-size:9px;letter-spacing:.3em;color:rgba(255,255,255,.4);">PERSONNEL FILE</div>'
@@ -577,11 +623,9 @@ function render() {
     +   '<div style="margin-top:8px;font-family:monospace;font-size:7px;letter-spacing:.2em;color:rgba(255,255,255,.2);">NSSA-' + (state.charType === 'delta' ? 'D' : 'S') + '-0000</div>'
     + '</div>';
 
-  /* ===== 전체 HTML ===== */
   document.getElementById('preview-root').innerHTML = ''
     + '<div style="display:flex;flex-direction:column;gap:10px;max-width:420px;margin:0 auto;padding:16px;background:#f2f2f0;border-radius:12px;font-family:\'Noto Sans KR\',sans-serif;">'
 
-    /* ── 크리에이터 카드 (원본 그대로) ── */
     + '<div style="border-radius:10px;overflow:hidden;background:#fdf9d6;border:1px solid #e8d98a;">'
     +   '<div style="padding:.85rem 1.1rem;display:flex;align-items:center;gap:.8rem;background:#fdf9d6;">'
     +     '<div style="width:46px;height:46px;border-radius:50%;background:#f5eeaa;border:1px solid #e8d98a;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">' + avatarHTML + '</div>'
@@ -593,33 +637,28 @@ function render() {
     +   '</div>'
     + '</div>'
 
-    /* ── 세계관 카드 (원본 그대로) ── */
     + '<div style="position:relative;border-radius:10px;overflow:hidden;border:1px solid #222;">'
     +   '<div style="position:absolute;inset:0;background:#111;"></div>'
     +   '<div style="position:absolute;inset:0;opacity:.07;background-image:linear-gradient(rgba(255,255,255,.9) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.9) 1px,transparent 1px);background-size:22px 22px;"></div>'
     +   '<div style="position:relative;z-index:1;padding:1.1rem 1.2rem;display:flex;flex-direction:column;gap:.38rem;">'
-    +     '<div style="font-family:monospace;font-size:9px;letter-spacing:.25em;color:rgba(255,255,255,.3);display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:12px;height:.5px;background:rgba(255,255,255,.3);vertical-align:middle;"></span>WORLDVIEW</div>'
+    +     '<div style="font-family:\'Share Tech Mono\',monospace;font-size:9px;letter-spacing:.25em;color:rgba(255,255,255,.3);text-transform:uppercase;display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:12px;height:.5px;background:rgba(255,255,255,.3);vertical-align:middle;"></span>worldview</div>'
     +     '<div style="font-size:20px;font-weight:700;color:#fff;">' + esc(wTitle) + '</div>'
-    +     '<div style="font-family:monospace;font-size:9px;color:rgba(255,255,255,.3);letter-spacing:.1em;margin-top:-2px;">' + esc(wSub) + '</div>'
+    +     '<div style="font-family:\'Share Tech Mono\',monospace;font-size:9px;color:rgba(255,255,255,.3);letter-spacing:.1em;margin-top:-2px;">' + esc(wSub) + '</div>'
     +     '<div style="font-size:12px;color:#fff;line-height:1.75;font-weight:300;margin-top:.3rem;">' + wDesc + '</div>'
     +     linkBtn
-    +     '<div style="font-family:monospace;font-size:7.5px;color:rgba(255,255,255,.2);letter-spacing:.15em;margin-top:.2rem;">● SEMI-PUBLIC · NSSA-2026</div>'
+    +     '<div style="font-family:\'Share Tech Mono\',monospace;font-size:7.5px;color:rgba(255,255,255,.2);letter-spacing:.15em;margin-top:.2rem;">● SEMI-PUBLIC · NSSA-2026</div>'
     +   '</div>'
     + '</div>'
 
-    /* ── 구분선 ── */
     + '<div style="text-align:center;padding:6px 0;"><span style="font-family:monospace;font-size:9px;letter-spacing:.4em;color:#bbb;">──────────</span></div>'
 
-    /* ── 뉴 캐릭터 카드 ── */
     + '<div style="border-radius:10px;overflow:hidden;border:1px solid #ddd;background:#fff;">'
     +   '<div style="padding:10px 17px 8px;border-bottom:1px solid #eee;">'
     +     '<div style="font-family:monospace;font-size:17px;font-weight:700;color:#111;letter-spacing:.06em;">NEW CHARACTER</div>'
     +   '</div>'
-    /* 4:3 비율 */
     +   '<div style="position:relative;width:100%;height:0;padding-bottom:75%;overflow:hidden;background:#1a1a1a;">'
     +     charBgImg
     +     '<div style="' + overlayStyle + '"></div>'
-    /* ★ 정중앙 배치 */
     +     '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:24px;padding:20px;z-index:2;">'
     +       stamp
     +       personnel
@@ -644,9 +683,6 @@ function copyHTML() {
   });
 }
 
-/* ═══════════════════════════════════════
-   초기 렌더
-═══════════════════════════════════════ */
 render();
 </script>
 </body>
